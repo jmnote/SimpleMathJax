@@ -6,6 +6,8 @@ class SimpleMathJax {
 	}
 
 	static function render($tex) {
+		$tex = str_replace('<', '\lt', $tex);
+		$tex = str_replace('>', '\gt', $tex);
 		return array("<span class='mathjax-wrapper'>[math]${tex}[/math]</span>", 'markerType'=>'nowiki');
 	}
 	
