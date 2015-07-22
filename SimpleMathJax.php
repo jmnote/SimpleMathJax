@@ -20,7 +20,7 @@ $wgExtensionCredits['parserhook'][] = array(
         'version'     => '0.3',
         'author'      => 'Jmkim dot com',
         'description' => 'render TeX between <nowiki><math></nowiki> and <nowiki></math></nowiki>',
-        'url'         => 'http://www.mediawiki.org/wiki/Extension:SimpleMathJax'
+        'url'         => '//www.mediawiki.org/wiki/Extension:SimpleMathJax'
 );
 
 // Register class
