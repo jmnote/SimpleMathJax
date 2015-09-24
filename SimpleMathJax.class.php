@@ -17,7 +17,7 @@ class SimpleMathJax {
 		$out->addScript( "<style>.MathJax_Display{display:inline !important;}
 .mathjax-wrapper{font-size:${wgSimpleMathJaxSize}%;}</style>
 <script type='text/x-mathjax-config'>MathJax.Hub.Config({displayAlign:'left',tex2jax:{displayMath:[['[math]','[/math]']]}})</script>
-<script src='http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>" );
+<script src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>" );
 		return true;
 	}
 }
