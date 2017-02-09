@@ -14,6 +14,7 @@ if( !defined( 'MEDIAWIKI' ) ) exit;
 
 // Global Settings
 $wgSimpleMathJaxSize = 100;
+$wgSimpleMathJaxChem = false;
 $wgExtensionCredits['parserhook'][] = array(
         'path'        => __FILE__,
         'name'        => 'SimpleMathJax',
