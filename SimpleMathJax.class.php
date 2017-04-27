@@ -37,10 +37,10 @@ class SimpleMathJax {
 <style>.MathJax_Display{display:inline !important;}
 .mathjax-wrapper{display:none;font-size:${wgSimpleMathJaxSize}%;}</style>
 <script type='text/x-mathjax-config'>MathJax.Hub.Config(${configJs});MathJax.Hub.Queue(function(){\$('.mathjax-wrapper').show();});</script>
-<script src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 HEREDOC;
 		if( $wgSimpleMathJaxChem ) {
-			$script .= "<script src='//cdn.mathjax.org/mathjax/latest/extensions/TeX/mhchem.js'></script>";
+			$script .= "<script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/extensions/TeX/mhchem.js'></script>";
 		}
 		$out->addScript( $script );
 		return true;
