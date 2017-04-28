@@ -1,15 +1,21 @@
 <?php
 class SimpleMathJax {
 
-	static function init() {
-		global $wgParser, $wgSimpleMathJaxChem;
-		$wgParser->setHook( 'math', 'SimpleMathJax::renderMath' );
+	public static $mathjaxScriptLoaded = false;
+
+	static function onParserFirstCallInit ( Parser &$parser ) {
+		global $wgSimpleMathJaxChem;
+		$parser->setHook( 'math', 'SimpleMathJax::renderMath' );
 		if( $wgSimpleMathJaxChem ) {
-			$wgParser->setHook('chem', 'SimpleMathJax::renderChem');
+			$parser->setHook('chem', 'SimpleMathJax::renderChem');
 		}
 	}
 
 	static function renderMath($tex) {
+		if ( ! self::$mathjaxScriptLoaded ) {
+			self::$mathjaxScriptLoaded = true;
+			self::loadJS();
+		}
 		$tex = str_replace('\>', '\;', $tex);
 		$tex = str_replace('<', '\lt ', $tex);
 		$tex = str_replace('>', '\gt ', $tex);
@@ -17,12 +23,16 @@ class SimpleMathJax {
 	}
 
 	static function renderChem($tex) {
+		if ( ! self::$mathjaxScriptLoaded ) {
+			self::$mathjaxScriptLoaded = true;
+			self::loadJS();
+		}
 		$tex = '\ce{'.$tex.'}';
 		return ["<span class='mathjax-wrapper'>[math]${tex}[/math]</span>", 'markerType'=>'nowiki'];
 	}
 
-	static function loadJS(&$out, &$skin ) {
-		global $wgSimpleMathJaxSize, $wgSimpleMathJaxChem;
+	static function loadJS() {
+		global $wgOut, $wgSimpleMathJaxSize, $wgSimpleMathJaxChem;
 
 		$config = [
 			'messageStyle' => 'none',
@@ -49,7 +59,7 @@ HEREDOC;
 			$chemURL = "$scriptBase/extensions/TeX/mhchem.js";
 			$script .= "<script src='$chemURL'></script>";
 		}
-		$out->addScript( $script );
+		$wgOut->addScript( $script );
 		return true;
 	}
 }
