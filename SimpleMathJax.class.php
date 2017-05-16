@@ -22,7 +22,7 @@ class SimpleMathJax {
 	}
 
 	static function loadJS(&$out, &$skin ) {
-		global $wgSimpleMathJaxSize, $wgSimpleMathJaxChem;
+		global $wgSimpleMathJaxSize, $wgSimpleMathJaxChem, $wgSimpleMathJaxLocalDir;
 
 		$config = [
 			'messageStyle' => 'none',
@@ -33,14 +33,27 @@ class SimpleMathJax {
 		];
 		$configJs = json_encode($config, JSON_UNESCAPED_SLASHES);
 
-		$script = <<<HEREDOC
+		if ( $wgSimpleMathJaxLocalDir ) {
+			$script = <<<HEREDOC
+<style>.MathJax_Display{display:inline !important;}
+.mathjax-wrapper{display:none;font-size:${wgSimpleMathJaxSize}%;}</style>
+<script type='text/x-mathjax-config'>MathJax.Hub.Config(${configJs});MathJax.Hub.Queue(function(){\$('.mathjax-wrapper').show();});</script>
+<script src='${wgSimpleMathJaxLocalDir}/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+HEREDOC;
+		} else {
+			$script = <<<HEREDOC
 <style>.MathJax_Display{display:inline !important;}
 .mathjax-wrapper{display:none;font-size:${wgSimpleMathJaxSize}%;}</style>
 <script type='text/x-mathjax-config'>MathJax.Hub.Config(${configJs});MathJax.Hub.Queue(function(){\$('.mathjax-wrapper').show();});</script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 HEREDOC;
+		}
 		if( $wgSimpleMathJaxChem ) {
-			$script .= "<script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/extensions/TeX/mhchem.js'></script>";
+			if ( $wgSimpleMathJaxLocalDir ) {
+				$script .="<script src='${wgSimpleMathJaxLocalDir}/extensions/TeX/mhchem.js'></script>";
+			} else {
+				$script .= "<script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/extensions/TeX/mhchem.js'></script>";
+			}
 		}
 		$out->addScript( $script );
 		return true;
