@@ -28,11 +28,10 @@ $wgSimpleMathJaxSize = 120;
 $wgSimpleMathJaxChem = true;
 ```
 
-To use local scripts, git clone MathJax and set variables.
+To use local scripts, git submodule update and set variables.
 ```Bash
 $ cd /path/to/extensions/SimpleMathJax
-$ git clone https://github.com/mathjax/MathJax.git
-$ git clone https://github.com/mhchem/MathJax-mhchem.git
+$ git submodule update
 ```
 ```PHP
 require "$IP/extensions/SimpleMathJax/SimpleMathJax.php";
