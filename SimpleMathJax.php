@@ -8,7 +8,7 @@
  * @author Jmkim dot com
  * @license GNU Public License
  */
- 
+
 // Exit if called outside of MediaWiki
 if( !defined( 'MEDIAWIKI' ) ) exit;
 
@@ -28,5 +28,4 @@ $wgExtensionCredits['parserhook'][] = array(
 $dir = dirname(__FILE__) . '/';
 $wgAutoloadClasses['SimpleMathJax'] = $dir.'SimpleMathJax.class.php';
 
-$wgHooks['BeforePageDisplay'][] = 'SimpleMathJax::loadJS';
-$wgExtensionFunctions[] = 'SimpleMathJax::init';
+$wgHooks['ParserFirstCallInit'][] = 'SimpleMathJax::onParserFirstCallInit';
