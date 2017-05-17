@@ -6,7 +6,7 @@ https://www.mediawiki.org/wiki/Extension:SimpleMathJax
 | Setting name                    | Default value                                       | Description                             |
 | ------------------------------- | --------------------------------------------------- | --------------------------------------- |
 | `$wgSimpleMathJaxSize`          | 100                                                 | The default font size for SimpleMathJax |
-| `$wgSimpleMathJaxChem`          | false                                               | enable Chem tag                         |
+| `$wgSimpleMathJaxChem`          | false                                               | enable `<chem>` tag                         |
 | `$wgSimpleMathJaxMathJsUrlPath` | "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1"                 | URL path of Math.js        |
 | `$wgSimpleMathJaxChemJsUrlPath` | "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/extensions/TeX"  | URL path of mhchem.js      |
 
