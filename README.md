@@ -15,11 +15,13 @@ https://www.mediawiki.org/wiki/Extension:SimpleMathJax
 require "$IP/extensions/SimpleMathJax/SimpleMathJax.php";
 ```
 
+To change font size, set `$wgSimpleMathJaxSize`.
 ```PHP
 require "$IP/extensions/SimpleMathJax/SimpleMathJax.php";
 $wgSimpleMathJaxSize = 110;
 ```
 
+To use chem tag, set `$wgSimpleMathJaxChem`.
 ```PHP
 require "$IP/extensions/SimpleMathJax/SimpleMathJax.php";
 $wgSimpleMathJaxSize = 120;
@@ -35,6 +37,7 @@ $ git clone https://github.com/mhchem/MathJax-mhchem.git
 ```PHP
 require "$IP/extensions/SimpleMathJax/SimpleMathJax.php";
 $wgSimpleMathJaxSize = 115;
+$wgSimpleMathJaxChem = true;
 $wgSimpleMathJaxMathJsUrlPath = "{$wgScriptPath}/extensions/SimpleMathJax/MathJax";
 $wgSimpleMathJaxChemJsUrlPath = "{$wgScriptPath}/extensions/SimpleMathJax/MathJax-mhchem";
 ```
