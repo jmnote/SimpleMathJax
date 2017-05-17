@@ -33,7 +33,6 @@ class SimpleMathJax {
 
 	static function loadJS() {
 		global $wgOut, $wgSimpleMathJaxSize, $wgSimpleMathJaxChem;
-
 		$config = [
 			'messageStyle' => 'none',
 			'tex2jax' => [
@@ -55,6 +54,7 @@ class SimpleMathJax {
 <script type='text/x-mathjax-config'>MathJax.Hub.Config(${configJs});MathJax.Hub.Queue(function(){\$('.mathjax-wrapper').show();});</script>
 <script src='$mathjaxURL'></script>
 HEREDOC;
+		}
 		if( $wgSimpleMathJaxChem ) {
 			$chemURL = "$scriptBase/extensions/TeX/mhchem.js";
 			$script .= "<script src='$chemURL'></script>";
