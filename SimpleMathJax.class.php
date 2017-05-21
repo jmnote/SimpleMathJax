@@ -25,23 +25,22 @@ class SimpleMathJax {
 	}
 	
 	static function addScripts( $out ) {
-		global $wgSimpleMathJaxSize, $wgSimpleMathJaxChem, $wgSimpleMathJaxMathJsUrlPath, $wgSimpleMathJaxChemJsUrlPath;
+		global $wgSimpleMathJaxSize, $wgSimpleMathJaxChem, $wgSimpleMathJaxJs, $wgSimpleMathJaxChemJs;
 		
-		if( !$wgSimpleMathJaxMathJsUrlPath )
-			$wgSimpleMathJaxMathJsUrlPath = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1';
-		if( !$wgSimpleMathJaxChemJsUrlPath )
-			$wgSimpleMathJaxChemJsUrlPath = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/extensions/TeX';
-		
+		if( !$wgSimpleMathJaxJs )
+			$wgSimpleMathJaxJs = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+		if( !$wgSimpleMathJaxChemJs )
+			$wgSimpleMathJaxChemJs = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/extensions/TeX/mhchem.js';
 		$out->addScript( <<<HEREDOC
 <style>.mathjax-wrapper{display:none;font-size:${wgSimpleMathJaxSize}%;}.MathJax_Display{display:inline !important;}</style>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({"messageStyle":"none","tex2jax":{"preview":"none","displayMath":[["[math]","[/math]"]]}});
 MathJax.Hub.Queue(function(){\$(".mathjax-wrapper").show();});</script>
-<script src="${wgSimpleMathJaxMathJsUrlPath}/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="${wgSimpleMathJaxJs}"></script>
 HEREDOC
 );
 		if( $wgSimpleMathJaxChem )
-			$out->addScript( "<script src='${wgSimpleMathJaxChemJsUrlPath}/mhchem.js'></script>" );
+			$out->addScript( "<script src='${wgSimpleMathJaxChemJs}'></script>" );
 		return true;
 	}
 }
