@@ -13,7 +13,7 @@
 	},
 	"callback": "SimpleMathJax::onRegistration",
 	"config": {
-		"SimpleMathJaxUseCDN": false,
+		"SimpleMathJaxUseCDN": true,
 		"SimpleMathJaxSize": 125
 	},
 	"ResourceModules": {
