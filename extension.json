@@ -5,7 +5,7 @@
 		"jmnote", "vedmaka", "jamesmontalvo3", "badshah400"
 	],
 	"url": "http://www.mediawiki.org/wiki/Extension:SimpleMathJax",
-	"description": "render TeX between <code>&lt;math&gt;</code> and <code>&lt;/math&gt;</nowiki></code>",
+	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
 	"license-name": "GPL-2.0+",
 	"type": "parserhook",
 	"AutoloadClasses": {
