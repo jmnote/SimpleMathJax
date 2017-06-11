@@ -17,9 +17,17 @@ wfLoadExtension( 'SimpleMathJax' );
 | Setting name             | Default value                                       | Description                             |
 | ------------------------ | --------------------------------------------------- | --------------------------------------- |
 | `$wgSimpleMathJaxSize`   | 125                                                 | The default font size for SimpleMathJax |
+| `$wgSimpleMathJaxUseCDN` | true                                                | use cloudflare CDN                      |
 
 If you want to change font size, set `$wgSimpleMathJaxSize`.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 $wgSimpleMathJaxSize = 150;
 ```
+
+If you want to use local module, set `$wgSimpleMathJaxUseCDN`.
+```PHP
+wfLoadExtension( 'SimpleMathJax' );
+$wgSimpleMathJaxUseCDN = false;
+```
+
