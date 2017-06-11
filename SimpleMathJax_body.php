@@ -2,12 +2,25 @@
 class SimpleMathJax {
 
 	public static function onRegistration() {
-		global $wgExtensionFunctions;
-		$wgExtensionFunctions[] = __CLASS__ . '::loadModule';
+		global $wgSimpleMathJaxUseCDN, $wgExtensionFunctions;
+		if( $wgSimpleMathJaxUseCDN ) $wgExtensionFunctions[] = __CLASS__ . '::setupCDN';
+		else $wgExtensionFunctions[] = __CLASS__ . '::setupLocal';
 		Hooks::register( 'ParserFirstCallInit', __CLASS__ . '::onParserFirstCallInit' );
 	}
 
-	public static function loadModule() {
+	public static function setupCDN() {
+		global $wgOut, $wgSimpleMathJaxSize;
+		$wgOut->addScript( <<<HEREDOC
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({"messageStyle":"none","HTML-CSS":{scale:${wgSimpleMathJaxSize}},"tex2jax":{"preview":"none","inlineMath":[["[math]","[/math]"]]}});
+MathJax.Hub.Queue(function(){\$(".MathJax").parent().show();});</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/extensions/TeX/mhchem.js"></script>
+HEREDOC
+);
+	}
+
+	public static function setupLocal() {
 		global $wgOut, $wgSimpleMathJaxSize;
 		$wgOut->addJsConfigVars( 'wgSimpleMathJaxSize', $wgSimpleMathJaxSize );
 		$wgOut->addModules( 'ext.SimpleMathJax' );

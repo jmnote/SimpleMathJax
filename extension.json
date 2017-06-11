@@ -13,15 +13,16 @@
 	},
 	"callback": "SimpleMathJax::onRegistration",
 	"config": {
+		"SimpleMathJaxUseCDN": false,
 		"SimpleMathJaxSize": 125
 	},
 	"ResourceModules": {
 		"ext.SimpleMathJax": {
 			"scripts": [
-				"MathJax/MathJax.js",
-				"ext.SimpleMathJax.js",
-				"MathJax/config/TeX-AMS-MML_HTMLorMML.js",
-				"MathJax-mhchem/mhchem.js"
+				"modules/MathJax/MathJax.js",
+				"modules/ext.SimpleMathJax.js",
+				"modules/MathJax/config/TeX-AMS-MML_HTMLorMML.js",
+				"modules/MathJax-mhchem/mhchem.js"
 			]
 		}
 	},

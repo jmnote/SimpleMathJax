@@ -1,4 +1,4 @@
-MathJax.Ajax.config.root = mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/MathJax';
+MathJax.Ajax.config.root = mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/modules/MathJax';
 MathJax.Hub.Config({
 	"messageStyle": "none",
 	"HTML-CSS": { scale: mw.config.get('wgSimpleMathJaxSize') },
