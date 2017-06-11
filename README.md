@@ -14,10 +14,10 @@ wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Variables
-| Setting name             | Default value                                       | Description                             |
-| ------------------------ | --------------------------------------------------- | --------------------------------------- |
-| `$wgSimpleMathJaxSize`   | 125                                                 | The default font size for SimpleMathJax |
-| `$wgSimpleMathJaxUseCDN` | true                                                | use cloudflare CDN                      |
+| Setting name             | Default value           | Description                   |
+| ------------------------ | ----------------------- | ----------------------------- |
+| `$wgSimpleMathJaxSize`   | 125                     | font size                     |
+| `$wgSimpleMathJaxUseCDN` | true                    | use CDN or local files        |
 
 If you want to change font size, set `$wgSimpleMathJaxSize`.
 ```PHP
