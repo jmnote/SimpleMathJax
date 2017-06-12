@@ -13,11 +13,12 @@ $ git clone --recursive https://github.com/jmnote/SimpleMathJax.git
 wfLoadExtension( 'SimpleMathJax' );
 ```
 
-# Variables
-| Setting name             | Default value           | Description                   |
-| ------------------------ | ----------------------- | ----------------------------- |
-| `$wgSimpleMathJaxSize`   | 125                     | font size                     |
-| `$wgSimpleMathJaxUseCDN` | true                    | use CDN or local files        |
+# Optional Settings
+| Setting name                 | Default value           | Description                                   |
+| ---------------------------- | ----------------------- | --------------------------------------------- |
+| `$wgSimpleMathJaxSize`       | 125                     | font size                                     |
+| `$wgSimpleMathJaxUseCDN`     | true                    | use CDN or local files                        |
+| `$wgSimpleMathJaxInlineMath` | []                      | add some additional inlineMath symbols pairs  |
 
 If you want to change font size, set `$wgSimpleMathJaxSize`.
 ```PHP
@@ -31,3 +32,8 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSimpleMathJaxUseCDN = false;
 ```
 
+If you want to enable some additional inlineMath symbol pairs, set `$wgSimpleMathJaxInlineMath`.
+```PHP
+wfLoadExtension( 'SimpleMathJax' );
+$wgSimpleMathJaxInlineMath = [["$","$"],["\\(","\\)"]];
+```
