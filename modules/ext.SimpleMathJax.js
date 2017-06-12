@@ -4,7 +4,7 @@ MathJax.Hub.Config({
 	"HTML-CSS": { scale: mw.config.get('wgSimpleMathJaxSize') },
 	"tex2jax": {
 		"preview": "none",
-		"inlineMath": [["[math]","[/math]"]]
+		"inlineMath": mw.config.get('wgSimpleMathJaxInlineMath')
 	}
 });
 MathJax.Hub.Queue( function() {

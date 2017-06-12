@@ -14,7 +14,8 @@
 	"callback": "SimpleMathJax::onRegistration",
 	"config": {
 		"SimpleMathJaxUseCDN": true,
-		"SimpleMathJaxSize": 125
+		"SimpleMathJaxSize": 125,
+		"SimpleMathJaxInlineMath": []
 	},
 	"ResourceModules": {
 		"ext.SimpleMathJax": {
