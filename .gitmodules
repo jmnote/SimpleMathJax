@@ -1,6 +1,0 @@
-[submodule "MathJax"]
-	path = modules/MathJax
-	url = https://github.com/mathjax/MathJax.git
-[submodule "MathJax-mhchem"]
-	path = modules/MathJax-mhchem
-	url = https://github.com/mhchem/MathJax-mhchem.git

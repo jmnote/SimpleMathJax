@@ -19,16 +19,16 @@
 	},
 	"ResourceModules": {
 		"ext.SimpleMathJax": {
-			"scripts": [
+			"scripts": "ext.SimpleMathJax.js",
+			"_scripts": [
 				"modules/MathJax/MathJax.js",
-				"modules/ext.SimpleMathJax.js",
 				"modules/MathJax/config/TeX-AMS-MML_HTMLorMML.js",
 				"modules/MathJax-mhchem/mhchem.js"
 			]
 		}
 	},
 	"ResourceFileModulePaths": {
-		"localBasePath": "",
-		"remoteExtPath": "SimpleMathJax"
+		"localBasePath": "modules",
+		"remoteExtPath": "SimpleMathJax/modules"
 	}
 }
