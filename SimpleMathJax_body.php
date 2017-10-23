@@ -15,6 +15,7 @@ class SimpleMathJax {
 			if( !$wgSmjDisableChem ) $wgSmjScripts[] = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/extensions/TeX/mhchem.js';
 		}
 		if( !$wgSmjSize ) $wgSmjSize = 110;
+		
 		$wgOut->addJsConfigVars( 'wgSmjInlineMath', $wgSmjInlineMath );
 		$wgOut->addJsConfigVars( 'wgSmjScripts', $wgSmjScripts );
 		$wgOut->addJsConfigVars( 'wgSmjSize', $wgSmjSize );
