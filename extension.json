@@ -30,5 +30,6 @@
 	"ResourceFileModulePaths": {
 		"localBasePath": "modules",
 		"remoteExtPath": "SimpleMathJax/modules"
-	}
+	},
+	"manifest_version": 1
 }
