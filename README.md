@@ -4,12 +4,12 @@ https://www.mediawiki.org/wiki/Extension:SimpleMathJax
 
 
 # Installation
-* git clone recursive in extensions directory
+* git clone in extensions directory
 ```Bash
-$ git clone --recursive https://github.com/jmnote/SimpleMathJax.git
+$ git clone https://github.com/jmnote/SimpleMathJax.git
 ```
 
-* If you want to use not CDN but local mathjax scripts, you can use git clone recursive. ( MathJax is pretty heavy. )
+* (Optional) If you want to use not CDN but local mathjax scripts, you can use git clone recursive. ( MathJax is pretty heavy. )
 ```Bash
 $ git clone --recursive https://github.com/jmnote/SimpleMathJax.git
 ```
