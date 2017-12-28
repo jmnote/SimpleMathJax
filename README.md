@@ -5,11 +5,12 @@ https://www.mediawiki.org/wiki/Extension:SimpleMathJax
 
 # Installation
 * git clone in extensions directory
+* Using CDN is recommended. Because it's much faster than using local resources in most cases. MathJax is pretty heavy.
 ```Bash
 $ git clone https://github.com/jmnote/SimpleMathJax.git
 ```
 
-* (Optional) If you want to use not CDN but local mathjax scripts, you can use git clone recursive. ( MathJax is pretty heavy. )
+* (Optional) If you want to use not CDN but local mathjax scripts, you can use git clone recursive.
 ```Bash
 $ git clone --recursive https://github.com/jmnote/SimpleMathJax.git
 ```
