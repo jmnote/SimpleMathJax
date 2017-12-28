@@ -1,10 +1,10 @@
 {
 	"name": "SimpleMathJax",
-	"version": "0.6.1",
+	"version": "0.7.0",
 	"author": [
 		"jmnote", "vedmaka", "jamesmontalvo3", "badshah400"
 	],
-	"url": "http://www.mediawiki.org/wiki/Extension:SimpleMathJax",
+	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
 	"license-name": "GPL-2.0+",
 	"type": "parserhook",
@@ -13,23 +13,18 @@
 	},
 	"callback": "SimpleMathJax::onRegistration",
 	"config": {
-		"SimpleMathJaxUseCDN": true,
-		"SimpleMathJaxSize": 125,
-		"SimpleMathJaxInlineMath": []
+		"SmjSize": 110,
+		"SmjUseCDN": true,
+		"SmjUseChem": true,
+		"SmjInlineMath": []
 	},
 	"ResourceModules": {
-		"ext.SimpleMathJax": {
-			"scripts": "ext.SimpleMathJax.js",
-			"_scripts": [
-				"modules/MathJax/MathJax.js",
-				"modules/MathJax/config/TeX-AMS-MML_HTMLorMML.js",
-				"modules/MathJax-mhchem/mhchem.js"
-			]
-		}
+		"ext.SmjCDN": { "scripts": "ext.SmjCDN.js" },
+		"ext.SmjLocal": { "scripts": "ext.SmjLocal.js" }
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "modules",
 		"remoteExtPath": "SimpleMathJax/modules"
-	},
-	"manifest_version": 1
+	}
 }
+
