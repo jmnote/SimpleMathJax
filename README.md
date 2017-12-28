@@ -8,32 +8,39 @@ https://www.mediawiki.org/wiki/Extension:SimpleMathJax
 ```Bash
 $ git clone --recursive https://github.com/jmnote/SimpleMathJax.git
 ```
+
+* If you want to use not CDN but local mathjax scripts, you can use git clone recursive. ( MathJax is pretty heavy. )
+```Bash
+$ git clone --recursive https://github.com/jmnote/SimpleMathJax.git
+```
+
 * LocalSetting.php
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Optional Settings
-| Setting name                 | Default value           | Description                                   |
-| ---------------------------- | ----------------------- | --------------------------------------------- |
-| `$wgSimpleMathJaxSize`       | 125                     | font size                                     |
-| `$wgSimpleMathJaxUseCDN`     | true                    | use CDN or local files                        |
-| `$wgSimpleMathJaxInlineMath` | []                      | add some additional inlineMath symbols pairs  |
+| Setting name       | Default value           | Description                                   |
+| ------------------ | ----------------------- | --------------------------------------------- |
+| `$wgSmjSize`       | 110                     | font size                                     |
+| `$wgSmjUseCDN`     | true                    | use CDN or local scripts                      |
+| `$wgSmjUseChem`    | true                    | enable chem tag                               |
+| `$wgSmjInlineMath` | []                      | add some additional inlineMath symbols pairs  |
 
-If you want to change font size, set `$wgSimpleMathJaxSize`.
+If you want to change font size, set `$wgSmjSize`.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
-$wgSimpleMathJaxSize = 150;
+$wgSmjSize = 150;
 ```
 
-If you want to use local module, set `$wgSimpleMathJaxUseCDN`.
+If you want to use local module, set `$wgSmjUseCDN`.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
-$wgSimpleMathJaxUseCDN = false;
+$wgSmjUseCDN = false;
 ```
 
-If you want to enable some additional inlineMath symbol pairs, set `$wgSimpleMathJaxInlineMath`.
+If you want to enable some additional inlineMath symbol pairs, set `$wgSmjInlineMath`.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
-$wgSimpleMathJaxInlineMath = [["$","$"],["\\(","\\)"]];
+$wgSmjInlineMath = [["$","$"],["\\(","\\)"]];
 ```
