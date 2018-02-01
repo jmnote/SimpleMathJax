@@ -1,17 +1,27 @@
 <?php
 class SimpleMathJax {
+	private static $moduleLoaded = false;
+	
 	public static function onRegistration() {
 		Hooks::register( 'ParserFirstCallInit', __CLASS__ . '::setup' );
 	}
 
 	public static function setup( Parser $parser ) {
 		global $wgOut, $wgSmjSize, $wgSmjUseChem, $wgSmjInlineMath;
+		if( count($wgSmjInlineMath)>0 ) self::loadModule();
 		$wgSmjInlineMath[] = ["[math]","[/math]"];
 		$wgOut->addJsConfigVars( 'wgSmjSize', $wgSmjSize );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
 		$wgOut->addJsConfigVars( 'wgSmjInlineMath', $wgSmjInlineMath );
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );
+	}
+	
+	private static function loadModule( ) {
+		if( self::$moduleLoaded ) return;
+		self::$moduleLoaded = true;
+		global $wgSmjUseCDN, $wgOut;
+		$wgOut->addModules( $wgSmjUseCDN ? 'ext.SmjCDN' : 'ext.SmjLocal' );
 	}
 	
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
@@ -27,8 +37,7 @@ class SimpleMathJax {
 	}
 
 	private static function renderTex($tex, $parser) {
-		global $wgSmjUseCDN;
-		$parser->getOutput()->addModules( $wgSmjUseCDN ? 'ext.SmjCDN' : 'ext.SmjLocal' );
+		self::loadModule();
 		return ["<span style='display:none'>[math]${tex}[/math]</span>", 'markerType'=>'nowiki'];
 	}
 }
