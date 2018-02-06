@@ -1,8 +1,11 @@
 $.getScript( mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/modules/MathJax/MathJax.js?config=TeX-AMS-MML_CHTML',
 	function () {
 		var extensions = ["tex2jax.js"];
-		if( mw.config.get('wgSmjUseChem') ) extensions.push("TeX/mhchem3/mhchem.js");
 		MathJax.Ajax.config.root = mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/modules/MathJax';
+		if( mw.config.get('wgSmjUseChem') ) {
+			MathJax.Ajax.config.path["mhchem"] = MathJax.Ajax.config.root + '/extensions/TeX';
+			extensions.push("[mhchem]/mhchem.js");
+		}
 		MathJax.Hub.Config({
 			showMathMenu: false,
 			extensions: extensions,
