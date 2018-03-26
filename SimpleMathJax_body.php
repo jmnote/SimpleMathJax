@@ -31,7 +31,7 @@ class SimpleMathJax {
 	}
 
 	private static function renderTex($tex, $parser) {
-		return ["<span style='display:none'>[math]${tex}[/math]</span>", 'markerType'=>'nowiki'];
+		return ["<span style='opacity:0.5'>[math]${tex}[/math]</span>", 'markerType'=>'nowiki'];
 	}
 }
 

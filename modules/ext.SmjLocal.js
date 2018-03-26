@@ -13,7 +13,9 @@ $.getScript( mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/modules/Ma
 			"HTML-CSS": { scale: mw.config.get('wgSmjSize') },
 			tex2jax: { inlineMath: mw.config.get('wgSmjInlineMath') }
 		});
-		MathJax.Hub.Queue(function() { $(".MathJax").parent().show(); });
+		MathJax.Hub.Queue(function() {
+			$(".MathJax").parent().css('opacity',1);
+		});
 	}
 );
 
