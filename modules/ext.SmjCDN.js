@@ -1,10 +1,7 @@
-$.getScript( '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS_HTML',
+$.getScript( '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js',
 	function () {
-		var extensions = ["tex2jax.js"];
-		if( mw.config.get('wgSmjUseChem') ) {
-			MathJax.Ajax.config.path["mhchem"] = '//cdnjs.cloudflare.com/ajax/libs/mathjax-mhchem/3.3.0';
-			extensions.push("[mhchem]/mhchem.js");
-		}
+		var extensions = ["tex2jax.js","TeX/AMSmath.js"];
+		if( mw.config.get('wgSmjUseChem') ) extensions.push("TeX/mhchem.js");
 		MathJax.Hub.Config({
 			showMathMenu: false,
 			extensions: extensions,
