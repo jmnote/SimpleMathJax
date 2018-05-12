@@ -3,6 +3,7 @@ $.getScript( '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js',
 		var extensions = ["tex2jax.js","TeX/AMSmath.js"];
 		if( mw.config.get('wgSmjUseChem') ) extensions.push("TeX/mhchem.js");
 		MathJax.Hub.Config({
+			messageStyle: "none",
 			showMathMenu: false,
 			extensions: extensions,
 			jax: ["input/TeX", "output/HTML-CSS"],

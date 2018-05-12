@@ -9,7 +9,7 @@ class SimpleMathJax {
 	public static function setup( Parser $parser ) {
 		global $wgOut, $wgSmjUseCDN, $wgSmjSize, $wgSmjUseChem, $wgSmjInlineMath;
 
-                $wgOut->addModules( $wgSmjUseCDN ? 'ext.SmjCDN' : 'ext.SmjLocal' );
+		$wgOut->addModules( $wgSmjUseCDN ? 'ext.SmjCDN' : 'ext.SmjLocal' );
 		$wgOut->addJsConfigVars( 'wgSmjSize', $wgSmjSize );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
 		$wgSmjInlineMath[] = ["[math]","[/math]"];
