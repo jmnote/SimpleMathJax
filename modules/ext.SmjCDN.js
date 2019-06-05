@@ -1,6 +1,6 @@
 $.getScript( '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js',
 	function () {
-		var extensions = ["tex2jax.js","TeX/AMSmath.js"];
+		var extensions = ["tex2jax.js","TeX/AMSmath.js","TeX/autoload-all.js"];
 		if( mw.config.get('wgSmjUseChem') ) extensions.push("TeX/mhchem.js");
 		MathJax.Hub.Config({
 			messageStyle: "none",
