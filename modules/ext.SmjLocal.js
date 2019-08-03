@@ -1,7 +1,7 @@
 $.getScript( mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/modules/MathJax/MathJax.js',
 	function () {
 		MathJax.Ajax.config.root = mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/modules/MathJax';
-		var extensions = ["tex2jax.js","TeX/AMSmath.js"];
+		var extensions = ["tex2jax.js","TeX/AMSmath.js","TeX/autoload-all.js"];
 		if( mw.config.get('wgSmjUseChem') ) extensions.push("TeX/mhchem.js");
 		MathJax.Hub.Config({
 			messageStyle: "none",
