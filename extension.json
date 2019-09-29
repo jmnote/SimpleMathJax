@@ -19,10 +19,8 @@
 		"SmjInlineMath": []
 	},
 	"ResourceModules": {
-		"ext.SmjCDN": { "scripts": "ext.SmjCDN.js" },
-		"ext.SmjLocal": { "scripts": "ext.SmjLocal.js" },
-		"ext.SmjCDN.mobile": { "scripts": "ext.SmjCDN.js", "targets": "mobile" },
-		"ext.SmjLocal.mobile": { "scripts": "ext.SmjLocal.js", "targets": "mobile" }
+		"ext.SmjCDN": {"scripts":["ext.SmjCDN.js"], "targets":["mobile","desktop"] },
+		"ext.SmjLocal": {"scripts":["ext.SmjLocal.js"], "targets":["mobile","desktop"] }
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "modules",
