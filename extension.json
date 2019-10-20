@@ -16,6 +16,7 @@
 		"SmjSize": 110,
 		"SmjUseCDN": true,
 		"SmjUseChem": true,
+		"SmjShowMathMenu": false,
 		"SmjInlineMath": []
 	},
 	"ResourceModules": {

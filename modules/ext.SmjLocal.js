@@ -5,9 +5,9 @@ $.getScript( mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/modules/Ma
 		if( mw.config.get('wgSmjUseChem') ) extensions.push("TeX/mhchem.js");
 		MathJax.Hub.Config({
 			messageStyle: "none",
-			showMathMenu: false,
 			extensions: extensions,
 			jax: ["input/TeX", "output/HTML-CSS"],
+			showMathMenu: mw.config.get('wgSmjShowMathMenu'),
 			"HTML-CSS": { scale: mw.config.get('wgSmjSize') },
 			tex2jax: { inlineMath: mw.config.get('wgSmjInlineMath') }
 		});

@@ -7,15 +7,15 @@ class SimpleMathJax {
 	}
 
 	public static function setup( Parser $parser ) {
-		global $wgOut, $wgSmjUseCDN, $wgSmjSize, $wgSmjUseChem, $wgSmjInlineMath;
+		global $wgOut, $wgSmjUseCDN, $wgSmjSize, $wgSmjUseChem, $wgSmjShowMathMenu, $wgSmjInlineMath;
 
-		$smjModule = $wgSmjUseCDN ? 'ext.SmjCDN' : 'ext.SmjLocal'; 
-		$wgOut->addModules( $smjModule );
+		$smjModule = $wgSmjUseCDN ? 'ext.SmjCDN' : 'ext.SmjLocal';
+		$wgOut->addModules( $smjModule ); 
 		// MobileFrontend requires explicit cloned modules targeting mobile
 		$wgOut->addModules( $smjModule . ".mobile" );
-
 		$wgOut->addJsConfigVars( 'wgSmjSize', $wgSmjSize );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
+		$wgOut->addJsConfigVars( 'wgSmjShowMathMenu', $wgSmjShowMathMenu );
 		$wgSmjInlineMath[] = ["[math]","[/math]"];
 		$wgOut->addJsConfigVars( 'wgSmjInlineMath', $wgSmjInlineMath );
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
