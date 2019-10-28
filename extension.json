@@ -18,7 +18,7 @@
 		"SmjUseChem": true,
 		"SmjShowMathMenu": false,
 		"SmjInlineMath": [],
-		"SmjDisplayMath": [ ['<math>','</math>'] ]
+		"SmjDisplayMath": [ ["<math>","</math>"] ]
 	},
 	"ResourceModules": {
 		"ext.SmjCDN": {"scripts":["ext.SmjCDN.js"], "targets":["mobile","desktop"] },
