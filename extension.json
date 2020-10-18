@@ -1,9 +1,7 @@
 {
 	"name": "SimpleMathJax",
-	"version": "0.7.4",
-	"author": [
-		"jmnote", "vedmaka", "jamesmontalvo3", "badshah400"
-	],
+	"version": "0.7.5",
+	"author": "jmnote",
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
 	"license-name": "GPL-2.0+",
@@ -13,21 +11,21 @@
 	},
 	"callback": "SimpleMathJax::onRegistration",
 	"config": {
-		"SmjSize": 110,
-		"SmjUseCDN": true,
-		"SmjUseChem": true,
-		"SmjShowMathMenu": false,
-		"SmjInlineMath": [],
-		"SmjDisplayMath": []
+		"SmjUseCdn": {"value":false, "description":"true to load mathjax from CDN"},
+		"SmjUseChem": {"value":true, "description":"true to enabled chem tag"},
+		"SmjEnableMenu": {"value":true, "description":"MathJax.options.enableMenu"},
+		"SmjDisplayMath": {"value":[], "description":"MathJax.tex.displayMath"},
+		"SmjExtraInlineMath": {"value":[], "description":"MathJax.tex.inlineMath"},
+		"SmjScale": {"value":1, "description":"MathJax.chtml.scale"}
 	},
 	"ResourceModules": {
-		"ext.SmjCDN": {"scripts":["ext.SmjCDN.js"], "targets":["mobile","desktop"] },
-		"ext.SmjLocal": {"scripts":["ext.SmjLocal.js"], "targets":["mobile","desktop"] }
+		"ext.SimpleMathJax": {
+			"scripts": ["resources/ext.SimpleMathJax.js"]
+		}
 	},
 	"ResourceFileModulePaths": {
-		"localBasePath": "modules",
-		"remoteExtPath": "SimpleMathJax/modules"
+		"localBasePath": "",
+		"remoteExtPath": "SimpleMathJax/resources"
 	},
-	"manifest_version": 1
+	"manifest_version": 2
 }
-

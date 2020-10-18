@@ -1,23 +1,24 @@
 <?php
 class SimpleMathJax {
-	private static $moduleLoaded = false;
-	
 	public static function onRegistration() {
 		Hooks::register( 'ParserFirstCallInit', __CLASS__ . '::setup' );
 	}
 
 	public static function setup( Parser $parser ) {
-		global $wgOut, $wgSmjUseCDN, $wgSmjSize, $wgSmjUseChem, $wgSmjShowMathMenu, $wgSmjInlineMath;
-
-		$smjModule = $wgSmjUseCDN ? 'ext.SmjCDN' : 'ext.SmjLocal';
-		$wgOut->addModules( $smjModule ); 
+		global $wgOut, $wgSmjUseCdn, $wgSmjScale, $wgSmjUseChem, $wgSmjShowMathMenu, $wgSmjExtraInlineMath, $wgSmjDisplayMath;
+		#trace( $wgSmjUseCdn );
+		#exit;
+		$wgOut->addModules( 'ext.SimpleMathJax' ); 
 		// MobileFrontend requires explicit cloned modules targeting mobile
-		$wgOut->addModules( $smjModule . ".mobile" );
-		$wgOut->addJsConfigVars( 'wgSmjSize', $wgSmjSize );
+		$wgOut->addModules( 'ext.SimpleMathJax.mobile' );
+
+		$wgOut->addJsConfigVars( 'wgSmjUseCdn', $wgSmjUseCdn );
+		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
 		$wgOut->addJsConfigVars( 'wgSmjShowMathMenu', $wgSmjShowMathMenu );
-		$wgSmjInlineMath[] = ["[math]","[/math]"];
-		$wgOut->addJsConfigVars( 'wgSmjInlineMath', $wgSmjInlineMath );
+		$wgOut->addJsConfigVars( 'wgSmjExtraInlineMath', $wgSmjExtraInlineMath );
+		$wgOut->addJsConfigVars( 'wgSmjDisplayMath', $wgSmjDisplayMath );
+
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );
 	}
@@ -30,12 +31,11 @@ class SimpleMathJax {
 	}
 
 	public static function renderChem($tex, array $args, Parser $parser, PPFrame $frame ) {
-		$tex = '\ce{'.$tex.'}';
-		return self::renderTex($tex, $parser);
+		return self::renderTex('\ce{'.$tex.'}', $parser);
 	}
 
 	private static function renderTex($tex, $parser) {
-		return ["<span style='opacity:0.5'>[math]${tex}[/math]</span>", 'markerType'=>'nowiki'];
+		return ["<span style='opacity:.5'>[math]${tex}[/math]</span>", 'markerType'=>'nowiki'];
 	}
 }
 
