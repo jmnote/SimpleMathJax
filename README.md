@@ -29,6 +29,7 @@ wfLoadExtension( 'SimpleMathJax' );
 | `$wgSmjDisplayMath`     | []            | MathJax.tex.displayMath          |
 | `$wgSmjExtraInlineMath` | []            | MathJax.tex.inlineMath           |
 | `$wgSmjScale`           | 1             | MathJax.chtml.scale              |
+| `$wgSmjDisplayAlign`    | center        | MathJax.chtml.displayAlign       |
 
 If you want to change font size, set `$wgSmjSize`.
 ```PHP
