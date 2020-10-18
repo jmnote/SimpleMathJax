@@ -11,7 +11,7 @@
 	},
 	"callback": "SimpleMathJax::onRegistration",
 	"config": {
-		"SmjUseCdn": {"value":false, "description":"true to load mathjax from CDN"},
+		"SmjUseCdn": {"value":true, "description":"true to load mathjax from CDN"},
 		"SmjUseChem": {"value":true, "description":"true to enabled chem tag"},
 		"SmjEnableMenu": {"value":true, "description":"MathJax.options.enableMenu"},
 		"SmjDisplayMath": {"value":[], "description":"MathJax.tex.displayMath"},
