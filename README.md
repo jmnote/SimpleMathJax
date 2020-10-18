@@ -21,13 +21,14 @@ wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Optional Settings
-| Setting name         | Default value           | Description                                   |
-| -------------------- | ----------------------- | --------------------------------------------- |
-| `$wgSmjSize`         | 110                     | font size                                     |
-| `$wgSmjUseCDN`       | true                    | use CDN or local scripts                      |
-| `$wgSmjUseChem`      | true                    | enable chem tag                               |
-| `$wgSmjInlineMath`   | []                      | add some additional inlineMath symbols pairs  |
-| `$wgSmjShowMathMenu` | false                   | enable MathJax context menu                   |
+| Setting name            | Default value | Description                      |
+| ----------------------- | ------------- | -------------------------------- |
+| `$wgSmjUseCDN`          | true          | use CDN or local scripts         |
+| `$wgSmjUseChem`         | true          | enable chem tag                  |
+| `$wgSmjEnableMenu`      | true          | MathJax.options.enableMenu       |
+| `$wgSmjDisplayMath`     | []            | MathJax.tex.displayMath          |
+| `$wgSmjExtraInlineMath` | []            | MathJax.tex.inlineMath           |
+| `$wgSmjScale`           | 1             | MathJax.chtml.scale              |
 
 If you want to change font size, set `$wgSmjSize`.
 ```PHP
