@@ -9,7 +9,6 @@
 	"AutoloadClasses": {
 		"SimpleMathJax": "SimpleMathJax_body.php"
 	},
-	"callback": "SimpleMathJax::onRegistration",
 	"config": {
 		"SmjUseCdn": {"value":true, "description":"true to load mathjax from CDN"},
 		"SmjUseChem": {"value":true, "description":"true to enabled chem tag"},
@@ -17,6 +16,9 @@
 		"SmjDisplayMath": {"value":[], "description":"MathJax.tex.displayMath"},
 		"SmjExtraInlineMath": {"value":[], "description":"MathJax.tex.inlineMath"},
 		"SmjScale": {"value":1, "description":"MathJax.chtml.scale"}
+	},
+	"Hooks": {
+		"ParserFirstCallInit": "SimpleMathJax::onParserFirstCallInit"
 	},
 	"ResourceModules": {
 		"ext.SimpleMathJax": {

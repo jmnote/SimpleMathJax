@@ -1,24 +1,16 @@
 <?php
 class SimpleMathJax {
-	public static function onRegistration() {
-		Hooks::register( 'ParserFirstCallInit', __CLASS__ . '::setup' );
-	}
 
-	public static function setup( Parser $parser ) {
-		global $wgOut, $wgSmjUseCdn, $wgSmjScale, $wgSmjUseChem, $wgSmjShowMathMenu, $wgSmjExtraInlineMath, $wgSmjDisplayMath;
-		#trace( $wgSmjUseCdn );
-		#exit;
-		$wgOut->addModules( 'ext.SimpleMathJax' ); 
-		// MobileFrontend requires explicit cloned modules targeting mobile
-		$wgOut->addModules( 'ext.SimpleMathJax.mobile' );
+	public static function onParserFirstCallInit( &$parser ) {
+		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjEnableMenu, $wgSmjDisplayMath, $wgSmjExtraInlineMath, $wgSmjScale;
 
 		$wgOut->addJsConfigVars( 'wgSmjUseCdn', $wgSmjUseCdn );
-		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
-		$wgOut->addJsConfigVars( 'wgSmjShowMathMenu', $wgSmjShowMathMenu );
-		$wgOut->addJsConfigVars( 'wgSmjExtraInlineMath', $wgSmjExtraInlineMath );
+		$wgOut->addJsConfigVars( 'wgSmjEnableMenu', $wgSmjEnableMenu );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayMath', $wgSmjDisplayMath );
-
+		$wgOut->addJsConfigVars( 'wgSmjExtraInlineMath', $wgSmjExtraInlineMath );
+		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
+		
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );
 	}
@@ -35,6 +27,8 @@ class SimpleMathJax {
 	}
 
 	private static function renderTex($tex, $parser) {
+		$parser->getOutput()->addModules( 'ext.SimpleMathJax' ); 
+		$parser->getOutput()->addModules( 'ext.SimpleMathJax.mobile' ); // For MobileFrontend
 		return ["<span style='opacity:.5'>[math]${tex}[/math]</span>", 'markerType'=>'nowiki'];
 	}
 }

@@ -1,3 +1,4 @@
+console.log( 'SmjExtraInlineMath', mw.config.get('SmjExtraInlineMath') );
 window.MathJax = {
   tex: {
     inlineMath: mw.config.get('wgSmjExtraInlineMath').concat([['[math]','[/math]']]),
@@ -19,7 +20,6 @@ window.MathJax = {
   }
 };
 (function () {
-  console.log( window.MathJax );
   var script = document.createElement('script');
   script.src = mw.config.get('wgSmjUseCdn') ? 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js'
     : mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/resources/MathJax/es5/tex-chtml.js';
