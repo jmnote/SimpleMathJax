@@ -1,4 +1,3 @@
-console.log( 'SmjExtraInlineMath', mw.config.get('SmjExtraInlineMath') );
 window.MathJax = {
   tex: {
     inlineMath: mw.config.get('wgSmjExtraInlineMath').concat([['[math]','[/math]']]),
@@ -6,7 +5,8 @@ window.MathJax = {
     packages: mw.config.get('wgSmjUseChem') ? {'[+]': ['mhchem']} : {}
   },
   chtml: {
-    scale: mw.config.get('wgSmjScale')
+    scale: mw.config.get('wgSmjScale'),
+    displayAlign: mw.config.get('wgSmjDisplayAlign')
   },
   loader: {
     load: mw.config.get('wgSmjUseChem') ? ['[tex]/mhchem'] : []

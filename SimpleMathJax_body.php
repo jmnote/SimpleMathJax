@@ -2,7 +2,9 @@
 class SimpleMathJax {
 
 	public static function onParserFirstCallInit( &$parser ) {
-		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjEnableMenu, $wgSmjDisplayMath, $wgSmjExtraInlineMath, $wgSmjScale;
+		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjEnableMenu,
+			$wgSmjDisplayMath, $wgSmjExtraInlineMath,
+			$wgSmjScale, $wgSmjDisplayAlign;
 
 		$wgOut->addJsConfigVars( 'wgSmjUseCdn', $wgSmjUseCdn );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
@@ -10,6 +12,8 @@ class SimpleMathJax {
 		$wgOut->addJsConfigVars( 'wgSmjDisplayMath', $wgSmjDisplayMath );
 		$wgOut->addJsConfigVars( 'wgSmjExtraInlineMath', $wgSmjExtraInlineMath );
 		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
+		$wgOut->addJsConfigVars( 'wgSmjDisplayAlign', $wgSmjDisplayAlign );
+		
 		
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );

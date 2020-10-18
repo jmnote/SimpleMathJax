@@ -15,7 +15,8 @@
 		"SmjEnableMenu": {"value":true, "description":"MathJax.options.enableMenu"},
 		"SmjDisplayMath": {"value":[], "description":"MathJax.tex.displayMath"},
 		"SmjExtraInlineMath": {"value":[], "description":"MathJax.tex.inlineMath"},
-		"SmjScale": {"value":1, "description":"MathJax.chtml.scale"}
+		"SmjScale": {"value":1, "description":"MathJax.chtml.scale"},
+		"SmjDisplayAlign": {"value":"left", "description":"MathJax.chtml.displayAlign"}
 	},
 	"Hooks": {
 		"ParserFirstCallInit": "SimpleMathJax::onParserFirstCallInit"
