@@ -49,7 +49,7 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjExtraInlineMath = [["$","$"],["\\(","\\)"]];
 ```
 
-If you want to disable MathJax context menu, set `$wgSmjShowMathMenu`.
+If you want to disable MathJax context menu, set `$wgSmjEnableMenu`.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableMenu = false;
