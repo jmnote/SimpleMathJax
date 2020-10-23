@@ -21,17 +21,17 @@ wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Optional Settings
-| Setting name            | Default value | Description                      |
-| ----------------------- | ------------- | -------------------------------- |
-| `$wgSmjUseCdn`          | true          | use CDN or local scripts         |
-| `$wgSmjUseChem`         | true          | enable chem tag                  |
-| `$wgSmjEnableMenu`      | true          | MathJax.options.enableMenu       |
-| `$wgSmjDisplayMath`     | []            | MathJax.tex.displayMath          |
-| `$wgSmjExtraInlineMath` | []            | MathJax.tex.inlineMath           |
-| `$wgSmjScale`           | 1             | MathJax.chtml.scale              |
-| `$wgSmjDisplayAlign`    | center        | MathJax.chtml.displayAlign       |
+| Setting name            | Description                      | default value | example value               |
+| ----------------------- | -------------------------------- | ------------- | --------------------------- |
+| `$wgSmjUseCdn`          | use CDN or local scripts         | true          | false                       |
+| `$wgSmjUseChem`         | enable chem tag                  | true          | false                       |
+| `$wgSmjEnableMenu`      | MathJax.options.enableMenu       | true          | false                       |
+| `$wgSmjDisplayMath`     | MathJax.tex.displayMath          | []            | [['$$','$$'],['\\[','\\]']] |
+| `$wgSmjExtraInlineMath` | MathJax.tex.inlineMath           | []            | [['\\(', '\\)']]            |
+| `$wgSmjScale`           | MathJax.chtml.scale              | 1             | 1.5                         |
+| `$wgSmjDisplayAlign`    | MathJax.chtml.displayAlign       | center        | left                        |
 
-If you want to change font size, set `$wgSmjSize`.
+If you want to change font size, set `$wgSmjScale`.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjScale = 1.5;
@@ -49,7 +49,7 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjExtraInlineMath = [["$","$"],["\\(","\\)"]];
 ```
 
-If you want to disable MathJax context menu, set `$wgSmjShowMathMenu`.
+If you want to disable MathJax context menu, set `$wgSmjEnableMenu`.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableMenu = false;
