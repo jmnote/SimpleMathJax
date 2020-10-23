@@ -1,25 +1,26 @@
 {
 	"name": "SimpleMathJax",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"author": "jmnote",
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
 	"license-name": "GPL-2.0+",
 	"type": "parserhook",
 	"AutoloadClasses": {
-		"SimpleMathJax": "SimpleMathJax_body.php"
+		"SimpleMathJaxHooks": "SimpleMathJaxHooks.php"
 	},
 	"config": {
 		"SmjUseCdn": {"value":true, "description":"true to load mathjax from CDN"},
 		"SmjUseChem": {"value":true, "description":"true to enabled chem tag"},
-		"SmjEnableMenu": {"value":true, "description":"MathJax.options.enableMenu"},
 		"SmjDisplayMath": {"value":[], "description":"MathJax.tex.displayMath"},
 		"SmjExtraInlineMath": {"value":[], "description":"MathJax.tex.inlineMath"},
 		"SmjScale": {"value":1, "description":"MathJax.chtml.scale"},
-		"SmjDisplayAlign": {"value":"left", "description":"MathJax.chtml.displayAlign"}
+		"SmjEnableMenu": {"value":true, "description":"MathJax.options.enableMenu"},
+		"SmjDisplayAlign": {"value":"left", "description":"MathJax.chtml.displayAlign"},
+		"SmjWrapDisplaystyle": {"value":true, "description":"true to wrap with displaystyle"}
 	},
 	"Hooks": {
-		"ParserFirstCallInit": "SimpleMathJax::onParserFirstCallInit"
+		"ParserFirstCallInit": "SimpleMathJaxHooks::onParserFirstCallInit"
 	},
 	"ResourceModules": {
 		"ext.SimpleMathJax": {
