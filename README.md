@@ -21,7 +21,7 @@ wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Optional Settings
-| Setting name             | Description                      | default value | example value               |
+| Setting name             | Description                      | default value | custom value example        |
 | ------------------------ | -------------------------------- | ------------- | --------------------------- |
 | `$wgSmjUseCdn`           | use CDN or local scripts         | true          | false                       |
 | `$wgSmjUseChem`          | enable chem tag                  | true          | false                       |
