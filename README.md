@@ -21,15 +21,16 @@ wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Optional Settings
-| Setting name            | Description                      | default value | example value               |
-| ----------------------- | -------------------------------- | ------------- | --------------------------- |
-| `$wgSmjUseCdn`          | use CDN or local scripts         | true          | false                       |
-| `$wgSmjUseChem`         | enable chem tag                  | true          | false                       |
-| `$wgSmjEnableMenu`      | MathJax.options.enableMenu       | true          | false                       |
-| `$wgSmjDisplayMath`     | MathJax.tex.displayMath          | []            | [['$$','$$'],['\\[','\\]']] |
-| `$wgSmjExtraInlineMath` | MathJax.tex.inlineMath           | []            | [['\\(', '\\)']]            |
-| `$wgSmjScale`           | MathJax.chtml.scale              | 1             | 1.5                         |
-| `$wgSmjDisplayAlign`    | MathJax.chtml.displayAlign       | center        | left                        |
+| Setting name             | Description                      | default value | example value               |
+| ------------------------ | -------------------------------- | ------------- | --------------------------- |
+| `$wgSmjUseCdn`           | use CDN or local scripts         | true          | false                       |
+| `$wgSmjUseChem`          | enable chem tag                  | true          | false                       |
+| `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true          | false                       |
+| `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []            | [['$$','$$'],['\\[','\\]']] |
+| `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []            | [['\\(', '\\)']]            |
+| `$wgSmjScale`            | MathJax.chtml.scale              | 1             | 1.5                         |
+| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | center        | left                        |
+| `$wgSmjWrapDisplaystyle` | wrap with displaystyle           | true          | false                       |
 
 If you want to change font size, set `$wgSmjScale`.
 ```PHP
