@@ -13,16 +13,16 @@ class SimpleMathJaxHooks {
 		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjEnableMenu', $wgSmjEnableMenu );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayAlign', $wgSmjDisplayAlign );
-		
+
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
-	
+
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
 		global $wgSmjWrapDisplaystyle;
 		$tex = str_replace('\>', '\;', $tex);
 		$tex = str_replace('<', '\lt ', $tex);
 		$tex = str_replace('>', '\gt ', $tex);
-		if( $wgSmjWrapDisplaystyle ) $tex = "\displaystyle{ $tex }"; 
+		if( $wgSmjWrapDisplaystyle ) $tex = "\displaystyle{ $tex }";
 		return self::renderTex($tex, $parser);
 	}
 
@@ -31,13 +31,8 @@ class SimpleMathJaxHooks {
 	}
 
 	private static function renderTex($tex, $parser) {
-		$parser->getOutput()->addModules( 'ext.SimpleMathJax' ); 
+		$parser->getOutput()->addModules( 'ext.SimpleMathJax' );
 		$parser->getOutput()->addModules( 'ext.SimpleMathJax.mobile' ); // For MobileFrontend
 		return ["<span style='opacity:.5'>[math]${tex}[/math]</span>", 'markerType'=>'nowiki'];
 	}
 }
-
-
-
-
-
