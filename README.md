@@ -55,3 +55,16 @@ If you want to disable MathJax context menu, set `$wgSmjEnableMenu`.
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableMenu = false;
 ```
+
+# Hooks
+The hook `SimpleMathJaxAttributes` is available to add attributes to the span around the math. This hook provides you with the opportunity to ensure that your own code does not interfere with MathJax's rendering of math.
+
+For instance, if Lingo's JS functions are called before MathJax is invoked, then it is possible that Lingo will change the text so that MathJax could no longer render the math.
+
+Lingo understands that [it should not touch anything inside an element with the class `noglossary`](https://www.mediawiki.org/wiki/Extension:Lingo#Excluding_text_from_markup) so the following code can be used to keep Lingo from ruining math:
+```PHP
+$wfHook['SimpleMathJaxAttributes']
+	= function ( array &attributes, string $tex ) {
+		$attributes['class'] = 'noglossary';
+	}
+```
