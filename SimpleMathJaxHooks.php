@@ -34,7 +34,7 @@ class SimpleMathJaxHooks {
 		$parser->getOutput()->addModules( 'ext.SimpleMathJax' );
 		$parser->getOutput()->addModules( 'ext.SimpleMathJax.mobile' ); // For MobileFrontend
 		$attributes = [ "style" => "opacity:.5" ];
-		Hooks::run( "SimpleMathJaxAttr", [ &$attributes, $tex ] );
+		Hooks::run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
 		$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
 		return [$element, 'markerType'=>'nowiki'];
 	}
