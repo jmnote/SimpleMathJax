@@ -13,8 +13,8 @@ class SimpleMathJaxHooks {
 		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjEnableMenu', $wgSmjEnableMenu );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayAlign', $wgSmjDisplayAlign );
-		$wgOut->addModules( 'ext.SimpleMathJax' );
-		$wgOut->addModules( 'ext.SimpleMathJax.mobile' ); // For MobileFrontend
+		$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
+		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
 
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
