@@ -1,4 +1,4 @@
-mw.hook( 'wikipage.categories' ).add( function ( $content ) {
+mw.hook( 'wikipage.content' ).add( function ( $content ) {
 window.MathJax = {
   tex: {
     inlineMath: mw.config.get('wgSmjExtraInlineMath').concat([['[math]','[/math]']]),
