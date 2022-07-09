@@ -1,6 +1,6 @@
 {
 	"name": "SimpleMathJax",
-	"version": "0.8.2",
+	"version": "0.8.3",
 	"author": "jmnote",
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
@@ -24,7 +24,8 @@
 	},
 	"ResourceModules": {
 		"ext.SimpleMathJax": {
-			"scripts": ["resources/ext.SimpleMathJax.js"]
+			"scripts": ["resources/ext.SimpleMathJax.js"],
+			"targets": ["desktop", "mobile"]
 		}
 	},
 	"ResourceFileModulePaths": {
