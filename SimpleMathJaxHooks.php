@@ -1,4 +1,4 @@
-<?php
+ <?php
 class SimpleMathJaxHooks {
 
 	public static function onParserFirstCallInit( Parser $parser ) {
@@ -13,6 +13,8 @@ class SimpleMathJaxHooks {
 		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjEnableMenu', $wgSmjEnableMenu );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayAlign', $wgSmjDisplayAlign );
+		$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
+		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
 
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
@@ -31,8 +33,6 @@ class SimpleMathJaxHooks {
 	}
 
 	private static function renderTex($tex, $parser) {
-		$parser->getOutput()->addModules( 'ext.SimpleMathJax' );
-		$parser->getOutput()->addModules( 'ext.SimpleMathJax.mobile' ); // For MobileFrontend
 		$attributes = [ "style" => "opacity:.5" ];
 		Hooks::run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
 		$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
