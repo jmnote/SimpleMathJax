@@ -15,7 +15,7 @@ $ git clone https://github.com/jmnote/SimpleMathJax.git
 $ git clone --recursive https://github.com/jmnote/SimpleMathJax.git
 ```
 
-* LocalSetting.php
+* LocalSettings.php
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 ```
