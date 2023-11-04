@@ -1,4 +1,4 @@
- <?php
+<?php
 class SimpleMathJaxHooks {
 
 	public static function onParserFirstCallInit( Parser $parser ) {
