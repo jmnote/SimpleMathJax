@@ -34,7 +34,7 @@ class SimpleMathJaxHooks {
 
 	private static function renderTex($tex, $parser) {
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
-		$attributes = [ "style" => "opacity:.5", "class" => "smj-containter" ];
+		$attributes = [ "style" => "opacity:.5", "class" => "smj-container" ];
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
 		$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
 		return [$element, 'markerType'=>'nowiki'];
