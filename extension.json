@@ -1,6 +1,6 @@
 {
 	"name": "SimpleMathJax",
-	"version": "0.8.4",
+	"version": "0.8.6",
 	"author": "jmnote",
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
