@@ -1,4 +1,5 @@
 <?php
+use MediaWiki\Html\Html;
 class SimpleMathJaxHooks {
 
 	public static function onParserFirstCallInit( Parser $parser ) {
