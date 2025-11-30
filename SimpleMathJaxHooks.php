@@ -4,13 +4,14 @@ class SimpleMathJaxHooks {
 
 	public static function onParserFirstCallInit( Parser $parser ) {
 		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjEnableMenu,
-			$wgSmjDisplayMath, $wgSmjExtraInlineMath,
+			$wgSmjDisplayMath, $wgSmjExtraInlineMath, $wgSmjIgnoreHtmlClass,
 			$wgSmjScale, $wgSmjDisplayAlign;
 
 		$wgOut->addJsConfigVars( 'wgSmjUseCdn', $wgSmjUseCdn );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayMath', $wgSmjDisplayMath );
 		$wgOut->addJsConfigVars( 'wgSmjExtraInlineMath', $wgSmjExtraInlineMath );
+		$wgOut->addJsConfigVars( 'wgSmjIgnoreHtmlClass', $wgSmjIgnoreHtmlClass );
 		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjEnableMenu', $wgSmjEnableMenu );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayAlign', $wgSmjDisplayAlign );

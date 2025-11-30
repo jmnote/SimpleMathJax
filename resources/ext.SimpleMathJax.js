@@ -108,6 +108,9 @@ window.MathJax = {
       Zeta: "{\\mathrm{Z}}"
     }
   },
+  options: {
+    ignoreHtmlClass: mw.config.get('wgSmjIgnoreHtmlClass')
+  },
   chtml: {
     scale: mw.config.get('wgSmjScale'),
     displayAlign: mw.config.get('wgSmjDisplayAlign')
