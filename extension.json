@@ -14,6 +14,7 @@
 		"SmjUseChem": {"value":true, "description":"true to enabled chem tag"},
 		"SmjDisplayMath": {"value":[], "description":"MathJax.tex.displayMath"},
 		"SmjExtraInlineMath": {"value":[], "description":"MathJax.tex.inlineMath"},
+		"SmjIgnoreHtmlClass": {"value":"mathjax_ignore|comment|diff-(context|addedline|deletedline)", "description":"MathJax.options.ignoreHtmlClass"},
 		"SmjScale": {"value":1, "description":"MathJax.chtml.scale"},
 		"SmjEnableMenu": {"value":true, "description":"MathJax.options.enableMenu"},
 		"SmjDisplayAlign": {"value":"left", "description":"MathJax.chtml.displayAlign"},

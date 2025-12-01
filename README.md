@@ -50,6 +50,13 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjExtraInlineMath = [["$","$"],["\\(","\\)"]];
 ```
 
+Since version 0.8.7, inlineMath and blockMath are ignored in edit summaries and diffs. To restore the previous behavior, set `$wgSmjIgnoreHtmlClass`.
+```PHP
+wfLoadExtension( 'SimpleMathJax' );
+$wgSmjExtraInlineMath = [["$","$"],["\\(","\\)"]];
+$wgSmjIgnoreHtmlClass = "mathjax_ignore";
+```
+
 If you want to disable MathJax context menu, set `$wgSmjEnableMenu`.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
