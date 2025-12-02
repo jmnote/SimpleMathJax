@@ -21,17 +21,17 @@ wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Optional Settings
-| Setting name             | Description                      | default value            | custom value example        |
-| ------------------------ | -------------------------------- | ------------------------ | --------------------------- |
-| `$wgSmjUseCdn`           | use CDN or local scripts         | true                     | false                       |
-| `$wgSmjUseChem`          | enable chem tag                  | true                     | false                       |
-| `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true                     | false                       |
-| `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []                       | [['$$','$$'],['\\[','\\]']] |
-| `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []                       | [['\\(', '\\)']]            |
-| `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore|comm..." | "mathjax_ignore"            |
-| `$wgSmjScale`            | MathJax.chtml.scale              | 1                        | 1.5                         |
-| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | center                   | left                        |
-| `$wgSmjWrapDisplaystyle` | wrap with displaystyle           | true                     | false                       |
+| Setting name             | Description                      | default value             | custom value example        |
+| ------------------------ | -------------------------------- | ------------------------- | --------------------------- |
+| `$wgSmjUseCdn`           | use CDN or local scripts         | true                      | false                       |
+| `$wgSmjUseChem`          | enable chem tag                  | true                      | false                       |
+| `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true                      | false                       |
+| `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []                        | [['$$','$$'],['\\[','\\]']] |
+| `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []                        | [['\\(', '\\)']]            |
+| `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore\|comm..." | "mathjax_ignore"            |
+| `$wgSmjScale`            | MathJax.chtml.scale              | 1                         | 1.5                         |
+| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | center                    | left                        |
+| `$wgSmjWrapDisplaystyle` | wrap with displaystyle           | true                      | false                       |
 
 If you want to change font size, set `$wgSmjScale`.
 ```PHP
