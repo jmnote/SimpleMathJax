@@ -21,16 +21,17 @@ wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Optional Settings
-| Setting name             | Description                      | default value | custom value example        |
-| ------------------------ | -------------------------------- | ------------- | --------------------------- |
-| `$wgSmjUseCdn`           | use CDN or local scripts         | true          | false                       |
-| `$wgSmjUseChem`          | enable chem tag                  | true          | false                       |
-| `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true          | false                       |
-| `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []            | [['$$','$$'],['\\[','\\]']] |
-| `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []            | [['\\(', '\\)']]            |
-| `$wgSmjScale`            | MathJax.chtml.scale              | 1             | 1.5                         |
-| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | center        | left                        |
-| `$wgSmjWrapDisplaystyle` | wrap with displaystyle           | true          | false                       |
+| Setting name             | Description                      | default value             | custom value example        |
+| ------------------------ | -------------------------------- | ------------------------- | --------------------------- |
+| `$wgSmjUseCdn`           | use CDN or local scripts         | true                      | false                       |
+| `$wgSmjUseChem`          | enable chem tag                  | true                      | false                       |
+| `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true                      | false                       |
+| `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []                        | [['$$','$$'],['\\[','\\]']] |
+| `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []                        | [['\\(', '\\)']]            |
+| `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore\|comm..." | "mathjax_ignore"            |
+| `$wgSmjScale`            | MathJax.chtml.scale              | 1                         | 1.5                         |
+| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | center                    | left                        |
+| `$wgSmjWrapDisplaystyle` | wrap with displaystyle           | true                      | false                       |
 
 If you want to change font size, set `$wgSmjScale`.
 ```PHP
@@ -44,16 +45,15 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjUseCdn = false;
 ```
 
-If you want to enable some extra inlineMath symbol pairs, set `$wgSmjExtraInlineMath`.
+If you want to enable some extra inlineMath symbol pairs, set `$wgSmjExtraInlineMath`. Pairs of `[math][/math]` are always in-line math delimiters.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjExtraInlineMath = [["$","$"],["\\(","\\)"]];
 ```
 
-Since version 0.8.7, inlineMath and blockMath are ignored in edit summaries and diffs. To restore the previous behavior, set `$wgSmjIgnoreHtmlClass`.
+Since version 0.8.7, inlineMath and blockMath and environments are ignored in edit summaries and diffs. To restore the previous behavior (especially if you are using maths in edit summaries), set `$wgSmjIgnoreHtmlClass`.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
-$wgSmjExtraInlineMath = [["$","$"],["\\(","\\)"]];
 $wgSmjIgnoreHtmlClass = "mathjax_ignore";
 ```
 
@@ -64,7 +64,7 @@ $wgSmjEnableMenu = false;
 ```
 
 # Hooks
-The hook `SimpleMathJaxAttributes` is available to add attributes to the span around the math. This hook provides you with the opportunity to ensure that your own code does not interfere with MathJax's rendering of math.
+The hook `SimpleMathJaxAttributes` is available to add attributes to the span around the math. (Note that this process is performed only for `<math>` elements, and other delimiters are handled directly by MathJax.) This hook provides you with the opportunity to ensure that your own code does not interfere with MathJax's rendering of math.
 
 For instance, if Lingo's JS functions are called before MathJax is invoked, then it is possible that Lingo will change the text so that MathJax could no longer render the math.
 
