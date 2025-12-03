@@ -1,0 +1,28 @@
+name: Update Contributors for Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  contributors:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: akhilmhdh/contributors-readme-action@v2.3
+        with:
+          image_size: 100
+          commit_message: "docs: update contributors"
+          readme_path: "./README.md"
+          repo: ${{ github.repository }}
+
+      - name: Push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "docs: update contributors" || echo "No changes"
+          git push
