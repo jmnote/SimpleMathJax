@@ -1,9 +1,10 @@
-name: Update Contributors for Release
+name: Release
 
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   contributors:
