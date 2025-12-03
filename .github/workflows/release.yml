@@ -11,14 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: akhilmhdh/contributors-readme-action@v2.3
-        with:
-          image_size: 100
-          commit_message: "docs: update contributors"
-          readme_path: "./README.md"
-          repo: ${{ github.repository }}
 
       - name: Push changes
         run: |
