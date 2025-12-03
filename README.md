@@ -79,4 +79,140 @@ $wfHook['SimpleMathJaxAttributes']
 ## Contributors
 
 <!-- readme: collaborators,contributors -start -->
+<table>
+	<tbody>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/jmnote">
+                    <img src="https://avatars.githubusercontent.com/u/2242405?v=4" width="48;" alt="jmnote"/>
+                    <br />
+                    <sub><b>jmnote</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/jamesmontalvo3">
+                    <img src="https://avatars.githubusercontent.com/u/716482?v=4" width="48;" alt="jamesmontalvo3"/>
+                    <br />
+                    <sub><b>James Montalvo</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/hexmode">
+                    <img src="https://avatars.githubusercontent.com/u/43581?v=4" width="48;" alt="hexmode"/>
+                    <br />
+                    <sub><b>Mark A. Hershberger</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/lakejason0">
+                    <img src="https://avatars.githubusercontent.com/u/36039861?v=4" width="48;" alt="lakejason0"/>
+                    <br />
+                    <sub><b>lakejason0</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/badshah400">
+                    <img src="https://avatars.githubusercontent.com/u/3532467?v=4" width="48;" alt="badshah400"/>
+                    <br />
+                    <sub><b>Atri Bhattacharya</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/Nikerabbit">
+                    <img src="https://avatars.githubusercontent.com/u/1109395?v=4" width="48;" alt="Nikerabbit"/>
+                    <br />
+                    <sub><b>Niklas Laxström</b></sub>
+                </a>
+            </td>
+		</tr>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/cubercsl">
+                    <img src="https://avatars.githubusercontent.com/u/22931465?v=4" width="48;" alt="cubercsl"/>
+                    <br />
+                    <sub><b>cubercsl</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/dummy-index">
+                    <img src="https://avatars.githubusercontent.com/u/3407906?v=4" width="48;" alt="dummy-index"/>
+                    <br />
+                    <sub><b>dummy-index</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/liberaldev">
+                    <img src="https://avatars.githubusercontent.com/u/56965274?v=4" width="48;" alt="liberaldev"/>
+                    <br />
+                    <sub><b>Liberal Dev</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/Adnn">
+                    <img src="https://avatars.githubusercontent.com/u/3911163?v=4" width="48;" alt="Adnn"/>
+                    <br />
+                    <sub><b>Adnn</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/dexgs">
+                    <img src="https://avatars.githubusercontent.com/u/93449583?v=4" width="48;" alt="dexgs"/>
+                    <br />
+                    <sub><b>Dexter Gaon-Shatford</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/pastakhov">
+                    <img src="https://avatars.githubusercontent.com/u/1772774?v=4" width="48;" alt="pastakhov"/>
+                    <br />
+                    <sub><b>Pavel Astakhov</b></sub>
+                </a>
+            </td>
+		</tr>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/v-gar">
+                    <img src="https://avatars.githubusercontent.com/u/11472697?v=4" width="48;" alt="v-gar"/>
+                    <br />
+                    <sub><b>Viktor Garske</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/rickselby">
+                    <img src="https://avatars.githubusercontent.com/u/1564517?v=4" width="48;" alt="rickselby"/>
+                    <br />
+                    <sub><b>Rick Selby</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/guyru">
+                    <img src="https://avatars.githubusercontent.com/u/1255135?v=4" width="48;" alt="guyru"/>
+                    <br />
+                    <sub><b>guyru</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/poiega">
+                    <img src="https://avatars.githubusercontent.com/u/110189813?v=4" width="48;" alt="poiega"/>
+                    <br />
+                    <sub><b>poiega</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/vedmaka">
+                    <img src="https://avatars.githubusercontent.com/u/592009?v=4" width="48;" alt="vedmaka"/>
+                    <br />
+                    <sub><b>Vedmaka</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/yardenac">
+                    <img src="https://avatars.githubusercontent.com/u/687943?v=4" width="48;" alt="yardenac"/>
+                    <br />
+                    <sub><b>Yardena Cohen</b></sub>
+                </a>
+            </td>
+		</tr>
+	<tbody>
+</table>
 <!-- readme: collaborators,contributors -end -->
