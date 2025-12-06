@@ -22,23 +22,48 @@ class SimpleMathJaxHooks {
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
 
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
-		global $wgSmjWrapDisplaystyle;
 		$tex = str_replace('\>', '\;', $tex);
 		$tex = str_replace('<', '\lt ', $tex);
 		$tex = str_replace('>', '\gt ', $tex);
-		if( $wgSmjWrapDisplaystyle ) $tex = "\displaystyle{ $tex }";
-		return self::renderTex($tex, $parser);
+		return self::renderTex($tex, $parser, $args);
 	}
 
 	public static function renderChem($tex, array $args, Parser $parser, PPFrame $frame ) {
-		return self::renderTex("\ce{ $tex }", $parser);
+		return self::renderTex("\\ce{ $tex }", $parser, $args);
 	}
 
-	private static function renderTex($tex, $parser) {
+	private static function renderTex($tex, $parser, $args) {
+		global $wgSmjWrapDisplaystyle;
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
-		$attributes = [ "style" => "opacity:.5", "class" => "smj-container" ];
+		if( !isset($args["display"]) ) {
+			if( $wgSmjWrapDisplaystyle ) $tex = "\\displaystyle{ $tex }";
+		} else switch ($args["display"]) {
+			case "inline":
+				$tex = "\\textstyle{ $tex }";
+				break;
+			case "block":
+				$tex = "\\displaystyle{ $tex }";
+				break;
+			default:
+				;
+		}
+		$attributes = [ "style" => "opacity:.5" ];
+		$attributes["class"] = ($args["class"] ?? '');
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
-		$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
+		if( isset($args["debug"]) ) {
+			$attributes["class"] .= " mathjax_ignore";
+		} else {
+			$attributes["class"] .= " smj-container";
+		}
+		if( isset($args["id"]) ) $attributes["id"] = $args["id"];
+		if( isset($args["title"]) ) $attributes["title"] = $args["title"];
+		if( isset($args["lang"]) ) $attributes["lang"] = $args["lang"];
+		if( isset($args["dir"]) ) $attributes["dir"] = $args["dir"];
+		if( isset($args["display"]) && $args["display"] == "block" ) {
+			$element = Html::Element( "span", $attributes, "\\begin{equation}{$tex}\\end{equation}" );
+		} else {
+			$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
+		}
 		return [$element, 'markerType'=>'nowiki'];
 	}
 }

@@ -109,7 +109,8 @@ window.MathJax = {
     }
   },
   options: {
-    ignoreHtmlClass: mw.config.get('wgSmjIgnoreHtmlClass')
+    ignoreHtmlClass: mw.config.get('wgSmjIgnoreHtmlClass'),
+    processHtmlClass: "mathjax_process|smj-container"
   },
   chtml: {
     scale: mw.config.get('wgSmjScale'),
