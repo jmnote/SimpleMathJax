@@ -34,6 +34,7 @@ class SimpleMathJaxHooks {
 
 	private static function renderTex($tex, $parser, $args) {
 		global $wgSmjWrapDisplaystyle;
+
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
 		if( !isset($args["display"]) ) {
 			if( $wgSmjWrapDisplaystyle ) $tex = "\\displaystyle{ $tex }";
@@ -55,10 +56,11 @@ class SimpleMathJaxHooks {
 		} else {
 			$attributes["class"] .= " smj-container";
 		}
-		if( isset($args["id"]) ) $attributes["id"] = $args["id"];
-		if( isset($args["title"]) ) $attributes["title"] = $args["title"];
-		if( isset($args["lang"]) ) $attributes["lang"] = $args["lang"];
-		if( isset($args["dir"]) ) $attributes["dir"] = $args["dir"];
+		$inherit_tags = [ "id", "title", "lang", "dir" ];
+		foreach( $inherit_tags as $tag ) {
+			if( isset($args[$tag]) ) $attributes[$tag] = $args[$tag];
+		}
+
 		if( isset($args["display"]) && $args["display"] == "block" ) {
 			$element = Html::Element( "span", $attributes, "\\begin{equation}{$tex}\\end{equation}" );
 		} else {
