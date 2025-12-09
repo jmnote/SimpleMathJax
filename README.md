@@ -32,6 +32,7 @@ wfLoadExtension( 'SimpleMathJax' );
 | `$wgSmjScale`            | MathJax.chtml.scale              | 1                         | 1.5                         |
 | `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | center                    | left                        |
 | `$wgSmjWrapDisplaystyle` | wrap with displaystyle           | true                      | false                       |
+| `$wgEnableHtmlAttributes` | process attributes of math tag  | false                     | true                        |
 
 If you want to change font size, set `$wgSmjScale`.
 ```PHP

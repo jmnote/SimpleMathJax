@@ -33,12 +33,15 @@ class SimpleMathJaxHooks {
 	}
 
 	private static function renderTex($tex, $parser, $args) {
-		global $wgSmjWrapDisplaystyle;
+		global $wgSmjWrapDisplaystyle, $wgSmjEnableHtmlAttributes;
 
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
+		if( !$wgSmjEnableHtmlAttributes ) $args = [];
 		if( !isset($args["display"]) ) {
 			if( $wgSmjWrapDisplaystyle ) $tex = "\\displaystyle{ $tex }";
 		} else switch ($args["display"]) {
+			case "":
+				break;
 			case "inline":
 				$tex = "\\textstyle{ $tex }";
 				break;
@@ -62,7 +65,7 @@ class SimpleMathJaxHooks {
 		}
 
 		if( isset($args["display"]) && $args["display"] == "block" ) {
-			$element = Html::Element( "span", $attributes, "\\begin{equation}{$tex}\\end{equation}" );
+			$element = Html::Element( "span", $attributes, "\\begin{displaymjx}{$tex}\\end{displaymjx}" );
 		} else {
 			$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
 		}

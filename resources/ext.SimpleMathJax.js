@@ -106,6 +106,9 @@ window.MathJax = {
       weierp: "{\\wp}",
       Z: "{\\mathbb{Z}}",
       Zeta: "{\\mathrm{Z}}"
+    },
+    environments: {
+      displaymjx: ["", ""]
     }
   },
   options: {

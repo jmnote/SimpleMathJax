@@ -18,7 +18,8 @@
 		"SmjScale": {"value":1, "description":"MathJax.chtml.scale"},
 		"SmjEnableMenu": {"value":true, "description":"MathJax.options.enableMenu"},
 		"SmjDisplayAlign": {"value":"left", "description":"MathJax.chtml.displayAlign"},
-		"SmjWrapDisplaystyle": {"value":true, "description":"true to wrap with displaystyle"}
+		"SmjWrapDisplaystyle": {"value":true, "description":"true to wrap with displaystyle"},
+		"SmjEnableHtmlAttributes": {"value":false, "description":"true to process attributes of math tag"}
 	},
 	"Hooks": {
 		"ParserFirstCallInit": "SimpleMathJaxHooks::onParserFirstCallInit"
