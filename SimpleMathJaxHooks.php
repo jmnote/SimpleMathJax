@@ -22,20 +22,11 @@ class SimpleMathJaxHooks {
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
 
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgSmjWrapDisplaystyle, $wgSmjEnableHtmlAttributes;
+
 		$tex = str_replace('\>', '\;', $tex);
 		$tex = str_replace('<', '\lt ', $tex);
 		$tex = str_replace('>', '\gt ', $tex);
-		return self::renderTex($tex, $parser, $args);
-	}
-
-	public static function renderChem($tex, array $args, Parser $parser, PPFrame $frame ) {
-		return self::renderTex("\\ce{ $tex }", $parser, $args);
-	}
-
-	private static function renderTex($tex, $parser, $args) {
-		global $wgSmjWrapDisplaystyle, $wgSmjEnableHtmlAttributes;
-
-		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
 		if( !$wgSmjEnableHtmlAttributes ) $args = [];
 		if( !isset($args["display"]) ) {
 			if( $wgSmjWrapDisplaystyle ) $tex = "\\displaystyle{ $tex }";
@@ -51,6 +42,18 @@ class SimpleMathJaxHooks {
 			default:
 				;
 		}
+		return self::renderTex($tex, $parser, $args);
+	}
+
+	public static function renderChem($tex, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgSmjEnableHtmlAttributes;
+
+		if( !$wgSmjEnableHtmlAttributes ) $args = [];
+		return self::renderTex("\\ce{ $tex }", $parser, $args);
+	}
+
+	private static function renderTex($tex, $parser, $args) {
+		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
 		$attributes = [ "style" => "opacity:.5" ];
 		$attributes["class"] = ($args["class"] ?? '');
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
