@@ -46,7 +46,7 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjUseCdn = false;
 ```
 
-If you want to enable some extra inlineMath symbol pairs, set `$wgSmjExtraInlineMath`. Pairs of `[math][/math]` are always in-line math delimiters.
+If you want to enable some extra inlineMath symbol pairs, set `$wgSmjExtraInlineMath`. Pairs of `[math][/math]` are always in-line math delimiters. (And independently of this setting, you can use `$ ... $` to switch to math mode within chemical formulas in the mhchem extension.)
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjExtraInlineMath = [["$","$"],["\\(","\\)"]];
@@ -64,6 +64,12 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableMenu = false;
 ```
 
+Since version 0.8.8, by enabling `$wgEnableHtmlAttributes`, the `display` attribute of the `<math>` tag will work, and the `class` and `id` attributes of the `<math>` tag will be carried over to the `<span>` tag.
+```PHP
+wfLoadExtension( 'SimpleMathJax' );
+$wgEnableHtmlAttributes = true;
+```
+
 # Hooks
 The hook `SimpleMathJaxAttributes` is available to add attributes to the span around the math. (Note that this process is performed only for `<math>` elements, and other delimiters are handled directly by MathJax.) This hook provides you with the opportunity to ensure that your own code does not interfere with MathJax's rendering of math.
 
@@ -71,10 +77,10 @@ For instance, if Lingo's JS functions are called before MathJax is invoked, then
 
 Lingo understands that [it should not touch anything inside an element with the class `noglossary`](https://www.mediawiki.org/wiki/Extension:Lingo#Excluding_text_from_markup) so the following code can be used to keep Lingo from ruining math:
 ```PHP
-$wfHook['SimpleMathJaxAttributes']
-	= function ( array &attributes, string $tex ) {
+$wgHooks['SimpleMathJaxAttributes'][]
+	= function ( array &$attributes, string $tex ) {
 		$attributes['class'] = 'noglossary';
-	}
+	};
 ```
 
 ## Contributors
