@@ -58,8 +58,11 @@ class SimpleMathJaxHooks {
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
 		$attributes = [ "style" => "opacity:.5" ];
 		$attributes["class"] = ($args["class"] ?? '');
+		if( !$wgSmjEnableHtmlAttributes ) {
+			$attributes["class"] .= " smj-container";
+		}
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
-		if( !isset($args["debug"]) && $wgSmjEnableHtmlAttributes ) {
+		if( $wgSmjEnableHtmlAttributes && !isset($args["debug"]) ) {
 			$attributes["class"] .= " smj-container";
 		}
 		$inherit_tags = [ "id", "title", "lang", "dir" ];
