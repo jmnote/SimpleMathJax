@@ -15,7 +15,6 @@ class SimpleMathJaxHooks {
 		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjEnableMenu', $wgSmjEnableMenu );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayAlign', $wgSmjDisplayAlign );
-		$wgOut->addJsConfigVars( 'wgSmjEnableHtmlAttributes', $wgSmjEnableHtmlAttributes );
 		$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
 		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
 
@@ -57,11 +56,10 @@ class SimpleMathJaxHooks {
 		global $wgSmjEnableHtmlAttributes;
 
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
-		$attributes = [ "style" => "opacity:.5", "class" => "smj-container" ];
+		$attributes = [ "style" => "opacity:.5" ];
+		$attributes["class"] = ($args["class"] ?? '');
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
-		if( isset($args["debug"]) ) {
-			$attributes["class"] .= " mathjax_ignore";
-		} else if( $wgSmjEnableHtmlAttributes ) {
+		if( !isset($args["debug"]) && $wgSmjEnableHtmlAttributes ) {
 			$attributes["class"] .= " smj-container";
 		}
 		$inherit_tags = [ "id", "title", "lang", "dir" ];

@@ -79,7 +79,7 @@ Lingo understands that [it should not touch anything inside an element with the 
 ```PHP
 $wgHooks['SimpleMathJaxAttributes'][]
 	= function ( array &$attributes, string $tex ) {
-		$attributes['class'] = 'noglossary';
+		$attributes['class'] .= ' noglossary';
 	};
 ```
 
