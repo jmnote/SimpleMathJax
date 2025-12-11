@@ -8,4 +8,3 @@
 #### Checklist
 <!-- Mark with [x] -->
 - [ ] `extension.json` version bumped
-- [ ] Documentation updated (if applicable)
