@@ -24,10 +24,12 @@ class SimpleMathJaxHooks {
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
 		global $wgSmjWrapDisplaystyle, $wgSmjEnableHtmlAttributes;
 
-		$tex = str_replace('\>', '\;', $tex);
-		$tex = str_replace('<', '\lt ', $tex);
-		$tex = str_replace('>', '\gt ', $tex);
 		if( !$wgSmjEnableHtmlAttributes ) $args = [];
+		if( !isset($args["chem"]) ) {
+			$tex = str_replace('\>', '\;', $tex);
+			$tex = str_replace('<', '\lt ', $tex);
+			$tex = str_replace('>', '\gt ', $tex);
+		}
 		if( !isset($args["display"]) ) {
 			if( $wgSmjWrapDisplaystyle ) $tex = "\\displaystyle{ $tex }";
 		} else switch ($args["display"]) {
