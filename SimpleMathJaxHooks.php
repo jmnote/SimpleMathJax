@@ -5,7 +5,7 @@ class SimpleMathJaxHooks {
 	public static function onParserFirstCallInit( Parser $parser ) {
 		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjEnableMenu,
 			$wgSmjDisplayMath, $wgSmjExtraInlineMath, $wgSmjIgnoreHtmlClass,
-			$wgSmjScale, $wgSmjDisplayAlign;
+			$wgSmjScale, $wgSmjDisplayAlign, $wgSmjEnableHtmlAttributes;
 
 		$wgOut->addJsConfigVars( 'wgSmjUseCdn', $wgSmjUseCdn );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
@@ -15,6 +15,7 @@ class SimpleMathJaxHooks {
 		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjEnableMenu', $wgSmjEnableMenu );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayAlign', $wgSmjDisplayAlign );
+		$wgOut->addJsConfigVars( 'wgSmjEnableHtmlAttributes', $wgSmjEnableHtmlAttributes );
 		$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
 		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
 
@@ -63,13 +64,13 @@ class SimpleMathJaxHooks {
 		if( !$wgSmjEnableHtmlAttributes ) {
 			$attributes["class"] .= " smj-container";
 		}
-		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
-		if( $wgSmjEnableHtmlAttributes && !isset($args["debug"]) ) {
-			$attributes["class"] .= " smj-container";
-		}
 		$inherit_tags = [ "id", "title", "lang", "dir" ];
 		foreach( $inherit_tags as $tag ) {
 			if( isset($args[$tag]) ) $attributes[$tag] = $args[$tag];
+		}
+		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
+		if( $wgSmjEnableHtmlAttributes && !isset($args["debug"]) ) {
+			$attributes["class"] .= " smj-container";
 		}
 
 		if( isset($args["display"]) && $args["display"] == "block" ) {

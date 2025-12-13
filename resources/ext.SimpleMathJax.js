@@ -113,7 +113,7 @@ window.MathJax = {
   },
   options: {
     ignoreHtmlClass: mw.config.get('wgSmjIgnoreHtmlClass'),
-    processHtmlClass: "mathjax_process|smj-container"
+    processHtmlClass: mw.config.get('wgSmjEnableHtmlAttributes') ? "mathjax_process|smj-container" : "mathjax_process"
   },
   chtml: {
     scale: mw.config.get('wgSmjScale'),
@@ -125,7 +125,7 @@ window.MathJax = {
   startup: {
     pageReady: () => {
       return MathJax.startup.defaultPageReady().then(() => {
-        $(".MathJax").parent().css('opacity',1);
+        $(mw.config.get('wgSmjEnableHtmlAttributes') ? "span.smj-container > .MathJax" : ".MathJax").parent().css('opacity',1);
       });
     }
   }
