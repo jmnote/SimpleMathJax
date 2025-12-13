@@ -43,7 +43,7 @@ class SimpleMathJaxHooks {
 				$tex = "\\displaystyle{ $tex }";
 				break;
 			default:
-				;
+				return self::renderError('SimpleMathJax: Invalid attribute value: display="' . $args["display"] . '"');
 		}
 		return self::renderTex($tex, $parser, $args);
 	}
@@ -78,6 +78,12 @@ class SimpleMathJaxHooks {
 		} else {
 			$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
 		}
+		return [$element, 'markerType'=>'nowiki'];
+	}
+
+	private static function renderError($str) {
+		$attributes = [ "class" => "error texerror" ];
+		$element = Html::Element( "strong", $attributes, $str );
 		return [$element, 'markerType'=>'nowiki'];
 	}
 }
