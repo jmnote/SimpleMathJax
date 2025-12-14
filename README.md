@@ -111,6 +111,13 @@ $wgHooks['SimpleMathJaxAttributes'][]
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/dummy-index">
+                    <img src="https://avatars.githubusercontent.com/u/3407906?v=4" width="48;" alt="dummy-index"/>
+                    <br />
+                    <sub><b>dummy-index</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/lakejason0">
                     <img src="https://avatars.githubusercontent.com/u/36039861?v=4" width="48;" alt="lakejason0"/>
                     <br />
@@ -124,6 +131,8 @@ $wgHooks['SimpleMathJaxAttributes'][]
                     <sub><b>Atri Bhattacharya</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/Nikerabbit">
                     <img src="https://avatars.githubusercontent.com/u/1109395?v=4" width="48;" alt="Nikerabbit"/>
@@ -131,20 +140,11 @@ $wgHooks['SimpleMathJaxAttributes'][]
                     <sub><b>Niklas Laxström</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/cubercsl">
                     <img src="https://avatars.githubusercontent.com/u/22931465?v=4" width="48;" alt="cubercsl"/>
                     <br />
                     <sub><b>cubercsl</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/dummy-index">
-                    <img src="https://avatars.githubusercontent.com/u/3407906?v=4" width="48;" alt="dummy-index"/>
-                    <br />
-                    <sub><b>dummy-index</b></sub>
                 </a>
             </td>
             <td align="center">
