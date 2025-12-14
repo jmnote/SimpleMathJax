@@ -106,10 +106,14 @@ window.MathJax = {
       weierp: "{\\wp}",
       Z: "{\\mathbb{Z}}",
       Zeta: "{\\mathrm{Z}}"
+    },
+    environments: {
+      displaymjx: ["", ""]
     }
   },
   options: {
-    ignoreHtmlClass: mw.config.get('wgSmjIgnoreHtmlClass')
+    ignoreHtmlClass: mw.config.get('wgSmjIgnoreHtmlClass'),
+    processHtmlClass: mw.config.get('wgSmjEnableHtmlAttributes') ? "mathjax_process|smj-container" : "mathjax_process"
   },
   chtml: {
     scale: mw.config.get('wgSmjScale'),
@@ -121,7 +125,7 @@ window.MathJax = {
   startup: {
     pageReady: () => {
       return MathJax.startup.defaultPageReady().then(() => {
-        $(".MathJax").parent().css('opacity',1);
+        $(mw.config.get('wgSmjEnableHtmlAttributes') ? "span.smj-container > .MathJax" : ".MathJax").parent().css('opacity',1);
       });
     }
   }

@@ -5,7 +5,7 @@ class SimpleMathJaxHooks {
 	public static function onParserFirstCallInit( Parser $parser ) {
 		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjEnableMenu,
 			$wgSmjDisplayMath, $wgSmjExtraInlineMath, $wgSmjIgnoreHtmlClass,
-			$wgSmjScale, $wgSmjDisplayAlign;
+			$wgSmjScale, $wgSmjDisplayAlign, $wgSmjEnableHtmlAttributes;
 
 		$wgOut->addJsConfigVars( 'wgSmjUseCdn', $wgSmjUseCdn );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
@@ -15,6 +15,7 @@ class SimpleMathJaxHooks {
 		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjEnableMenu', $wgSmjEnableMenu );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayAlign', $wgSmjDisplayAlign );
+		$wgOut->addJsConfigVars( 'wgSmjEnableHtmlAttributes', $wgSmjEnableHtmlAttributes );
 		$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
 		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
 
@@ -22,23 +23,67 @@ class SimpleMathJaxHooks {
 		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
 
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
-		global $wgSmjWrapDisplaystyle;
-		$tex = str_replace('\>', '\;', $tex);
-		$tex = str_replace('<', '\lt ', $tex);
-		$tex = str_replace('>', '\gt ', $tex);
-		if( $wgSmjWrapDisplaystyle ) $tex = "\displaystyle{ $tex }";
-		return self::renderTex($tex, $parser);
+		global $wgSmjWrapDisplaystyle, $wgSmjEnableHtmlAttributes;
+
+		if( !$wgSmjEnableHtmlAttributes ) $args = [];
+		if( !isset($args["chem"]) ) {
+			$tex = str_replace('\>', '\;', $tex);
+			$tex = str_replace('<', '\lt ', $tex);
+			$tex = str_replace('>', '\gt ', $tex);
+		}
+		if( !isset($args["display"]) ) {
+			if( $wgSmjWrapDisplaystyle ) $tex = "\\displaystyle{ $tex }";
+		} else switch ($args["display"]) {
+			case "":
+				break;
+			case "inline":
+				$tex = "\\textstyle{ $tex }";
+				break;
+			case "block":
+				$tex = "\\displaystyle{ $tex }";
+				break;
+			default:
+				return self::renderError('SimpleMathJax: Invalid attribute value: display="' . $args["display"] . '"');
+		}
+		return self::renderTex($tex, $parser, $args);
 	}
 
 	public static function renderChem($tex, array $args, Parser $parser, PPFrame $frame ) {
-		return self::renderTex("\ce{ $tex }", $parser);
+		global $wgSmjEnableHtmlAttributes;
+
+		if( !$wgSmjEnableHtmlAttributes ) $args = [];
+		return self::renderTex("\\ce{ $tex }", $parser, $args);
 	}
 
-	private static function renderTex($tex, $parser) {
+	private static function renderTex($tex, $parser, $args) {
+		global $wgSmjEnableHtmlAttributes;
+
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
-		$attributes = [ "style" => "opacity:.5", "class" => "smj-container" ];
+		$attributes = [ "style" => "opacity:.5" ];
+		$attributes["class"] = ($args["class"] ?? '');
+		if( !$wgSmjEnableHtmlAttributes ) {
+			$attributes["class"] .= " smj-container";
+		}
+		$inherit_tags = [ "id", "title", "lang", "dir" ];
+		foreach( $inherit_tags as $tag ) {
+			if( isset($args[$tag]) ) $attributes[$tag] = $args[$tag];
+		}
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
-		$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
+		if( $wgSmjEnableHtmlAttributes && !isset($args["debug"]) ) {
+			$attributes["class"] .= " smj-container";
+		}
+
+		if( isset($args["display"]) && $args["display"] == "block" ) {
+			$element = Html::Element( "span", $attributes, "\\begin{displaymjx}{$tex}\\end{displaymjx}" );
+		} else {
+			$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
+		}
+		return [$element, 'markerType'=>'nowiki'];
+	}
+
+	private static function renderError($str) {
+		$attributes = [ "class" => "error texerror" ];
+		$element = Html::Element( "strong", $attributes, $str );
 		return [$element, 'markerType'=>'nowiki'];
 	}
 }
