@@ -28,11 +28,11 @@ wfLoadExtension( 'SimpleMathJax' );
 | `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true                      | false                       |
 | `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []                        | [['$$','$$'],['\\[','\\]']] |
 | `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []                        | [['\\(', '\\)']]            |
-| `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore\|comm..." | "mathjax_ignore"            |
+| `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore\|comment\|<br>diff-(context\|<br>addedline\|deletedline)" | "mathjax_ignore"            |
 | `$wgSmjScale`            | MathJax.chtml.scale              | 1                         | 1.5                         |
-| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | center                    | left                        |
-| `$wgSmjWrapDisplaystyle` | wrap with displaystyle           | true                      | false                       |
-| `$wgEnableHtmlAttributes` | process attributes of math tag  | false                     | true                        |
+| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | "center"                  | "left"                      |
+| `$wgSmjWrapDisplaystyle` | wrap with displaystyle on `<math>`  | true                   | false                       |
+| `$wgSmjEnableHtmlAttributes` | process attributes of math tag  | false                  | true                        |
 
 If you want to change font size, set `$wgSmjScale`.
 ```PHP
@@ -64,10 +64,10 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableMenu = false;
 ```
 
-Since version 0.8.8, by enabling `$wgEnableHtmlAttributes`, the `display` attribute of the `<math>` tag will work, and the `class` and `id` attributes of the `<math>` tag will be carried over to the `<span>` tag.
+Since version 0.8.8, by enabling `$wgSmjEnableHtmlAttributes`, the `display` attribute of the `<math>` tag will work, and the `class` and `id` attributes of the `<math>` tag will be carried over to the `<span>` tag.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
-$wgEnableHtmlAttributes = true;
+$wgSmjEnableHtmlAttributes = true;
 ```
 
 # Hooks
