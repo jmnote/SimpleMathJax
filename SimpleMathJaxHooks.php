@@ -32,7 +32,12 @@ class SimpleMathJaxHooks {
 			$tex = str_replace('<', '\lt ', $tex);
 			$tex = str_replace('>', '\gt ', $tex);
 		}
-		if( !isset($args["display"]) ) {
+		if( isset($args["inline-block"]) ) {
+			if( isset($args["display"]) ) {
+				return self::renderError('SimpleMathJax: Do not use the inline-block attribute and the display attribute together on the same element.');
+			}
+			$tex = "\\displaystyle{ $tex }";
+		} else if( !isset($args["display"]) ) {
 			if( $wgSmjWrapDisplaystyle ) $tex = "\\displaystyle{ $tex }";
 		} else switch ($args["display"]) {
 			case "":
