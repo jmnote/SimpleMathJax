@@ -3,6 +3,9 @@ window.MathJax = {
   tex: {
     inlineMath: mw.config.get('wgSmjExtraInlineMath').concat([['[math]','[/math]']]),
     displayMath: mw.config.get('wgSmjDisplayMath'),
+    processEnvironments: true,
+    processRefs: mw.config.get('wgSmjDirectMathJax') == 'full',
+    processEscapes: mw.config.get('wgSmjDirectMathJax') == 'full',
     packages: mw.config.get('wgSmjUseChem') ? {'[+]': ['mhchem']} : {},
     macros: {
       AA: "{\u00c5}",
@@ -123,6 +126,7 @@ window.MathJax = {
     load: mw.config.get('wgSmjUseChem') ? ['[tex]/mhchem'] : []
   },
   startup: {
+    elements: mw.config.get('wgSmjDirectMathJax') == 'none' ? ["span.smj-container"] : null,
     pageReady: () => {
       return MathJax.startup.defaultPageReady().then(() => {
         $(mw.config.get('wgSmjEnableHtmlAttributes') ? "span.smj-container > .MathJax" : ".MathJax").parent().css('opacity',1);

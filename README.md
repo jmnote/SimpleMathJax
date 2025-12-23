@@ -25,6 +25,7 @@ wfLoadExtension( 'SimpleMathJax' );
 | ------------------------ | -------------------------------- | ------------------------- | --------------------------- |
 | `$wgSmjUseCdn`           | use CDN or local scripts         | true                      | false                       |
 | `$wgSmjUseChem`          | enable chem tag                  | true                      | false                       |
+| `$wgSmjDirectMathJax`    | which ones can be written directly  | "full"                 | "none"                      |
 | `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true                      | false                       |
 | `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []                        | [['$$','$$'],['\\[','\\]']] |
 | `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []                        | [['\\(', '\\)']]            |
@@ -64,10 +65,16 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableMenu = false;
 ```
 
-Since version 0.8.8, by enabling `$wgSmjEnableHtmlAttributes`, the `display` attribute of the `<math>` tag will work, and the `class` and `id` attributes of the `<math>` tag will be carried over to the `<span>` tag.
+Since version 0.8.8, by enabling `$wgSmjEnableHtmlAttributes`, the `display` attribute of the `<math>` tag will work, and the `class`, `id` and `title` attributes of the `<math>` tag will be carried over to the `<span>` tag.
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableHtmlAttributes = true;
+```
+
+In version 0.8.9, an option was added to make it completely dedicated to `<math>` and `<chem>`. Setting `$wgSmjDirectMathJax` to `env` disables `\ref{}` and escaping of `$`, while setting it to `none` disables all delimiters, including `[math]`, making it mandatory to enclose all TeX expressions in `<math>` or `<chem>`.
+```PHP
+wfLoadExtension( 'SimpleMathJax' );
+$wgSmjDirectMathJax = "none";
 ```
 
 # Hooks
