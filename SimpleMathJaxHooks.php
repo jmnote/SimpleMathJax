@@ -46,7 +46,6 @@ class SimpleMathJaxHooks {
 				$tex = "\\textstyle{ $tex }";
 				break;
 			case "block":
-				$tex = "\\displaystyle{ $tex }";
 				break;
 			default:
 				return self::renderError('SimpleMathJax: Invalid attribute value: display="' . $args["display"] . '"');
