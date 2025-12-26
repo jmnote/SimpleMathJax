@@ -74,7 +74,7 @@ class SimpleMathJaxHooks {
 			if( isset($args[$tag]) ) $attributes[$tag] = $args[$tag];
 		}
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
-		if( $wgSmjEnableHtmlAttributes && !isset($args["debug"]) ) {
+		if( $wgSmjEnableHtmlAttributes && !isset($args["smj-debug"]) ) {
 			$attributes["class"] .= " smj-container";
 		}
 

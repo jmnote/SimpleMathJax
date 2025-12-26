@@ -71,7 +71,7 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableHtmlAttributes = true;
 ```
 
-In version 0.8.9, an option was added to make it completely dedicated to `<math>` and `<chem>`. Setting `$wgSmjDirectMathJax` to `env` disables `\ref{}` and escaping of `$`, while setting it to `none` disables all delimiters, including `[math]`, making it mandatory to enclose all TeX expressions in `<math>` or `<chem>`.
+In version 0.8.9, an option was added to make it completely dedicated to `<math>` and `<chem>`. Setting `$wgSmjDirectMathJax` to `env` disables `\ref{}` and escaping of `$`, while setting it to `none` disables all delimiters, including `[math]`, making it mandatory to enclose all TeX expressions in `<math>` or `<chem>` (and `$wgSmjDisplayMath`, `$wgSmjExtraInlineMath`, `$wgSmjIgnoreHtmlClass`, etc. will become meaningless).
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjDirectMathJax = "none";
