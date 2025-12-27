@@ -3,12 +3,13 @@ use MediaWiki\Html\Html;
 class SimpleMathJaxHooks {
 
 	public static function onParserFirstCallInit( Parser $parser ) {
-		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjEnableMenu,
+		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjDirectMathJax, $wgSmjEnableMenu,
 			$wgSmjDisplayMath, $wgSmjExtraInlineMath, $wgSmjIgnoreHtmlClass,
 			$wgSmjScale, $wgSmjDisplayAlign, $wgSmjEnableHtmlAttributes;
 
 		$wgOut->addJsConfigVars( 'wgSmjUseCdn', $wgSmjUseCdn );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
+		$wgOut->addJsConfigVars( 'wgSmjDirectMathJax', $wgSmjDirectMathJax );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayMath', $wgSmjDisplayMath );
 		$wgOut->addJsConfigVars( 'wgSmjExtraInlineMath', $wgSmjExtraInlineMath );
 		$wgOut->addJsConfigVars( 'wgSmjIgnoreHtmlClass', $wgSmjIgnoreHtmlClass );
@@ -31,7 +32,12 @@ class SimpleMathJaxHooks {
 			$tex = str_replace('<', '\lt ', $tex);
 			$tex = str_replace('>', '\gt ', $tex);
 		}
-		if( !isset($args["display"]) ) {
+		if( isset($args["inline-block"]) ) {
+			if( isset($args["display"]) ) {
+				return self::renderError('SimpleMathJax: Do not use the inline-block attribute and the display attribute together on the same element.');
+			}
+			$tex = "\\displaystyle{ $tex }";
+		} else if( !isset($args["display"]) ) {
 			if( $wgSmjWrapDisplaystyle ) $tex = "\\displaystyle{ $tex }";
 		} else switch ($args["display"]) {
 			case "":
@@ -40,7 +46,6 @@ class SimpleMathJaxHooks {
 				$tex = "\\textstyle{ $tex }";
 				break;
 			case "block":
-				$tex = "\\displaystyle{ $tex }";
 				break;
 			default:
 				return self::renderError('SimpleMathJax: Invalid attribute value: display="' . $args["display"] . '"');
@@ -69,7 +74,7 @@ class SimpleMathJaxHooks {
 			if( isset($args[$tag]) ) $attributes[$tag] = $args[$tag];
 		}
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
-		if( $wgSmjEnableHtmlAttributes && !isset($args["debug"]) ) {
+		if( $wgSmjEnableHtmlAttributes && !isset($args["smj-debug"]) ) {
 			$attributes["class"] .= " smj-container";
 		}
 

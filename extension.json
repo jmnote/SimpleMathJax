@@ -1,6 +1,6 @@
 {
 	"name": "SimpleMathJax",
-	"version": "0.8.8",
+	"version": "0.8.9",
 	"author": "jmnote",
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
@@ -12,6 +12,7 @@
 	"config": {
 		"SmjUseCdn": {"value":true, "description":"true to load mathjax from CDN"},
 		"SmjUseChem": {"value":true, "description":"true to enabled chem tag"},
+		"SmjDirectMathJax": {"value":"full", "description":"env to disable escapes, none to only math and chem tags"},
 		"SmjDisplayMath": {"value":[], "description":"MathJax.tex.displayMath"},
 		"SmjExtraInlineMath": {"value":[], "description":"MathJax.tex.inlineMath"},
 		"SmjIgnoreHtmlClass": {"value":"mathjax_ignore|comment|diff-(context|addedline|deletedline)", "description":"MathJax.options.ignoreHtmlClass"},
