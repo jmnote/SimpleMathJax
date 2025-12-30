@@ -5,7 +5,7 @@ class SimpleMathJaxHooks {
 	public static function onParserFirstCallInit( Parser $parser ) {
 		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjDirectMathJax, $wgSmjEnableMenu,
 			$wgSmjDisplayMath, $wgSmjExtraInlineMath, $wgSmjIgnoreHtmlClass,
-			$wgSmjScale, $wgSmjDisplayAlign, $wgSmjEnableHtmlAttributes;
+			$wgSmjScale, $wgSmjDisplayAlign;
 
 		$wgOut->addJsConfigVars( 'wgSmjUseCdn', $wgSmjUseCdn );
 		$wgOut->addJsConfigVars( 'wgSmjUseChem', $wgSmjUseChem );
@@ -16,7 +16,6 @@ class SimpleMathJaxHooks {
 		$wgOut->addJsConfigVars( 'wgSmjScale', $wgSmjScale );
 		$wgOut->addJsConfigVars( 'wgSmjEnableMenu', $wgSmjEnableMenu );
 		$wgOut->addJsConfigVars( 'wgSmjDisplayAlign', $wgSmjDisplayAlign );
-		$wgOut->addJsConfigVars( 'wgSmjEnableHtmlAttributes', $wgSmjEnableHtmlAttributes );
 		$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
 		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
 
@@ -61,20 +60,16 @@ class SimpleMathJaxHooks {
 	}
 
 	private static function renderTex($tex, $parser, $args) {
-		global $wgSmjEnableHtmlAttributes;
 
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
 		$attributes = [ "style" => "opacity:.5" ];
 		$attributes["class"] = ($args["class"] ?? '');
-		if( !$wgSmjEnableHtmlAttributes ) {
-			$attributes["class"] .= " smj-container";
-		}
 		$inherit_tags = [ "id", "title", "lang", "dir" ];
 		foreach( $inherit_tags as $tag ) {
 			if( isset($args[$tag]) ) $attributes[$tag] = $args[$tag];
 		}
-		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex ] );
-		if( $wgSmjEnableHtmlAttributes && !isset($args["smj-debug"]) ) {
+		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex, $args ] );
+		if( !isset($attributes["smj-debug"]) && !isset($args["smj-debug"]) ) {
 			$attributes["class"] .= " smj-container";
 		}
 

@@ -85,7 +85,7 @@ For instance, if Lingo's JS functions are called before MathJax is invoked, then
 Lingo understands that [it should not touch anything inside an element with the class `noglossary`](https://www.mediawiki.org/wiki/Extension:Lingo#Excluding_text_from_markup) so the following code can be used to keep Lingo from ruining math:
 ```PHP
 $wgHooks['SimpleMathJaxAttributes'][]
-	= function ( array &$attributes, string $tex ) {
+	= function ( array &$attributes, string $tex, array $args = [] ) {
 		$attributes['class'] .= ' noglossary';
 	};
 ```
