@@ -29,11 +29,12 @@ wfLoadExtension( 'SimpleMathJax' );
 | `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true                      | false                       |
 | `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []                        | [['$$','$$'],['\\[','\\]']] |
 | `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []                        | [['\\(', '\\)']]            |
-| `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore\|comment\|<br>diff-(context\|<br>addedline\|deletedline)" | "mathjax_ignore"            |
+| `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore\|comment\|<br>diff-(context\|<br>addedline\|deletedline)" | "mathjax_ignore" |
 | `$wgSmjScale`            | MathJax.chtml.scale              | 1                         | 1.5                         |
 | `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | "center"                  | "left"                      |
 | `$wgSmjWrapDisplaystyle` | wrap with displaystyle on `<math>`  | true                   | false                       |
 | `$wgSmjEnableHtmlAttributes` | process attributes of math tag  | false                  | true                        |
+| `$wgSmjConfigByRevision` | switch the configuration according to the article's revision  | [] | [['upto'=>1048576,<br>'wgSmjDisplayAlign'<br>=>'left']] |
 
 If you want to change font size, set `$wgSmjScale`.
 ```PHP
@@ -75,6 +76,16 @@ In version 0.8.9, an option was added to make it completely dedicated to `<math>
 ```PHP
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjDirectMathJax = "none";
+```
+
+By using $wgSmjConfigByRevision, you can apply different settings to an article's revisions up to a certain point and to revisions after that. This allows past revisions to be displayed with the settings that were in place at the time. Only the keys written inside the [] are overwritten. Preview, History and SpecialPages are treated as base cases that do not apply this setting.
+```PHP
+wfLoadExtension( 'SimpleMathJax' );
+$wgSmjDirectMathJax = "none";    #To match the preview with the actual rendering, write the latest settings in the base case
+$wgSmjConfigByRevision = [
+	["upto"=>50000, "wgSmjDirectMathJax"=>"full"],
+	["since"=>50001, "upto"=>60000, "wgSmjDirectMathJax"=>"env"]
+];
 ```
 
 # Hooks

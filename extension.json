@@ -1,6 +1,6 @@
 {
 	"name": "SimpleMathJax",
-	"version": "0.8.9",
+	"version": "0.8.10",
 	"author": "jmnote",
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
@@ -20,7 +20,8 @@
 		"SmjEnableMenu": {"value":true, "description":"MathJax.options.enableMenu"},
 		"SmjDisplayAlign": {"value":"left", "description":"MathJax.chtml.displayAlign"},
 		"SmjWrapDisplaystyle": {"value":true, "description":"true to wrap with displaystyle"},
-		"SmjEnableHtmlAttributes": {"value":false, "description":"true to process attributes of math tag"}
+		"SmjEnableHtmlAttributes": {"value":false, "description":"true to process attributes of math tag"},
+		"SmjConfigByRevision": {"value":[], "description":"switch the configuration"}
 	},
 	"Hooks": {
 		"ParserFirstCallInit": "SimpleMathJaxHooks::onParserFirstCallInit"
