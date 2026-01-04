@@ -38,7 +38,7 @@ class SimpleMathJaxHooks {
 		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
 
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
-		if( $wgSmjUseChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
+		if( self::$useChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
 
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
 		if( !self::$enableHtmlAttributes ) $args = [];
