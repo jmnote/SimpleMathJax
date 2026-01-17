@@ -42,11 +42,6 @@ class SimpleMathJaxHooks {
 
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
 		if( !self::$enableHtmlAttributes ) $args = [];
-		if( !isset($args["chem"]) ) {
-			$tex = str_replace('\>', '\;', $tex);
-			$tex = str_replace('<', '\lt ', $tex);
-			$tex = str_replace('>', '\gt ', $tex);
-		}
 		if( isset($args["inline-block"]) ) {
 			if( isset($args["display"]) ) {
 				return self::renderError('SimpleMathJax: Do not use the inline-block attribute and the display attribute together on the same element.');
