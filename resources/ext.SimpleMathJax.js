@@ -123,7 +123,7 @@ window.MathJax = {
     displayAlign: mw.config.get('wgSmjDisplayAlign')
   },
   loader: {
-    load: mw.config.get('wgSmjUseChem') ? ['[tex]/mhchem'] : []
+    load: mw.config.get('wgSmjUseChem') ? ['ui/safe', '[tex]/mhchem'] : ['ui/safe']
   },
   startup: {
     elements: mw.config.get('wgSmjDirectMathJax') == 'none' ? ["span.smj-container"] : null,
