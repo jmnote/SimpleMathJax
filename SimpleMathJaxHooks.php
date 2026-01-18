@@ -1,5 +1,6 @@
 <?php
 use MediaWiki\Html\Html;
+use MediaWiki\Parser\Sanitizer;
 class SimpleMathJaxHooks {
 	private static $useChem;
 	private static $wrapDisplaystyle;
@@ -38,7 +39,8 @@ class SimpleMathJaxHooks {
 		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
 
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
-		if( self::$useChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
+		if( self::$useChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );
+	}
 
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
 		if( !self::$enableHtmlAttributes ) $args = [];
@@ -71,12 +73,10 @@ class SimpleMathJaxHooks {
 	private static function renderTex($tex, $parser, $args) {
 
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
-		$attributes = [ "style" => "opacity:.5" ];
-		$attributes["class"] = ($args["class"] ?? '');
-		$inherit_tags = [ "id", "title", "lang", "dir" ];
-		foreach( $inherit_tags as $tag ) {
-			if( isset($args[$tag]) ) $attributes[$tag] = $args[$tag];
-		}
+		$attributes = [ "style" => "opacity:.5", "class" => "" ];
+		$inherit_tags = [ "class", "id", "title", "lang", "dir" ];
+		$attributes = array_merge( $attributes, Sanitizer::validateAttributes( $args , array_fill_keys( $inherit_tags, true ) ) );
+
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex, $args ] );
 		if( !isset($attributes["smj-debug"]) && !isset($args["smj-debug"]) ) {
 			$attributes["class"] .= " smj-container";
