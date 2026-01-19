@@ -6,7 +6,7 @@ window.MathJax = {
     processEnvironments: true,
     processRefs: mw.config.get('wgSmjDirectMathJax') == 'full',
     processEscapes: mw.config.get('wgSmjDirectMathJax') == 'full',
-    packages: mw.config.get('wgSmjUseChem') ? {'[+]': ['mhchem']} : {},
+    packages: mw.config.get('wgSmjPreloadChem') ? {'[+]': ['mhchem']} : {},
     macros: {
       AA: "{\u00c5}",
       alef: "{\\aleph}",
@@ -123,7 +123,7 @@ window.MathJax = {
     displayAlign: mw.config.get('wgSmjDisplayAlign')
   },
   loader: {
-    load: mw.config.get('wgSmjUseChem') ? ['ui/safe', '[tex]/mhchem'] : ['ui/safe']
+    load: mw.config.exists('wgSmjPreloadChem') ? ['ui/safe', '[tex]/mhchem'] : ['ui/safe']
   },
   startup: {
     elements: mw.config.get('wgSmjDirectMathJax') == 'none' ? ["span.smj-container"] : null,

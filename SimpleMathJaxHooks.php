@@ -12,12 +12,13 @@ class SimpleMathJaxHooks {
 			$wgSmjScale, $wgSmjDisplayAlign, $wgSmjWrapDisplaystyle,
 			$wgSmjEnableHtmlAttributes, $wgSmjConfigByRevision;
 
-		$globalvars = [ "wgSmjUseCdn", "wgSmjUseChem", "wgSmjDirectMathJax",
+		$globalvars = [ "wgSmjUseCdn", "wgSmjDirectMathJax",
 				"wgSmjDisplayMath", "wgSmjExtraInlineMath", "wgSmjIgnoreHtmlClass",
 				"wgSmjScale", "wgSmjEnableMenu", "wgSmjDisplayAlign" ];
 		foreach( $globalvars as $varname ) {
 			$wgOut->addJsConfigVars( $varname, $$varname );
 		}
+		self::$useChem = $wgSmjUseChem;
 		self::$wrapDisplaystyle = $wgSmjWrapDisplaystyle;
 		self::$enableHtmlAttributes = $wgSmjEnableHtmlAttributes;
 
@@ -30,10 +31,10 @@ class SimpleMathJaxHooks {
 			foreach( $globalvars as $varname ) {
 				if( isset($confset[$varname]) ) $wgOut->addJsConfigVars( $varname, $confset[$varname] );
 			}
+			if (isset($confset["wgSmjUseChem"]) ) self::$useChem = $confset["wgSmjUseChem"];
 			if (isset($confset["wgSmjWrapDisplaystyle"]) ) self::$wrapDisplaystyle = $confset["wgSmjWrapDisplaystyle"];
 			if (isset($confset["wgSmjEnableHtmlAttributes"]) ) self::$enableHtmlAttributes = $confset["wgSmjEnableHtmlAttributes"];
 		}
-		self::$useChem = $wgOut->getJsConfigVars()["wgSmjUseChem"];
 
 		$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
 		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
@@ -43,7 +44,11 @@ class SimpleMathJaxHooks {
 	}
 
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgOut;
 		if( !self::$enableHtmlAttributes ) $args = [];
+		if( isset($args["chem"]) ) {
+			$wgOut->addJsConfigVars( "wgSmjPreloadChem", true );
+		}
 		if( isset($args["inline-block"]) ) {
 			if( isset($args["display"]) ) {
 				return self::renderError('SimpleMathJax: Do not use the inline-block attribute and the display attribute together on the same element.');
@@ -66,6 +71,8 @@ class SimpleMathJaxHooks {
 	}
 
 	public static function renderChem($tex, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgOut;
+		$wgOut->addJsConfigVars( "wgSmjPreloadChem", true );
 		if( !self::$enableHtmlAttributes ) $args = [];
 		return self::renderTex("\\ce{ $tex }", $parser, $args);
 	}
