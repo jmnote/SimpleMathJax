@@ -82,7 +82,8 @@ class SimpleMathJaxHooks {
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
 		$attributes = [ "style" => "opacity:.5", "class" => "" ];
 		$inherit_tags = [ "class", "id", "title", "lang", "dir" ];
-		$attributes = array_merge( $attributes, Sanitizer::validateAttributes( $args , array_fill_keys( $inherit_tags, true ) ) );
+		$validatedAttribs = Sanitizer::validateAttributes( $args, array_fill_keys( $inherit_tags, true ) );
+	        $attributes = array_merge( $attributes, $validatedAttribs );
 
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex, $args ] );
 		if( !isset($attributes["smj-debug"]) && !isset($args["smj-debug"]) ) {
