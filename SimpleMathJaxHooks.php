@@ -1,5 +1,6 @@
 <?php
 use MediaWiki\Html\Html;
+use MediaWiki\Parser\Sanitizer;
 class SimpleMathJaxHooks {
 	private static $useChem;
 	private static $wrapDisplaystyle;
@@ -11,12 +12,13 @@ class SimpleMathJaxHooks {
 			$wgSmjScale, $wgSmjDisplayAlign, $wgSmjWrapDisplaystyle,
 			$wgSmjEnableHtmlAttributes, $wgSmjConfigByRevision;
 
-		$globalvars = [ "wgSmjUseCdn", "wgSmjUseChem", "wgSmjDirectMathJax",
+		$globalvars = [ "wgSmjUseCdn", "wgSmjDirectMathJax",
 				"wgSmjDisplayMath", "wgSmjExtraInlineMath", "wgSmjIgnoreHtmlClass",
 				"wgSmjScale", "wgSmjEnableMenu", "wgSmjDisplayAlign" ];
 		foreach( $globalvars as $varname ) {
 			$wgOut->addJsConfigVars( $varname, $$varname );
 		}
+		self::$useChem = $wgSmjUseChem;
 		self::$wrapDisplaystyle = $wgSmjWrapDisplaystyle;
 		self::$enableHtmlAttributes = $wgSmjEnableHtmlAttributes;
 
@@ -29,23 +31,23 @@ class SimpleMathJaxHooks {
 			foreach( $globalvars as $varname ) {
 				if( isset($confset[$varname]) ) $wgOut->addJsConfigVars( $varname, $confset[$varname] );
 			}
+			if (isset($confset["wgSmjUseChem"]) ) self::$useChem = $confset["wgSmjUseChem"];
 			if (isset($confset["wgSmjWrapDisplaystyle"]) ) self::$wrapDisplaystyle = $confset["wgSmjWrapDisplaystyle"];
 			if (isset($confset["wgSmjEnableHtmlAttributes"]) ) self::$enableHtmlAttributes = $confset["wgSmjEnableHtmlAttributes"];
 		}
-		self::$useChem = $wgOut->getJsConfigVars()["wgSmjUseChem"];
 
 		$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
 		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
 
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
-		if( self::$useChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );	}
+		if( self::$useChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );
+	}
 
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgOut;
 		if( !self::$enableHtmlAttributes ) $args = [];
-		if( !isset($args["chem"]) ) {
-			$tex = str_replace('\>', '\;', $tex);
-			$tex = str_replace('<', '\lt ', $tex);
-			$tex = str_replace('>', '\gt ', $tex);
+		if( isset($args["chem"]) ) {
+			$wgOut->addJsConfigVars( "wgSmjPreloadChem", true );
 		}
 		if( isset($args["inline-block"]) ) {
 			if( isset($args["display"]) ) {
@@ -69,6 +71,8 @@ class SimpleMathJaxHooks {
 	}
 
 	public static function renderChem($tex, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgOut;
+		$wgOut->addJsConfigVars( "wgSmjPreloadChem", true );
 		if( !self::$enableHtmlAttributes ) $args = [];
 		return self::renderTex("\\ce{ $tex }", $parser, $args);
 	}
@@ -76,12 +80,11 @@ class SimpleMathJaxHooks {
 	private static function renderTex($tex, $parser, $args) {
 
 		$hookContainer = MediaWiki\MediaWikiServices::getInstance()->getHookContainer();
-		$attributes = [ "style" => "opacity:.5" ];
-		$attributes["class"] = ($args["class"] ?? '');
-		$inherit_tags = [ "id", "title", "lang", "dir" ];
-		foreach( $inherit_tags as $tag ) {
-			if( isset($args[$tag]) ) $attributes[$tag] = $args[$tag];
-		}
+		$attributes = [ "style" => "opacity:.5", "class" => "" ];
+		$inherit_tags = [ "class", "id", "title", "lang", "dir" ];
+		$validatedAttribs = Sanitizer::validateAttributes( $args, array_fill_keys( $inherit_tags, true ) );
+	        $attributes = array_merge( $attributes, $validatedAttribs );
+
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex, $args ] );
 		if( !isset($attributes["smj-debug"]) && !isset($args["smj-debug"]) ) {
 			$attributes["class"] .= " smj-container";
