@@ -1,8 +1,5 @@
-#### Which issue this PR fixes / What this PR does / Why we need it
+#### What this PR does / Why we need it
 
-<!-- Optional: use `fixes #<issue>` format to auto-close issues on merge -->
-
-- fixes #
 
 
 #### Checklist
