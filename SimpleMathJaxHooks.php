@@ -12,15 +12,19 @@ class SimpleMathJaxHooks {
 			$wgSmjScale, $wgSmjDisplayAlign, $wgSmjWrapDisplaystyle,
 			$wgSmjEnableHtmlAttributes, $wgSmjConfigByRevision;
 
-		$globalvars = [ "wgSmjUseCdn", "wgSmjDirectMathJax",
-				"wgSmjDisplayMath", "wgSmjExtraInlineMath", "wgSmjIgnoreHtmlClass",
-				"wgSmjScale", "wgSmjEnableMenu", "wgSmjDisplayAlign" ];
-		foreach( $globalvars as $varname ) {
-			$wgOut->addJsConfigVars( $varname, $$varname );
-		}
-		self::$useChem = $wgSmjUseChem;
-		self::$wrapDisplaystyle = $wgSmjWrapDisplaystyle;
-		self::$enableHtmlAttributes = $wgSmjEnableHtmlAttributes;
+		$config = [
+			"wgSmjUseCdn" => $wgSmjUseCdn,
+			"wgSmjUseChem" => $wgSmjUseChem,
+			"wgSmjDirectMathJax" => $wgSmjDirectMathJax,
+			"wgSmjDisplayMath" => $wgSmjDisplayMath,
+			"wgSmjExtraInlineMath" => $wgSmjExtraInlineMath,
+			"wgSmjIgnoreHtmlClass" => $wgSmjIgnoreHtmlClass,
+			"wgSmjScale" => $wgSmjScale,
+			"wgSmjEnableMenu" => $wgSmjEnableMenu,
+			"wgSmjDisplayAlign" => $wgSmjDisplayAlign,
+			"wgSmjWrapDisplaystyle" => $wgSmjWrapDisplaystyle,
+			"wgSmjEnableHtmlAttributes" => $wgSmjEnableHtmlAttributes,
+		];
 
 		$articlerev = (int)$wgOut->getRevisionId();
 		foreach ($wgSmjConfigByRevision as $confset) {
@@ -28,26 +32,36 @@ class SimpleMathJaxHooks {
 			if (!isset($confset["upto"]) && !isset($confset["since"])) continue;
 			if (isset($confset["upto"]) && $confset["upto"] < $articlerev) continue;
 			if (isset($confset["since"]) && $confset["since"] > $articlerev) continue;
-			foreach( $globalvars as $varname ) {
-				if( isset($confset[$varname]) ) $wgOut->addJsConfigVars( $varname, $confset[$varname] );
+			foreach( array_keys( $config ) as $varname ) {
+				if( array_key_exists($varname, $confset) ) $config[$varname] = $confset[$varname];
 			}
-			if (isset($confset["wgSmjUseChem"]) ) self::$useChem = $confset["wgSmjUseChem"];
-			if (isset($confset["wgSmjWrapDisplaystyle"]) ) self::$wrapDisplaystyle = $confset["wgSmjWrapDisplaystyle"];
-			if (isset($confset["wgSmjEnableHtmlAttributes"]) ) self::$enableHtmlAttributes = $confset["wgSmjEnableHtmlAttributes"];
 		}
 
-		$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
-		$wgOut->addModules( [ 'ext.SimpleMathJax.mobile' ] ); // For MobileFrontend
+		$clientConfigVars = [ "wgSmjUseCdn", "wgSmjDirectMathJax",
+				"wgSmjDisplayMath", "wgSmjExtraInlineMath", "wgSmjIgnoreHtmlClass",
+				"wgSmjScale", "wgSmjEnableMenu", "wgSmjDisplayAlign" ];
+		foreach( $clientConfigVars as $varname ) {
+			$wgOut->addJsConfigVars( $varname, $config[$varname] );
+		}
+
+		self::$useChem = $config["wgSmjUseChem"];
+		self::$wrapDisplaystyle = $config["wgSmjWrapDisplaystyle"];
+		self::$enableHtmlAttributes = $config["wgSmjEnableHtmlAttributes"];
+
+		if ( $config["wgSmjDirectMathJax"] !== 'none' ) {
+			$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
+		}
 
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
 		if( self::$useChem ) $parser->setHook( 'chem', __CLASS__ . '::renderChem' );
 	}
 
 	public static function renderMath($tex, array $args, Parser $parser, PPFrame $frame ) {
-		global $wgOut;
+		$parserOutput = $parser->getOutput();
+		$parserOutput->addModules( [ 'ext.SimpleMathJax' ] );
 		if( !self::$enableHtmlAttributes ) $args = [];
 		if( isset($args["chem"]) ) {
-			$wgOut->addJsConfigVars( "wgSmjPreloadChem", true );
+			$parserOutput->setJsConfigVar( "wgSmjPreloadChem", true );
 		}
 		if( isset($args["inline-block"]) ) {
 			if( isset($args["display"]) ) {
@@ -71,8 +85,9 @@ class SimpleMathJaxHooks {
 	}
 
 	public static function renderChem($tex, array $args, Parser $parser, PPFrame $frame ) {
-		global $wgOut;
-		$wgOut->addJsConfigVars( "wgSmjPreloadChem", true );
+		$parserOutput = $parser->getOutput();
+		$parserOutput->addModules( [ 'ext.SimpleMathJax' ] );
+		$parserOutput->setJsConfigVar( "wgSmjPreloadChem", true );
 		if( !self::$enableHtmlAttributes ) $args = [];
 		return self::renderTex("\\ce{ $tex }", $parser, $args);
 	}
@@ -83,7 +98,7 @@ class SimpleMathJaxHooks {
 		$attributes = [ "style" => "opacity:.5", "class" => "" ];
 		$inherit_tags = [ "class", "id", "title", "lang", "dir" ];
 		$validatedAttribs = Sanitizer::validateAttributes( $args, array_fill_keys( $inherit_tags, true ) );
-	        $attributes = array_merge( $attributes, $validatedAttribs );
+		$attributes = array_merge( $attributes, $validatedAttribs );
 
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex, $args ] );
 		if( !isset($attributes["smj-debug"]) && !isset($args["smj-debug"]) ) {
