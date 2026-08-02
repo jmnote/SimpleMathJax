@@ -1,4 +1,4 @@
-The SimpleMathJax extension enables MathJax, a Javascript library, for typesetting TeX formula in MediaWiki inside math environments.
+The SimpleMathJax extension enables MathJax, a Javascript library, for typesetting TeX formula in MediaWiki inside math environments. It requires MediaWiki 1.43 or later.
 
 https://www.mediawiki.org/wiki/Extension:SimpleMathJax
 
@@ -31,7 +31,7 @@ wfLoadExtension( 'SimpleMathJax' );
 | `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []                        | [['\\(', '\\)']]            |
 | `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore\|comment\|<br>diff-(context\|<br>addedline\|deletedline)" | "mathjax_ignore" |
 | `$wgSmjScale`            | MathJax.chtml.scale              | 1                         | 1.5                         |
-| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | "center"                  | "left"                      |
+| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | "left"                    | "center"                    |
 | `$wgSmjWrapDisplaystyle` | wrap with displaystyle on `<math>`  | true                   | false                       |
 | `$wgSmjEnableHtmlAttributes` | process attributes of math tag  | false                  | true                        |
 | `$wgSmjConfigByRevision` | switch the configuration according to the article's revision  | [] | [['upto'=>1048576,<br>'wgSmjDisplayAlign'<br>=>'left']] |

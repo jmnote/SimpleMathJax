@@ -1,35 +1,37 @@
 {
 	"name": "SimpleMathJax",
-	"version": "0.8.12",
+	"version": "0.9.0",
 	"author": "jmnote",
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
 	"license-name": "GPL-2.0+",
 	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.43.0"
+	},
 	"AutoloadClasses": {
 		"SimpleMathJaxHooks": "SimpleMathJaxHooks.php"
 	},
 	"config": {
-		"SmjUseCdn": {"value":true, "description":"true to load mathjax from CDN"},
-		"SmjUseChem": {"value":true, "description":"true to enabled chem tag"},
-		"SmjDirectMathJax": {"value":"full", "description":"env to disable escapes, none to only math and chem tags"},
-		"SmjDisplayMath": {"value":[], "description":"MathJax.tex.displayMath"},
-		"SmjExtraInlineMath": {"value":[], "description":"MathJax.tex.inlineMath"},
-		"SmjIgnoreHtmlClass": {"value":"mathjax_ignore|comment|diff-(context|addedline|deletedline)", "description":"MathJax.options.ignoreHtmlClass"},
-		"SmjScale": {"value":1, "description":"MathJax.chtml.scale"},
-		"SmjEnableMenu": {"value":true, "description":"MathJax.options.enableMenu"},
-		"SmjDisplayAlign": {"value":"left", "description":"MathJax.chtml.displayAlign"},
-		"SmjWrapDisplaystyle": {"value":true, "description":"true to wrap with displaystyle"},
-		"SmjEnableHtmlAttributes": {"value":false, "description":"true to process attributes of math tag"},
-		"SmjConfigByRevision": {"value":[], "description":"switch the configuration"}
+		"SmjUseCdn": {"value":true, "description":"Whether to load MathJax from CDN"},
+		"SmjUseChem": {"value":true, "description":"Whether to enable <chem> tag"},
+		"SmjDirectMathJax": {"value":"full", "description":"Direct MathJax mode: 'full', 'env', or 'none' (lazy load)"},
+		"SmjDisplayMath": {"value":[], "description":"Delimiters for MathJax.tex.displayMath"},
+		"SmjExtraInlineMath": {"value":[], "description":"Delimiters for MathJax.tex.inlineMath"},
+		"SmjIgnoreHtmlClass": {"value":"mathjax_ignore|comment|diff-(context|addedline|deletedline)", "description":"Pattern for MathJax.options.ignoreHtmlClass"},
+		"SmjScale": {"value":1, "description":"Output scale for MathJax.chtml.scale"},
+		"SmjEnableMenu": {"value":true, "description":"Whether to enable MathJax context menu"},
+		"SmjDisplayAlign": {"value":"left", "description":"Alignment for MathJax.chtml.displayAlign"},
+		"SmjWrapDisplaystyle": {"value":true, "description":"Whether to wrap <math> in displaystyle"},
+		"SmjEnableHtmlAttributes": {"value":false, "description":"Whether to process HTML attributes on <math>"},
+		"SmjConfigByRevision": {"value":[], "description":"Revision-based configuration overrides"}
 	},
 	"Hooks": {
 		"ParserFirstCallInit": "SimpleMathJaxHooks::onParserFirstCallInit"
 	},
 	"ResourceModules": {
 		"ext.SimpleMathJax": {
-			"scripts": ["resources/ext.SimpleMathJax.js"],
-			"targets": ["desktop", "mobile"]
+			"scripts": ["resources/ext.SimpleMathJax.js"]
 		}
 	},
 	"ResourceFileModulePaths": {
