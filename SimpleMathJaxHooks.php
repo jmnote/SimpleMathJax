@@ -118,4 +118,36 @@ class SimpleMathJaxHooks {
 		$element = Html::Element( "strong", $attributes, $str );
 		return [$element, 'markerType'=>'nowiki'];
 	}
+
+	/**
+	 * Protect '' / ''' runs inside MathJax-delimited math from MediaWiki's
+	 * wikitext emphasis parsing (InternalParseBeforeLinks runs after
+	 * nowiki/tag stripping but before handleAllQuotes, so code blocks are
+	 * already markers and prose italics is still to come). In TeX, '' and
+	 * ''' are primes (y'', f'''(x)); without this guard the parser inserts
+	 * <i>/<b> inside the delimited text, splitting it so MathJax cannot find
+	 * the closing delimiter (dangling $ then swallows prose as math).
+	 *
+	 * Runs only when direct $…$/$$…$$ parsing is enabled (mode 'full'/'env');
+	 * in 'none' mode MathJax handles only <math>/<chem> tags, whose content
+	 * is already protected from wikitext parsing.
+	 */
+	public static function onInternalParseBeforeLinks( $parser, &$text, $stripState ) {
+		global $wgSmjDirectMathJax, $wgSmjDisplayMath, $wgSmjExtraInlineMath;
+
+		if ( $wgSmjDirectMathJax === 'none' ) {
+			return;
+		}
+
+		$text = SimpleMathJaxQuotes::protectQuotesInMath(
+			$text,
+			static function ( $run ) use ( $parser ) {
+				return $parser->insertStripItem( $run );
+			},
+			$wgSmjExtraInlineMath,
+			$wgSmjDisplayMath,
+			true, // processEscapes — $wgSmjDirectMathJax 'full'
+			true  // \begin…\end environments
+		);
+	}
 }
