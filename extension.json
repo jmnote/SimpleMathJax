@@ -10,7 +10,8 @@
 		"MediaWiki": ">= 1.43.0"
 	},
 	"AutoloadClasses": {
-		"SimpleMathJaxHooks": "SimpleMathJaxHooks.php"
+		"SimpleMathJaxHooks": "SimpleMathJaxHooks.php",
+		"SimpleMathJaxQuotes": "SimpleMathJaxQuotes.php"
 	},
 	"config": {
 		"SmjUseCdn": {"value":true, "description":"Whether to load MathJax from CDN"},
@@ -27,7 +28,8 @@
 		"SmjConfigByRevision": {"value":[], "description":"Revision-based configuration overrides"}
 	},
 	"Hooks": {
-		"ParserFirstCallInit": "SimpleMathJaxHooks::onParserFirstCallInit"
+		"ParserFirstCallInit": "SimpleMathJaxHooks::onParserFirstCallInit",
+		"InternalParseBeforeLinks": "SimpleMathJaxHooks::onInternalParseBeforeLinks"
 	},
 	"ResourceModules": {
 		"ext.SimpleMathJax": {
