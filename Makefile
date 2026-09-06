@@ -18,7 +18,7 @@ local-mathjax: ## Pin the bundled local MathJax submodule, e.g. `make local-math
 vendor/autoload.php: composer.json
 	composer install --no-progress
 
-screenshots: ## Screenshot a demo page, e.g. `make screenshots custom01` (no demo = every demo in hack/demo/demos.yaml)
+screenshots: ## Screenshot a demo page, e.g. `make screenshots custom01` (no demo = every demo in hack/demo/demos.yaml); `MW_VERSION=1.45 make screenshots` targets a different mediawiki Docker image tag (default 1.43)
 	hack/demo/demo.sh screenshot $(filter-out $@,$(MAKECMDGOALS))
 
 # Swallows the extra word in `make screenshots custom01` so make doesn't
