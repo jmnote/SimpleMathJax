@@ -1,0 +1,7 @@
+{
+	"[php]": {
+		"editor.defaultFormatter": "wongjn.php-sniffer",
+		"editor.formatOnSave": true,
+	},
+	"phpSniffer.executablesFolder": "vendor/bin/"
+}
