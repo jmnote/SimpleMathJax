@@ -5,21 +5,26 @@
 #
 # Usage: hack/demo/demo.sh [up|down] [demo]
 #        hack/demo/demo.sh screenshot [demo]
+#        MW_VERSION=1.45 hack/demo/demo.sh screenshot [demo]
 # `demo` is a top-level key in hack/demo/demos.yaml (e.g. default01, custom01);
-# its capture is saved to docs/screenshots/screenshot-<demo>.png. Defaults
-# to `default01`; `screenshot` with no `demo` given screenshots every demo in
-# demos.yaml.
+# its capture is saved to docs/screenshots-$MW_VERSION/screenshot-<demo>.png.
+# Defaults to `default01`; `screenshot` with no `demo` given screenshots
+# every demo in demos.yaml. MW_VERSION selects the `mediawiki` Docker image
+# tag to test against (default 1.43) — e.g. to check whether a bug is
+# specific to one MediaWiki version.
 set -euo pipefail
 DEMO_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$DEMO_DIR/../.."
 
-IMAGE=mediawiki:1.43
+MW_VERSION="${MW_VERSION:-1.43}"
+IMAGE="mediawiki:$MW_VERSION"
 NAME=demo
 PORT=8080
 DATA="$PWD/hack/demo/temp"
 DOCKER_USER=33:33
 PASS=demo12345678
 PAGE_TITLE=SimpleMathJax
+SCREENSHOT_DIR="$PWD/docs/screenshots-$MW_VERSION"
 
 # Encodes the configured page title for index.php query-string URLs. API
 # requests below use curl's --data-urlencode instead.
@@ -57,7 +62,10 @@ render_examples() {
 # Logs in as Admin and edits the configured demo page (not "Main Page", which
 # the installer already fills with its own default content) with a small
 # demo showing primes inside $...$/$$...$$ surviving wikitext emphasis
-# parsing, prefixed with the demo's own `settings:` block (wrapped in
+# parsing, prefixed with a MediaWiki {{CURRENTVERSION}}/SimpleMathJax
+# version line (so a screenshot alone shows what it was captured against —
+# useful once screenshots exist for more than one MediaWiki version, see
+# MW_VERSION) and the demo's own `settings:` block (wrapped in
 # <syntaxhighlight>) for context. Blanks the page first so the demo edit
 # always has an empty previous revision to diff against — a real
 # two-column diff, not just a "page creation" summary — regardless of how
@@ -83,9 +91,14 @@ seed_demo_page() {
 		--data-urlencode "text=" \
 		--data-urlencode "token=$csrf_token" --data-urlencode "format=json" "$url" >/dev/null
 
+	local smj_version
+	smj_version=$(php -r 'echo json_decode(file_get_contents($argv[1]), true)["version"];' "$PWD/extension.json")
+
 	local page
 	page=$(mktemp)
 	{
+		echo "SimpleMathJax $smj_version, MediaWiki {{CURRENTVERSION}}"
+		echo
 		echo '<syntaxhighlight lang="php">'
 		local_settings_body "$demo"
 		echo '</syntaxhighlight>'
@@ -156,17 +169,17 @@ down() {
 # Screenshots one demo's page with a real browser (Puppeteer); see
 # screenshot.mjs. Forces a fresh install (down, then up) so the demo's own
 # `settings:` block is guaranteed to be the one in effect, then saves to
-# docs/screenshots/screenshot-<demo>.png. A demo with `addRightClickShot: true`
-# (see render.php) gets one extra screenshot,
-# docs/screenshots/screenshot-<demo>-rightclick.png, after right-clicking its
-# first mjx-container — needed to show MathJax's context menu, e.g. for
+# $SCREENSHOT_DIR/screenshot-<demo>.png (docs/screenshots-$MW_VERSION by
+# default). A demo with `addRightClickShot: true` (see render.php) gets one
+# extra screenshot, screenshot-<demo>-rightclick.png, after right-clicking
+# its first mjx-container — needed to show MathJax's context menu, e.g. for
 # $wgSmjEnableMenu, since the normal capture never triggers one. A demo with
 # `addDiffShot: true` gets a separate extra screenshot,
-# docs/screenshots/screenshot-<demo>-diff.png, of the demo page's diff
-# against the blank revision seed_demo_page saves right before its real
-# edit — needed to show $wgSmjIgnoreHtmlClass keeping bare-delimiter
-# scanning out of diff views, since a diff is a different page/URL entirely,
-# not something a click on the normal capture can reveal.
+# screenshot-<demo>-diff.png, of the demo page's diff against the blank
+# revision seed_demo_page saves right before its real edit — needed to show
+# $wgSmjIgnoreHtmlClass keeping bare-delimiter scanning out of diff views,
+# since a diff is a different page/URL entirely, not something a click on
+# the normal capture can reveal.
 screenshot_one() {
 	local demo="$1"
 	down
@@ -179,13 +192,13 @@ screenshot_one() {
 	if [ "$(php "$DEMO_DIR/render.php" "$DEMO_DIR/demos.yaml" "$demo" addrightclickshot)" = "true" ]; then
 		right_click=mjx-container
 	fi
-	mkdir -p "$PWD/docs/screenshots"
+	mkdir -p "$SCREENSHOT_DIR"
 	(
 		cd "$DEMO_DIR" &&
 		URL="http://localhost:$PORT/index.php?title=$PAGE_TITLE_URL" \
-		OUT="$PWD/../../docs/screenshots/screenshot-$demo.png" \
+		OUT="$SCREENSHOT_DIR/screenshot-$demo.png" \
 		RIGHT_CLICK="$right_click" \
-		RIGHT_CLICK_OUT="$PWD/../../docs/screenshots/screenshot-$demo-rightclick.png" \
+		RIGHT_CLICK_OUT="$SCREENSHOT_DIR/screenshot-$demo-rightclick.png" \
 		node screenshot.mjs
 	)
 	if [ "$(php "$DEMO_DIR/render.php" "$DEMO_DIR/demos.yaml" "$demo" adddiffshot)" = "true" ]; then
@@ -194,7 +207,7 @@ screenshot_one() {
 		(
 			cd "$DEMO_DIR" &&
 			URL="http://localhost:$PORT/index.php?title=$PAGE_TITLE_URL&diff=prev&oldid=$revid" \
-			OUT="$PWD/../../docs/screenshots/screenshot-$demo-diff.png" \
+			OUT="$SCREENSHOT_DIR/screenshot-$demo-diff.png" \
 			node screenshot.mjs
 		)
 	fi
@@ -209,7 +222,8 @@ screenshot() {
 	# Regenerating every demo: clear old captures first so a demo that got
 	# renamed or removed from demos.yaml doesn't leave a stale screenshot
 	# behind under its old name.
-	rm -f "$PWD/docs/screenshots"/screenshot-*.png
+	mkdir -p "$SCREENSHOT_DIR"
+	rm -f "$SCREENSHOT_DIR"/screenshot-*.png
 	local demo
 	for demo in $(sed -n 's/^- name: //p' "$DEMO_DIR/demos.yaml"); do
 		screenshot_one "$demo"
