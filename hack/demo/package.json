@@ -1,0 +1,11 @@
+{
+	"name": "simplemathjax-demo",
+	"private": true,
+	"description": "Dev-only tooling for the local test wiki (see demo.sh). Not part of the SimpleMathJax extension itself.",
+	"scripts": {
+		"screenshot": "node screenshot.mjs"
+	},
+	"devDependencies": {
+		"puppeteer": "^25.10.0"
+	}
+}
