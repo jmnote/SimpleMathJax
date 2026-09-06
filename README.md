@@ -6,98 +6,42 @@ https://www.mediawiki.org/wiki/Extension:SimpleMathJax
 # Installation
 * git clone in extensions directory
 * Using CDN is recommended. Because it's much faster than using local resources in most cases. ("the benefits of using a CDN")
-```Bash
+```bash
 $ git clone https://github.com/jmnote/SimpleMathJax.git
 ```
 
-* (Optional) If you want to use not CDN but local mathjax scripts, you can use git clone recursive.
-```Bash
+* (Optional) If you want to use not CDN but local mathjax scripts, you can use git clone recursive, then set `$wgSmjCdnEnabled = false` (see [`$wgSmjCdnEnabled`](docs/configuration.md#wgsmjcdnenabled)).
+```bash
 $ git clone --recursive https://github.com/jmnote/SimpleMathJax.git
 ```
 
 * LocalSettings.php
-```PHP
+```php
 wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Optional Settings
-| Setting name             | Description                      | default value             | custom value example        |
-| ------------------------ | -------------------------------- | ------------------------- | --------------------------- |
-| `$wgSmjUseCdn`           | use CDN or local scripts         | true                      | false                       |
-| `$wgSmjUseChem`          | enable chem tag                  | true                      | false                       |
-| `$wgSmjDirectMathJax`    | which ones can be written directly  | "full"                 | "none"                      |
-| `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true                      | false                       |
-| `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []                        | [['$$','$$'],['\\[','\\]']] |
-| `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []                        | [['\\(', '\\)']]            |
-| `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore\|comment\|<br>diff-(context\|<br>addedline\|deletedline)" | "mathjax_ignore" |
-| `$wgSmjScale`            | MathJax.chtml.scale              | 1                         | 1.5                         |
-| `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | "left"                    | "center"                    |
-| `$wgSmjWrapDisplaystyle` | wrap with displaystyle on `<math>`  | true                   | false                       |
-| `$wgSmjEnableHtmlAttributes` | process attributes of math tag  | false                  | true                        |
-| `$wgSmjConfigByRevision` | switch the configuration according to the article's revision  | [] | [['upto'=>1048576,<br>'wgSmjDisplayAlign'<br>=>'left']] |
+| Setting name             | Default value              | Description                      | Custom value example        |
+| ------------------------ | --------------------------- | -------------------------------- | --------------------------- |
+| `$wgSmjCdnEnabled`       | `true`                      | Whether to load MathJax from a CDN | `false`                     |
+| `$wgSmjCdnVersion`       | `'4'`                       | MathJax version to load from the CDN | `'4.1.3'`                  |
+| `$wgSmjScale`            | `1`                         | `MathJax.chtml.scale`              | `1.5`                         |
+| `$wgSmjEnableMenu`       | `true`                      | `MathJax.options.enableMenu`       | `false`                       |
+| `$wgSmjDelimitersEnabled` | `false`               | Whether to also scan for bare delimiters (e.g. `$...$`) outside `<math>`/`<chem>` | `true` |
+| `$wgSmjDelimitersInlineMath` | `[]`              | Inline math delimiter pairs | `[['$','$']]` |
+| `$wgSmjDelimitersDisplayMath` | `[]`             | Display math delimiter pairs | `[['$$','$$']]` |
+| `$wgSmjAllowedAttributes` | `[]` | List of generic HTML attributes to carry over to the output `<span>` | `['class', 'title']` |
+| `$wgSmjIgnoreHtmlClass`  | `'mathjax_ignore\|comment\|`<br>`diff-(context\|`<br>`addedline\|deletedline)'` | `MathJax.options.ignoreHtmlClass`  | `'mathjax_ignore\|comment\|`<br>`diff-(context\|`<br>`addedline\|deletedline)\|my_custom_class'` |
+| `$wgSmjRevisionOverrides` | `[]` | Switch the configuration according to the article's revision  | `[['max'=>1048576,`<br>`'wgSmjScale'=>1.5]]` |
 
-If you want to change font size, set `$wgSmjScale`.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjScale = 1.5;
-```
+See [docs/configuration.md](docs/configuration.md) for a detailed walkthrough of each
+setting, with usage examples. Upgrading from before 1.0.0? See the
+[migration guide](docs/mig-1.0.md) for what to change in your
+`LocalSettings.php`.
 
-If you want to use local module, set `$wgSmjUseCdn`.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjUseCdn = false;
-```
+See [docs/displaystyle.md](docs/displaystyle.md) for the `<math display>`
+rendering modes and examples.
 
-If you want to enable some extra inlineMath symbol pairs, set `$wgSmjExtraInlineMath`. Pairs of `[math][/math]` are always in-line math delimiters. (And independently of this setting, you can use `$ ... $` to switch to math mode within text (`\text{}` etc.) or chemical formulas (`\ce{}`).)
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjExtraInlineMath = [["$","$"],["\\(","\\)"]];
-```
-
-Since version 0.8.7, inlineMath and blockMath and environments are ignored in edit summaries and diffs. To restore the previous behavior (especially if you are using maths in edit summaries), set `$wgSmjIgnoreHtmlClass`.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjIgnoreHtmlClass = "mathjax_ignore";
-```
-
-If you want to disable MathJax context menu, set `$wgSmjEnableMenu`.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjEnableMenu = false;
-```
-
-By enabling `$wgSmjEnableHtmlAttributes`, the `display` attribute of the `<math>` tag will work, and the `class`, `id`, `title` and `data-*` attributes of the `<math>` tag will be carried over to the `<span>` tag.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjEnableHtmlAttributes = true;
-```
-
-In version 0.8.9, an option was added to make it completely dedicated to `<math>` and `<chem>`. Setting `$wgSmjDirectMathJax` to `env` disables `\ref{}` and escaping of `$`, while setting it to `none` disables all delimiters, including `[math]`, making it mandatory to enclose all TeX expressions in `<math>` or `<chem>` (and `$wgSmjDisplayMath`, `$wgSmjExtraInlineMath`, and `$wgSmjIgnoreHtmlClass` will become meaningless).
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjDirectMathJax = "none";
-```
-
-By using $wgSmjConfigByRevision, you can apply different settings to an article's revisions up to a certain point and to revisions after that. This allows past revisions to be displayed with the settings that were in place at the time. Only the keys written inside the [] are overwritten. Preview, History and SpecialPages are treated as base cases that do not apply this setting.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjDirectMathJax = "none";    #To match the preview with the actual rendering, write the latest settings in the base case
-$wgSmjConfigByRevision = [
-	["upto"=>50000, "wgSmjDirectMathJax"=>"full"],
-	["since"=>50001, "upto"=>60000, "wgSmjDirectMathJax"=>"env"]
-];
-```
-
-# Hooks
-The hook `SimpleMathJaxAttributes` is available to add attributes to the span around the math. (Note that this process is performed only for `<math>` and `<chem>` elements, and other delimiters are handled directly by MathJax.) This hook provides you with the opportunity to ensure that your own code does not interfere with MathJax's rendering of math.
-
-For instance, if Lingo's JS functions are called before MathJax is invoked, then it is possible that Lingo will change the text so that MathJax could no longer render the math.
-
-Lingo understands that [it should not touch anything inside an element with the class `noglossary`](https://www.mediawiki.org/wiki/Extension:Lingo#Excluding_text_from_markup) so the following code can be used to keep Lingo from ruining math:
-```PHP
-$wgHooks['SimpleMathJaxAttributes'][]
-	= function ( array &$attributes, string $tex, array $args = [] ) {
-		$attributes['class'] .= ' noglossary';
-	};
-```
-
+Need to keep another extension (e.g. Lingo) from interfering with MathJax's
+rendering? See [Hooks](docs/configuration.md#hooks) in the configuration
+guide for the `SimpleMathJaxAttributes` hook.

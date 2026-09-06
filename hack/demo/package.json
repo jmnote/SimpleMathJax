@@ -1,0 +1,13 @@
+{
+	"name": "simplemathjax-demo",
+	"private": true,
+	"description": "Dev-only tooling for the local test wiki (see demo.sh). Not part of the SimpleMathJax extension itself.",
+	"scripts": {
+		"screenshot": "node screenshot.mjs"
+	},
+	"devDependencies": {
+		"@fontsource/noto-sans-kr": "^5.3.0",
+		"@fontsource/noto-serif-kr": "^5.3.0",
+		"puppeteer": "^25.10.0"
+	}
+}

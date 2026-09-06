@@ -20,10 +20,8 @@ class Quotes {
 			if ( !is_array( $pair ) || count( $pair ) < 2 ) {
 				continue;
 			}
-			// array_values() re-indexes from 0: a pair with non-sequential or
-			// associative keys (e.g. [1 => '$', 2 => '$']) would otherwise
-			// leave $open undefined (list-assignment reads keys 0/1 by
-			// position) and emit a warning before being filtered below.
+			// Non-sequential/associative keys would leave $open undefined
+			// via list-assignment; array_values() re-indexes from 0 first.
 			[ $open, $close ] = array_values( $pair );
 			if ( !is_string( $open ) || !is_string( $close ) || $open === '' || $close === '' ) {
 				continue;

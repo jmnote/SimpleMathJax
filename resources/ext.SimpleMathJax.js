@@ -1,12 +1,12 @@
 mw.hook( 'wikipage.content' ).add( function ( $content ) {
 window.MathJax = {
   tex: {
-    inlineMath: mw.config.get('wgSmjExtraInlineMath').concat([['[math]','[/math]']]),
-    displayMath: mw.config.get('wgSmjDisplayMath'),
+    inlineMath: mw.config.get('wgSmjDelimitersInlineMath').concat([['[math]','[/math]']]),
+    displayMath: mw.config.get('wgSmjDelimitersDisplayMath'),
     processEnvironments: true,
-    processRefs: mw.config.get('wgSmjDirectMathJax') == 'full',
-    processEscapes: mw.config.get('wgSmjDirectMathJax') == 'full',
-    packages: mw.config.exists('wgSmjPreloadChem') ? {'[+]': ['autoload','mhchem']} : {'[+]': ['autoload']},
+    processRefs: mw.config.get('wgSmjDelimitersEnabled'),
+    processEscapes: mw.config.get('wgSmjDelimitersEnabled'),
+    packages: mw.config.exists('smjPreloadChem') ? {'[+]': ['autoload','mhchem']} : {'[+]': ['autoload']},
     macros: {
       AA: "{\u00c5}",
       alef: "{\\aleph}",
@@ -120,24 +120,25 @@ window.MathJax = {
   },
   chtml: {
     scale: mw.config.get('wgSmjScale'),
-    displayAlign: mw.config.get('wgSmjDisplayAlign')
   },
   loader: {
-    load: ['ui/safe','[tex]/autoload'].concat(mw.config.exists('wgSmjPreloadChem') ? ['[tex]/mhchem'] : [])
+    load: ['ui/safe','[tex]/autoload'].concat(mw.config.exists('smjPreloadChem') ? ['[tex]/mhchem'] : [])
   },
   startup: {
-    elements: mw.config.get('wgSmjDirectMathJax') == 'none' ? ["span.smj-container"] : null,
+    elements: mw.config.get('wgSmjDelimitersEnabled') ? null : ["span.smj-container"],
     pageReady: () => {
       return MathJax.startup.defaultPageReady().then(() => {
-        $("span.smj-container > .MathJax").parent().css('opacity',1);
+        document.querySelectorAll("span.smj-container > .MathJax").forEach((mjx) => {
+          mjx.parentElement.style.opacity = 1;
+        });
       });
     }
   }
 };
 (function () {
-  var script = document.createElement('script');
-  script.src = mw.config.get('wgSmjUseCdn')
-    ? 'https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js'
+  const script = document.createElement('script');
+  script.src = mw.config.get('wgSmjCdnEnabled')
+    ? 'https://cdn.jsdelivr.net/npm/mathjax@' + mw.config.get('wgSmjCdnVersion') + '/tex-chtml.js'
     : mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/resources/MathJax/tex-chtml.js';
   script.async = true;
   document.head.appendChild(script);
