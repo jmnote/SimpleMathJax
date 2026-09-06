@@ -155,7 +155,7 @@ if ( $mode === 'examples' ) {
 	// block up by that amount to cancel it out.
 	echo '<div style="column-count: 2; column-rule: 1px solid #ccc">';
 	foreach ( $examples as $example ) {
-		echo "<syntaxhighlight lang=\"tex\">$example</syntaxhighlight> $example\n";
+		echo "<syntaxhighlight lang=\"wikitext\">$example</syntaxhighlight> $example\n";
 	}
 	echo '</div>';
 	exit;

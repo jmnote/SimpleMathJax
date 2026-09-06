@@ -19,6 +19,11 @@ PORT=8080
 DATA="$PWD/hack/demo/temp"
 DOCKER_USER=33:33
 PASS=demo12345678
+PAGE_TITLE=SimpleMathJax
+
+# Encodes the configured page title for index.php query-string URLs. API
+# requests below use curl's --data-urlencode instead.
+PAGE_TITLE_URL=$(php -r 'echo rawurlencode( $argv[1] );' "$PAGE_TITLE")
 
 # Extracts a query.tokens.* field from an API JSON response (properly
 # unescaped — plain grep/sed would mangle tokens containing backslashes).
@@ -49,7 +54,7 @@ render_examples() {
 	php "$DEMO_DIR/render.php" "$DEMO_DIR/demos.yaml" "$1" examples
 }
 
-# Logs in as Admin and edits a page called "Demo" (not "Main Page", which
+# Logs in as Admin and edits the configured demo page (not "Main Page", which
 # the installer already fills with its own default content) with a small
 # demo showing primes inside $...$/$$...$$ surviving wikitext emphasis
 # parsing, prefixed with the demo's own `settings:` block (wrapped in
@@ -74,7 +79,7 @@ seed_demo_page() {
 	csrf_token=$(curl -s -b "$jar" -c "$jar" "$url?action=query&meta=tokens&format=json" | json_field csrftoken)
 
 	curl -s -b "$jar" -c "$jar" \
-		--data-urlencode "action=edit" --data-urlencode "title=Demo" \
+		--data-urlencode "action=edit" --data-urlencode "title=$PAGE_TITLE" \
 		--data-urlencode "text=" \
 		--data-urlencode "token=$csrf_token" --data-urlencode "format=json" "$url" >/dev/null
 
@@ -90,18 +95,18 @@ seed_demo_page() {
 
 	local edit_response
 	edit_response=$(curl -s -b "$jar" -c "$jar" \
-		--data-urlencode "action=edit" --data-urlencode "title=Demo" \
+		--data-urlencode "action=edit" --data-urlencode "title=$PAGE_TITLE" \
 		--data-urlencode "text@$page" \
 		--data-urlencode "token=$csrf_token" --data-urlencode "format=json" "$url")
 	rm -f "$jar" "$page"
 	echo "$edit_response" | edit_new_revid > "$DATA/last_revid"
-	echo "==> Seeded the Demo page with the $demo demo"
+	echo "==> Seeded the $PAGE_TITLE page with the $demo demo"
 }
 
 wait_for_wiki() {
-	# Main Page, not Demo: it's the installer's own default page, so it
-	# already exists the moment the wiki responds — unlike Demo, which
-	# seed_demo_page hasn't created yet at this point.
+	# Main Page, not the configured demo page: it's the installer's own
+	# default page, so it already exists the moment the wiki responds — unlike
+	# the demo page, which seed_demo_page hasn't created yet at this point.
 	for _ in $(seq 1 30); do
 		curl -sf -o /dev/null "http://localhost:$PORT/index.php/Main_Page" && return 0
 		sleep 1
@@ -157,7 +162,7 @@ down() {
 # first mjx-container — needed to show MathJax's context menu, e.g. for
 # $wgSmjEnableMenu, since the normal capture never triggers one. A demo with
 # `addDiffShot: true` gets a separate extra screenshot,
-# docs/screenshots/screenshot-<demo>-diff.png, of the Demo page's diff
+# docs/screenshots/screenshot-<demo>-diff.png, of the demo page's diff
 # against the blank revision seed_demo_page saves right before its real
 # edit — needed to show $wgSmjIgnoreHtmlClass keeping bare-delimiter
 # scanning out of diff views, since a diff is a different page/URL entirely,
@@ -177,7 +182,7 @@ screenshot_one() {
 	mkdir -p "$PWD/docs/screenshots"
 	(
 		cd "$DEMO_DIR" &&
-		URL="http://localhost:$PORT/index.php/Demo" \
+		URL="http://localhost:$PORT/index.php?title=$PAGE_TITLE_URL" \
 		OUT="$PWD/../../docs/screenshots/screenshot-$demo.png" \
 		RIGHT_CLICK="$right_click" \
 		RIGHT_CLICK_OUT="$PWD/../../docs/screenshots/screenshot-$demo-rightclick.png" \
@@ -188,7 +193,7 @@ screenshot_one() {
 		revid=$(<"$DATA/last_revid")
 		(
 			cd "$DEMO_DIR" &&
-			URL="http://localhost:$PORT/index.php?title=Demo&diff=prev&oldid=$revid" \
+			URL="http://localhost:$PORT/index.php?title=$PAGE_TITLE_URL&diff=prev&oldid=$revid" \
 			OUT="$PWD/../../docs/screenshots/screenshot-$demo-diff.png" \
 			node screenshot.mjs
 		)
