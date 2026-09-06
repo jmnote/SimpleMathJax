@@ -2,20 +2,24 @@
 
 ## Updating MathJax
 
-The `mathjax` make target updates both the bundled local MathJax submodule
-and the CDN version in `extension.json`.
+Local and CDN MathJax versions are independent and managed separately —
+there's no need to keep them in sync.
 
-Run the `mathjax` Make target from the repository root:
+**Local**: the `local-mathjax` make target pins the bundled MathJax
+submodule to a tag. Run it from the repository root:
 
 ```bash
-make mathjax
+make local-mathjax
 ```
 
-The versions are configured in the `Makefile`: `MATHJAX_VERSION_LOCAL`
-defaults to `4.1.3`, and `MATHJAX_VERSION_CDN` defaults to `4`.
+The version is configured in the `Makefile`: `LOCAL_MATHJAX_VERSION`
+defaults to `4.1.3`. Change this value in the `Makefile` when changing the
+project's default version, or override it on the command line for a
+one-off update (`make local-mathjax LOCAL_MATHJAX_VERSION=4.1.4`).
 
-Change these values in the `Makefile` when changing the project's default
-versions, or override them on the command line for a one-off update.
+**CDN**: `$wgSmjCdnVersion`'s default lives in `extension.json` like any
+other setting's default — edit `SmjCdnVersion.value` there directly to
+change what version new installs load from the CDN.
 
 ## Rendering internals
 

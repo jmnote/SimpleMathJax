@@ -39,7 +39,7 @@ $wgSmjCdnEnabled = false;
 ```
 
 When working from the Git repository, initialize or update the bundled
-MathJax submodule with `make mathjax` — see
+MathJax submodule with `make local-mathjax` — see
 [Updating MathJax](development.md#updating-mathjax) for version
 selection. Normal extension packages already include the bundled MathJax
 resources and do not require Git commands.

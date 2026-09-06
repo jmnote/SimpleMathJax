@@ -1,7 +1,6 @@
-.PHONY: checks test phpcs mathjax screenshots
+.PHONY: checks test phpcs local-mathjax screenshots
 
-MATHJAX_VERSION_LOCAL ?= 4.1.3
-MATHJAX_VERSION_CDN ?= 4
+LOCAL_MATHJAX_VERSION ?= 4.1.3
 
 checks: test phpcs ## Everything CI runs before merging (needs `composer install`, PHP >= 8.2)
 
@@ -12,8 +11,8 @@ test: ## Run the pure-PHP test suites
 phpcs: vendor/autoload.php ## parallel-lint + minus-x + phpcs against the MediaWiki coding standard
 	composer test
 
-mathjax: ## Pin local/CDN MathJax versions, e.g. `make mathjax MATHJAX_VERSION_LOCAL=4.1.3 MATHJAX_VERSION_CDN=4`
-	hack/mathjax.sh $(MATHJAX_VERSION_LOCAL) $(MATHJAX_VERSION_CDN)
+local-mathjax: ## Pin the bundled local MathJax submodule, e.g. `make local-mathjax LOCAL_MATHJAX_VERSION=4.1.3`
+	hack/local-mathjax.sh $(LOCAL_MATHJAX_VERSION)
 
 vendor/autoload.php: composer.json
 	composer install --no-progress
