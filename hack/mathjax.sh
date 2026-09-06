@@ -20,8 +20,15 @@ git submodule update --init "$MATHJAX_DIR"
 (cd "$MATHJAX_DIR" && git fetch --tags origin && git checkout "tags/$LOCAL_VERSION")
 git add "$MATHJAX_DIR"
 
+# Fail loudly rather than silently no-op'ing if extension.json's SmjCdnVersion
+# config entry is ever renamed or reshaped again.
+if ! grep -A1 '"SmjCdnVersion"' "$EXTENSION_JSON" | grep -q '"value": "[0-9.]'; then
+	echo "hack/mathjax.sh: could not find SmjCdnVersion's value in $EXTENSION_JSON" >&2
+	exit 1
+fi
+
 # Keep this narrow so unrelated manifest formatting remains untouched.
-sed -i -E "s/(\"value\": \{ \"enabled\": true, \"version\": \")[0-9.]+/\1${CDN_VERSION}/" "$EXTENSION_JSON"
+sed -i -E '/"SmjCdnVersion"/,/"value"/ s/("value": ")[0-9.]+/\1'"${CDN_VERSION}"'/' "$EXTENSION_JSON"
 git add "$EXTENSION_JSON"
 
 echo "==> Pinned local MathJax to $LOCAL_VERSION and CDN MathJax to $CDN_VERSION."
