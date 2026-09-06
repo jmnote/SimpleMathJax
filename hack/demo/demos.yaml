@@ -38,6 +38,12 @@
     - '$$e^{i\pi} + 1 = 0$$'
     - '<math style="color: red">e^{i\pi} + 1 = 0</math>'
     - '<math class="mathjax_ignore">E=mc^2</math>'
+    # The default ignore pattern contains "comment": this exact class is
+    # intentionally ignored, while "commentary" must still be typeset.
+    - '<math class="comment">E=mc^2</math>'
+    - '<math class="commentary">E=mc^2</math>'
+    # Ignoring MathJax must not discard an independently allowed style.
+    - '<math class="mathjax_ignore" style="color: red">E=mc^2</math>'
     - "<nowiki><math>E=mc^2</math></nowiki>"
     - '<math display="block">e^{i\pi} + 1 = 0</math>'
 - name: custom02
