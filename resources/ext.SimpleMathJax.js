@@ -137,8 +137,8 @@ window.MathJax = {
 (function () {
   var script = document.createElement('script');
   script.src = mw.config.get('wgSmjUseCdn')
-    ? 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js'
-    : mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/resources/MathJax/es5/tex-chtml.js';
+    ? 'https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js'
+    : mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/resources/MathJax/tex-chtml.js';
   script.async = true;
   document.head.appendChild(script);
 })();
