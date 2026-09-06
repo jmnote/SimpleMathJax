@@ -3,6 +3,12 @@ name: release
 on:
   push:
     branches: [main]
+  # Lets a release be retried by hand (e.g. after a workflow bug like this
+  # one) without a throwaway version bump. github.event.before is empty on
+  # a manual run, so the version-changed check below always treats it as
+  # changed; "gh release view" still skips it if that tag's release
+  # already exists.
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -53,10 +59,11 @@ jobs:
           # that doesn't require git.
           git submodule update --init --recursive
 
+          workdir="$PWD"
           asset_root="SimpleMathJax-$VERSION"
           asset="$asset_root-with-mathjax.tar.gz"
-          git archive --format=tar --prefix="$asset_root/" HEAD -o base.tar
-          ( cd resources/MathJax && git archive --format=tar --prefix="$asset_root/resources/MathJax/" HEAD -o ../mathjax.tar )
+          git archive --format=tar --prefix="$asset_root/" HEAD -o "$workdir/base.tar"
+          ( cd resources/MathJax && git archive --format=tar --prefix="$asset_root/resources/MathJax/" HEAD -o "$workdir/mathjax.tar" )
           tar -Af base.tar mathjax.tar
           gzip -c base.tar > "$asset"
 
