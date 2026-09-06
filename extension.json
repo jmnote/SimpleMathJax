@@ -13,13 +13,25 @@
 		"MediaWiki\\Extension\\SimpleMathJax\\": "includes/"
 	},
 	"config": {
-		"SmjCdn": {
-			"value": { "enabled": true, "version": "4" },
-			"description": "CDN settings for MathJax"
+		"SmjCdnEnabled": {
+			"value": true,
+			"description": "Whether to load MathJax from a CDN instead of the bundled local copy"
 		},
-		"SmjExtraDelimiters": {
-			"value": { "enabled": false, "inlineMath": [], "displayMath": [] },
-			"description": "Extra delimiter scanning (e.g. $...$), outside of <math>/<chem>: 'enabled', 'inlineMath', 'displayMath'"
+		"SmjCdnVersion": {
+			"value": "4",
+			"description": "MathJax version to load from the CDN"
+		},
+		"SmjExtraDelimitersEnabled": {
+			"value": false,
+			"description": "Whether to also scan for bare delimiters (e.g. $...$), outside of <math>/<chem>"
+		},
+		"SmjExtraDelimitersInlineMath": {
+			"value": [],
+			"description": "Inline math delimiter pairs for extra delimiter scanning, e.g. [['$','$']]"
+		},
+		"SmjExtraDelimitersDisplayMath": {
+			"value": [],
+			"description": "Display math delimiter pairs for extra delimiter scanning, e.g. [['$$','$$']]"
 		},
 		"SmjIgnoreHtmlClass": {
 			"value": "mathjax_ignore|comment|diff-(context|addedline|deletedline)",

@@ -10,28 +10,32 @@ and examples. Upgrading from before 1.0.0? See the
 
 | Setting name             | Default value | Description |
 | ------------------------ | ------------- | ----------- |
-| `$wgSmjCdn`              | `['enabled'=>true, 'version'=>'4']` | MathJax CDN settings |
+| `$wgSmjCdnEnabled`       | `true` | Whether to load MathJax from a CDN instead of the bundled local copy |
+| `$wgSmjCdnVersion`       | `'4'` | MathJax version to load from the CDN |
 | `$wgSmjScale`            | `1` | `MathJax.chtml.scale` |
 | `$wgSmjEnableMenu`       | `true` | `MathJax.options.enableMenu` |
-| `$wgSmjExtraDelimiters`       | `['enabled'=>false,`<br>`'inlineMath'=>[],`<br>`'displayMath'=>[]]` | Extra delimiter scanning outside `<math>`/`<chem>` (e.g. bare `$...$`) — `enabled`, `inlineMath`, `displayMath` |
+| `$wgSmjExtraDelimitersEnabled` | `false` | Whether to also scan for bare delimiters (e.g. `$...$`) outside `<math>`/`<chem>` |
+| `$wgSmjExtraDelimitersInlineMath` | `[]` | Inline math delimiter pairs, e.g. `[['$','$']]` |
+| `$wgSmjExtraDelimitersDisplayMath` | `[]` | Display math delimiter pairs, e.g. `[['$$','$$']]` |
 | `$wgSmjAllowedAttributes` | `[]` | List of generic HTML attributes to carry over to the output `<span>` |
 | `$wgSmjIgnoreHtmlClass`  | `'mathjax_ignore\|comment\|`<br>`diff-(context\|`<br>`addedline\|deletedline)'` | `MathJax.options.ignoreHtmlClass` |
 | `$wgSmjRevisionOverrides` | `[]` | Switch the configuration according to the article's revision |
 
-### `$wgSmjCdn`
+### `$wgSmjCdnEnabled`
 
 The default follows the latest 4.x release. To pin the CDN to an exact
 version, set it explicitly:
 
 ```php
-$wgSmjCdn = [ 'enabled' => true, 'version' => '4.1.3' ];
+wfLoadExtension( 'SimpleMathJax' );
+$wgSmjCdnVersion = '4.1.3';
 ```
 
 To use the local MathJax module, disable the CDN.
 
 ```php
 wfLoadExtension( 'SimpleMathJax' );
-$wgSmjCdn = [ 'enabled' => false ];
+$wgSmjCdnEnabled = false;
 ```
 
 When working from the Git repository, initialize or update the bundled
@@ -61,41 +65,24 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableMenu = false;
 ```
 
-### `$wgSmjExtraDelimiters`
+### `$wgSmjExtraDelimitersEnabled`
 
-By default, `$wgSmjExtraDelimiters['enabled']` is `false`, so only TeX
-wrapped in `<math>` or `<chem>` is recognized — bare `$...$`/`$$...$$`
-delimiters are left as plain text, and `['inlineMath']`/`['displayMath']` go
+By default, `$wgSmjExtraDelimitersEnabled` is `false`, so only TeX wrapped in
+`<math>` or `<chem>` is recognized — bare `$...$`/`$$...$$` delimiters are
+left as plain text, and `$wgSmjExtraDelimitersInlineMath`/`DisplayMath` go
 unused (as does [`$wgSmjIgnoreHtmlClass`](#wgsmjignorehtmlclass)'s
 diff/comment protection, since there's nothing for it to protect against).
-Set `'enabled'` to `true` and list the delimiter pairs yourself to also
+Set `Enabled` to `true` and list the delimiter pairs yourself to also
 recognize bare delimiters:
 
 ```php
 wfLoadExtension( 'SimpleMathJax' );
-$wgSmjExtraDelimiters = [
-	'enabled' => true,
-	'inlineMath' => [ [ '$', '$' ], [ '\(', '\)' ] ],
-	'displayMath' => [ [ '$$', '$$' ] ],
-];
+$wgSmjExtraDelimitersEnabled = true;
+$wgSmjExtraDelimitersInlineMath = [ [ '$', '$' ] ];
+$wgSmjExtraDelimitersDisplayMath = [ [ '$$', '$$' ] ];
 ```
-
-`[math][/math]` is always an inline delimiter too — but that's
-SimpleMathJax's own internal marker for wrapping `<math>`/`<chem>` output for
-MathJax, not wikitext syntax an editor would type themselves.
 
 ### `$wgSmjAllowedAttributes`
-
-The `display` attribute is always processed. Its modes and examples are documented in [Display styles](displaystyle.md).
-
-The `chem` attribute (`<math chem>`) is unrelated to `$wgSmjAllowedAttributes`
-and always works. Unlike `<chem>...</chem>`, though, it only preloads the
-mhchem package — it doesn't wrap the content in `\ce{...}` for you, so write
-that yourself:
-
-```
-<math chem>\ce{CO2 + C -> 2 CO}</math>
-```
 
 `$wgSmjAllowedAttributes` is the administrator-defined allow-list of generic
 HTML attributes to copy from `<math>`/`<chem>` to the output `<span>`. No
@@ -110,39 +97,34 @@ wfLoadExtension( 'SimpleMathJax' );
 $wgSmjAllowedAttributes = [ 'class', 'title' ];
 ```
 
+`display` and `chem` are unrelated to this list and always work regardless —
+see [Display styles](displaystyle.md).
+
 ### `$wgSmjIgnoreHtmlClass`
 
-You probably don't need to change this. It does two separate things:
+You probably don't need to change this — the default already covers what it
+needs to:
 
-- **Skip one element, always.** An editor can add `class="mathjax_ignore"` to
-  a single `<math>`/`<chem>` to make SimpleMathJax skip it entirely — if
-  `class` is allowed via
-  [`$wgSmjAllowedAttributes`](#wgsmjallowedattributes) (empty by default).
-  This works regardless of `$wgSmjExtraDelimiters`.
-- **Protect diffs/comments, only with extra delimiters on.**
-  [`$wgSmjExtraDelimiters`](#wgsmjextradelimiters)`['enabled']` also decides
-  how much of the page MathJax scans: off (the default), it only looks at
-  its own `<span class="smj-container">` output, so a diff or comment is
-  never a target regardless of this setting; on, it scans the whole page
-  instead, including a diff table's literal text — that's what this default
-  pattern protects against. `<math>`/`<chem>` tags are never at risk in a
-  diff either way, since MediaWiki shows diffs as raw, unparsed wikitext —
-  only bare delimiters can leak through there.
+```
+mathjax_ignore|comment|diff-(context|addedline|deletedline)
+```
+
+`mathjax_ignore` lets an editor skip one `<math>`/`<chem>` by adding that
+class, if `class` is allowed via
+[`$wgSmjAllowedAttributes`](#wgsmjallowedattributes) (empty by default).
+`comment` and `diff-(context|addedline|deletedline)` match what MediaWiki
+puts on edit-summary and diff-table elements, protecting them — though only
+if [`$wgSmjExtraDelimitersEnabled`](#wgsmjextradelimitersenabled) is on (see
+[Rendering internals](development.md#rendering-internals) for why).
 
 **Don't** replace the whole pattern with just your own class when extra
 delimiters are on — the default's diff/comment protection goes with it:
 
 ```php
 wfLoadExtension( 'SimpleMathJax' );
-$wgSmjExtraDelimiters = [ 'enabled' => true ];
+$wgSmjExtraDelimitersEnabled = true;
 // Don't: replaces the whole pattern, so it loses diff/comment protection.
 $wgSmjIgnoreHtmlClass = 'my_custom_class';
-```
-
-The default is already well-formed:
-
-```
-mathjax_ignore|comment|diff-(context|addedline|deletedline)
 ```
 
 **Do**, only if you really need your own class, extend the default with `|`
@@ -151,7 +133,8 @@ individual `<math class="my_custom_class">` elements:
 
 ```php
 wfLoadExtension( 'SimpleMathJax' );
-// Do: extends the default pattern instead of replacing it.
+$wgSmjExtraDelimitersEnabled = true;
+// Do, if you really need it: extends the default pattern instead of replacing it.
 $wgSmjIgnoreHtmlClass = 'mathjax_ignore|comment|diff-(context|addedline|deletedline)|my_custom_class';
 $wgSmjAllowedAttributes = [ 'class' ];
 ```
@@ -168,9 +151,8 @@ is an array whose other keys are the overrides to apply, plus:
   is open if omitted). Both bounds are inclusive. Revision ids increase
   across the whole wiki, not per page — check the page's history for the
   actual numbers rather than guessing from its edit count.
-- Only the keys written inside `[]` are overwritten; to reach into an
-  array-shaped setting like `$wgSmjExtraDelimiters`, use a dot path
-  (`'wgSmjExtraDelimiters.enabled'`).
+- Only the keys written inside `[]` are overwritten — the rest of your
+  `$wgSmj*` settings stay as they are.
 - When more than one entry matches the same revision, later entries in the
   list win — each one overwrites whatever the ones before it set for the
   same key.
@@ -180,10 +162,10 @@ is an array whose other keys are the overrides to apply, plus:
 
 ```php
 wfLoadExtension( 'SimpleMathJax' );
-$wgSmjExtraDelimiters = [ 'enabled' => false ];    // To match the preview with the actual rendering, write the latest settings in the base case
+$wgSmjExtraDelimitersEnabled = false;    // To match the preview with the actual rendering, write the latest settings in the base case
 $wgSmjRevisionOverrides = [
-	[ 'max' => 50000, 'wgSmjExtraDelimiters.enabled' => true ],
-	[ 'min' => 50001, 'max' => 60000, 'wgSmjExtraDelimiters.enabled' => false ],
+	[ 'max' => 50000, 'wgSmjExtraDelimitersEnabled' => true ],
+	[ 'min' => 50001, 'max' => 60000, 'wgSmjExtraDelimitersEnabled' => false ],
 ];
 ```
 

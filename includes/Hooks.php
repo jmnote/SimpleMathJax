@@ -9,35 +9,35 @@ use Parser;
 use PPFrame;
 
 class Hooks {
-	private const EXTRA_DELIMITERS_DEFAULTS = [
-		'enabled' => false,
-		'inlineMath' => [],
-		'displayMath' => [],
-	];
-
 	private static array $allowedAttributes = [];
-	private static array $extraDelimiters   = self::EXTRA_DELIMITERS_DEFAULTS;
-	private static string $ignoreHtmlClass  = '';
+	private static bool $extraDelimitersEnabled = false;
+	private static array $extraDelimitersInlineMath = [];
+	private static array $extraDelimitersDisplayMath = [];
+	private static string $ignoreHtmlClass = '';
 
 	public static function onParserFirstCallInit( Parser $parser ) {
-		global $wgOut, $wgSmjCdn, $wgSmjEnableMenu,
-		$wgSmjExtraDelimiters, $wgSmjIgnoreHtmlClass,
-		$wgSmjScale,
+		global $wgOut, $wgSmjCdnEnabled, $wgSmjCdnVersion, $wgSmjEnableMenu,
+		$wgSmjExtraDelimitersEnabled, $wgSmjExtraDelimitersInlineMath, $wgSmjExtraDelimitersDisplayMath,
+		$wgSmjIgnoreHtmlClass, $wgSmjScale,
 		$wgSmjAllowedAttributes, $wgSmjRevisionOverrides;
 
 		$config = [
-			"wgSmjCdn"               => $wgSmjCdn,
-			"wgSmjExtraDelimiters"   => self::mergeExtraDelimiters( $wgSmjExtraDelimiters ),
-			"wgSmjIgnoreHtmlClass"   => $wgSmjIgnoreHtmlClass,
-			"wgSmjScale"             => $wgSmjScale,
-			"wgSmjEnableMenu"        => $wgSmjEnableMenu,
-			"wgSmjAllowedAttributes" => $wgSmjAllowedAttributes,
+			"wgSmjCdnEnabled"                  => $wgSmjCdnEnabled,
+			"wgSmjCdnVersion"                  => $wgSmjCdnVersion,
+			"wgSmjExtraDelimitersEnabled"      => $wgSmjExtraDelimitersEnabled,
+			"wgSmjExtraDelimitersInlineMath"   => $wgSmjExtraDelimitersInlineMath,
+			"wgSmjExtraDelimitersDisplayMath"  => $wgSmjExtraDelimitersDisplayMath,
+			"wgSmjIgnoreHtmlClass"             => $wgSmjIgnoreHtmlClass,
+			"wgSmjScale"                       => $wgSmjScale,
+			"wgSmjEnableMenu"                  => $wgSmjEnableMenu,
+			"wgSmjAllowedAttributes"           => $wgSmjAllowedAttributes,
 		];
 
 		$articlerev = (int)$wgOut->getRevisionId();
 		$config = self::applyRevisionOverrides( $config, $wgSmjRevisionOverrides, $articlerev );
 
-		$clientConfigVars = [ "wgSmjCdn", "wgSmjExtraDelimiters",
+		$clientConfigVars = [ "wgSmjCdnEnabled", "wgSmjCdnVersion",
+			"wgSmjExtraDelimitersEnabled", "wgSmjExtraDelimitersInlineMath", "wgSmjExtraDelimitersDisplayMath",
 			"wgSmjIgnoreHtmlClass", "wgSmjScale", "wgSmjEnableMenu" ];
 		foreach ( $clientConfigVars as $varname ) {
 			$wgOut->addJsConfigVars( $varname, $config[$varname] );
@@ -45,20 +45,20 @@ class Hooks {
 
 		self::$allowedAttributes =
 			is_array( $config["wgSmjAllowedAttributes"] ) ? $config["wgSmjAllowedAttributes"] : [];
-		self::$extraDelimiters   = $config["wgSmjExtraDelimiters"];
-		self::$ignoreHtmlClass   =
+		self::$extraDelimitersEnabled = (bool)$config["wgSmjExtraDelimitersEnabled"];
+		self::$extraDelimitersInlineMath =
+			is_array( $config["wgSmjExtraDelimitersInlineMath"] ) ? $config["wgSmjExtraDelimitersInlineMath"] : [];
+		self::$extraDelimitersDisplayMath =
+			is_array( $config["wgSmjExtraDelimitersDisplayMath"] ) ? $config["wgSmjExtraDelimitersDisplayMath"] : [];
+		self::$ignoreHtmlClass =
 			is_string( $config["wgSmjIgnoreHtmlClass"] ) ? $config["wgSmjIgnoreHtmlClass"] : '';
 
-		if ( self::$extraDelimiters['enabled'] ) {
+		if ( self::$extraDelimitersEnabled ) {
 			$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
 		}
 
 		$parser->setHook( 'math', __CLASS__ . '::renderMath' );
 		$parser->setHook( 'chem', __CLASS__ . '::renderChem' );
-	}
-
-	public static function mergeExtraDelimiters( $value ): array {
-		return array_merge( self::EXTRA_DELIMITERS_DEFAULTS, is_array( $value ) ? $value : [] );
 	}
 
 	// $pattern is an admin-supplied regex fragment with no delimiter of its
@@ -90,16 +90,8 @@ class Hooks {
 			}
 
 			foreach ( $confset as $key => $value ) {
-				if ( strpos( $key, '.' ) !== false ) {
-					[ $varname, $subkey ] = explode( '.', $key, 2 );
-					if ( array_key_exists( $varname, $config ) && is_array( $config[$varname] ) ) {
-						$config[$varname][$subkey] = $value;
-					}
-					continue;
-				}
-
 				if ( array_key_exists( $key, $config ) ) {
-					$config[$key] = $key === "wgSmjExtraDelimiters" ? self::mergeExtraDelimiters( $value ) : $value;
+					$config[$key] = $value;
 				}
 			}
 		}
@@ -184,7 +176,7 @@ class Hooks {
 	}
 
 	public static function onInternalParseBeforeLinks( $parser, &$text, $stripState ) {
-		if ( !self::$extraDelimiters['enabled'] ) {
+		if ( !self::$extraDelimitersEnabled ) {
 			return;
 		}
 
@@ -193,8 +185,8 @@ class Hooks {
 			static function ( $run ) use ( $parser ) {
 				return $parser->insertStripItem( $run );
 			},
-			self::$extraDelimiters['inlineMath'],
-			self::$extraDelimiters['displayMath'],
+			self::$extraDelimitersInlineMath,
+			self::$extraDelimitersDisplayMath,
 			true,
 			true
 		);

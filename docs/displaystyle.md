@@ -50,3 +50,12 @@ math styles:
 <math>\sum_{i=0}^\infty \frac{1}{2^i}</math>
 <math display="inline">\sum_{i=0}^\infty \frac{1}{2^i}</math>
 ```
+
+## `chem` attribute
+
+`<math chem>` only preloads the mhchem package — unlike `<chem>...</chem>`,
+it doesn't wrap the content in `\ce{...}` for you, so write that yourself:
+
+```wikitext
+<math chem>\ce{CO2 + C -> 2 CO}</math>
+```

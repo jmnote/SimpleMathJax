@@ -17,27 +17,7 @@ function assert_same( $name, $expected, $actual ) {
 	echo '  actual:   ' . var_export( $actual, true ) . "\n";
 }
 
-assert_same(
-	'mergeExtraDelimiters fills defaults when nothing is set',
-	[ 'enabled' => false, 'inlineMath' => [], 'displayMath' => [] ],
-	Hooks::mergeExtraDelimiters( null )
-);
-assert_same(
-	'mergeExtraDelimiters keeps unrelated defaults when only enabled is set',
-	[ 'enabled' => true, 'inlineMath' => [], 'displayMath' => [] ],
-	Hooks::mergeExtraDelimiters( [ 'enabled' => true ] )
-);
-assert_same(
-	'mergeExtraDelimiters keeps all three when fully specified',
-	[ 'enabled' => true, 'inlineMath' => [ [ '$', '$' ] ], 'displayMath' => [ [ '$$', '$$' ] ] ],
-	Hooks::mergeExtraDelimiters( [
-		'enabled' => true,
-		'inlineMath' => [ [ '$', '$' ] ],
-		'displayMath' => [ [ '$$', '$$' ] ],
-	] )
-);
-
-$baseConfig = [ 'wgSmjScale' => 1, 'wgSmjExtraDelimiters' => Hooks::mergeExtraDelimiters( null ) ];
+$baseConfig = [ 'wgSmjScale' => 1, 'wgSmjCdnEnabled' => true, 'wgSmjExtraDelimitersEnabled' => false ];
 assert_same(
 	'applyRevisionOverrides is a no-op with no overrides configured',
 	$baseConfig,
@@ -55,7 +35,7 @@ assert_same(
 
 assert_same(
 	'applyRevisionOverrides replaces a top-level key inside its range',
-	[ 'wgSmjScale' => 2, 'wgSmjExtraDelimiters' => Hooks::mergeExtraDelimiters( null ) ],
+	[ 'wgSmjScale' => 2, 'wgSmjCdnEnabled' => true, 'wgSmjExtraDelimitersEnabled' => false ],
 	Hooks::applyRevisionOverrides(
 		$baseConfig,
 		[ [ 'max' => 50000, 'wgSmjScale' => 2 ] ],
@@ -73,11 +53,11 @@ assert_same(
 );
 
 assert_same(
-	'applyRevisionOverrides supports a dot path into wgSmjExtraDelimiters',
-	[ 'wgSmjScale' => 1, 'wgSmjExtraDelimiters' => [ 'enabled' => true, 'inlineMath' => [], 'displayMath' => [] ] ],
+	'applyRevisionOverrides sets an unrelated flat key without touching the rest',
+	[ 'wgSmjScale' => 1, 'wgSmjCdnEnabled' => true, 'wgSmjExtraDelimitersEnabled' => true ],
 	Hooks::applyRevisionOverrides(
 		$baseConfig,
-		[ [ 'min' => 1, 'max' => 50000, 'wgSmjExtraDelimiters.enabled' => true ] ],
+		[ [ 'min' => 1, 'max' => 50000, 'wgSmjExtraDelimitersEnabled' => true ] ],
 		25000
 	)
 );

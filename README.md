@@ -10,7 +10,7 @@ https://www.mediawiki.org/wiki/Extension:SimpleMathJax
 $ git clone https://github.com/jmnote/SimpleMathJax.git
 ```
 
-* (Optional) If you want to use not CDN but local mathjax scripts, you can use git clone recursive, then set `$wgSmjCdn = [ 'enabled' => false ]` (see [`$wgSmjCdn`](docs/configuration.md#wgsmjcdn)).
+* (Optional) If you want to use not CDN but local mathjax scripts, you can use git clone recursive, then set `$wgSmjCdnEnabled = false` (see [`$wgSmjCdnEnabled`](docs/configuration.md#wgsmjcdnenabled)).
 ```bash
 $ git clone --recursive https://github.com/jmnote/SimpleMathJax.git
 ```
@@ -23,10 +23,13 @@ wfLoadExtension( 'SimpleMathJax' );
 # Optional Settings
 | Setting name             | Default value              | Description                      | Custom value example        |
 | ------------------------ | --------------------------- | -------------------------------- | --------------------------- |
-| `$wgSmjCdn`              | `['enabled'=>true, 'version'=>'4']` | MathJax CDN settings             | `['enabled'=>false]` |
+| `$wgSmjCdnEnabled`       | `true`                      | Whether to load MathJax from a CDN | `false`                     |
+| `$wgSmjCdnVersion`       | `'4'`                       | MathJax version to load from the CDN | `'4.1.3'`                  |
 | `$wgSmjScale`            | `1`                         | `MathJax.chtml.scale`              | `1.5`                         |
 | `$wgSmjEnableMenu`       | `true`                      | `MathJax.options.enableMenu`       | `false`                       |
-| `$wgSmjExtraDelimiters`       | `['enabled'=>false,`<br>`'inlineMath'=>[],`<br>`'displayMath'=>[]]` | Extra delimiter scanning outside `<math>`/`<chem>` (e.g. bare `$...$`) — `enabled`, `inlineMath`, `displayMath` | `['enabled'=>true,`<br>`'inlineMath'=>[['$','$']],`<br>`'displayMath'=>[['$$','$$']]]` |
+| `$wgSmjExtraDelimitersEnabled` | `false`               | Whether to also scan for bare delimiters (e.g. `$...$`) outside `<math>`/`<chem>` | `true` |
+| `$wgSmjExtraDelimitersInlineMath` | `[]`              | Inline math delimiter pairs | `[['$','$']]` |
+| `$wgSmjExtraDelimitersDisplayMath` | `[]`             | Display math delimiter pairs | `[['$$','$$']]` |
 | `$wgSmjAllowedAttributes` | `[]` | List of generic HTML attributes to carry over to the output `<span>` | `['class', 'title']` |
 | `$wgSmjIgnoreHtmlClass`  | `'mathjax_ignore\|comment\|`<br>`diff-(context\|`<br>`addedline\|deletedline)'` | `MathJax.options.ignoreHtmlClass`  | `'mathjax_ignore\|comment\|`<br>`diff-(context\|`<br>`addedline\|deletedline)\|my_custom_class'` |
 | `$wgSmjRevisionOverrides` | `[]` | Switch the configuration according to the article's revision  | `[['max'=>1048576,`<br>`'wgSmjScale'=>1.5]]` |
