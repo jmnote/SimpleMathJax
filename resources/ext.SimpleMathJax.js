@@ -1,12 +1,12 @@
 mw.hook( 'wikipage.content' ).add( function ( $content ) {
 window.MathJax = {
   tex: {
-    inlineMath: mw.config.get('wgSmjExtraInlineMath').concat([['[math]','[/math]']]),
-    displayMath: mw.config.get('wgSmjDisplayMath'),
+    inlineMath: mw.config.get('wgSmjDirectMath').inlineMath.concat([['[math]','[/math]']]),
+    displayMath: mw.config.get('wgSmjDirectMath').displayMath,
     processEnvironments: true,
-    processRefs: mw.config.get('wgSmjDirectMathJax') == 'full',
-    processEscapes: mw.config.get('wgSmjDirectMathJax') == 'full',
-    packages: mw.config.exists('wgSmjPreloadChem') ? {'[+]': ['autoload','mhchem']} : {'[+]': ['autoload']},
+    processRefs: mw.config.get('wgSmjDirectMath').enabled,
+    processEscapes: mw.config.get('wgSmjDirectMath').enabled,
+    packages: mw.config.exists('smjPreloadChem') ? {'[+]': ['autoload','mhchem']} : {'[+]': ['autoload']},
     macros: {
       AA: "{\u00c5}",
       alef: "{\\aleph}",
@@ -120,13 +120,22 @@ window.MathJax = {
   },
   chtml: {
     scale: mw.config.get('wgSmjScale'),
-    displayAlign: mw.config.get('wgSmjDisplayAlign')
+    displayAlign: mw.config.get('wgSmjDisplayAlign'),
+    displayOverflow: mw.config.exists('smjLinebreak') ? 'linebreak' : 'overflow',
+    linebreaks: {
+      // getLinebreakWidth() resolves this against the container's width in
+      // *unscaled* ems, while the equation's own width is measured in its
+      // own (scaled) ems — so without compensating, a scale != 1 makes it
+      // misjudge how much actually fits. Shrinking the percentage by the
+      // same factor cancels that out.
+      width: (100 / mw.config.get('wgSmjScale')) + '%'
+    }
   },
   loader: {
-    load: ['ui/safe','[tex]/autoload'].concat(mw.config.exists('wgSmjPreloadChem') ? ['[tex]/mhchem'] : [])
+    load: ['ui/safe','[tex]/autoload'].concat(mw.config.exists('smjPreloadChem') ? ['[tex]/mhchem'] : [])
   },
   startup: {
-    elements: mw.config.get('wgSmjDirectMathJax') == 'none' ? ["span.smj-container"] : null,
+    elements: mw.config.get('wgSmjDirectMath').enabled ? null : ["span.smj-container"],
     pageReady: () => {
       return MathJax.startup.defaultPageReady().then(() => {
         $("span.smj-container > .MathJax").parent().css('opacity',1);

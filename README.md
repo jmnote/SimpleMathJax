@@ -21,72 +21,24 @@ wfLoadExtension( 'SimpleMathJax' );
 ```
 
 # Optional Settings
-| Setting name             | Description                      | default value             | custom value example        |
+| Setting name             | Description                      | Default value             | Custom value example        |
 | ------------------------ | -------------------------------- | ------------------------- | --------------------------- |
 | `$wgSmjUseCdn`           | use CDN or local scripts         | true                      | false                       |
-| `$wgSmjUseChem`          | enable chem tag                  | true                      | false                       |
-| `$wgSmjDirectMathJax`    | which ones can be written directly  | "full"                 | "none"                      |
+| `$wgSmjEnableRenderAttributes` | process SimpleMathJax's own render-control attributes on <math> (`display=`, `inline-block`) | true | false |
+| `$wgSmjAllowedAttributes` | list of generic HTML attributes to carry over to the output `<span>` | `[]` | `['class', 'title']` |
+| `$wgSmjDirectMath`       | direct (bare `$...$`) math scanning — `enabled`, `inlineMath`, `displayMath` | `['enabled'=>false,`<br>`'inlineMath'=>[],`<br>`'displayMath'=>[]]` | `['enabled'=>true,`<br>`'inlineMath'=>[['$','$']],`<br>`'displayMath'=>[['$$','$$']]]` |
 | `$wgSmjEnableMenu`       | MathJax.options.enableMenu       | true                      | false                       |
-| `$wgSmjDisplayMath`      | MathJax.tex.displayMath          | []                        | [['$$','$$'],['\\[','\\]']] |
-| `$wgSmjExtraInlineMath`  | MathJax.tex.inlineMath           | []                        | [['\\(', '\\)']]            |
 | `$wgSmjIgnoreHtmlClass`  | MathJax.options.ignoreHtmlClass  | "mathjax_ignore\|comment\|<br>diff-(context\|<br>addedline\|deletedline)" | "mathjax_ignore" |
 | `$wgSmjScale`            | MathJax.chtml.scale              | 1                         | 1.5                         |
 | `$wgSmjDisplayAlign`     | MathJax.chtml.displayAlign       | "left"                    | "center"                    |
-| `$wgSmjWrapDisplaystyle` | wrap with displaystyle on `<math>`  | true                   | false                       |
-| `$wgSmjEnableHtmlAttributes` | process attributes of math tag  | false                  | true                        |
-| `$wgSmjConfigByRevision` | switch the configuration according to the article's revision  | [] | [['upto'=>1048576,<br>'wgSmjDisplayAlign'<br>=>'left']] |
+| `$wgSmjDisplaystyle`     | render bare `<math>` (no `display=`) at display-style size | false | true |
+| `$wgSmjRevisionOverrides` | switch the configuration according to the article's revision  | [] | [['max'=>1048576,<br>'wgSmjDisplayAlign'<br>=>'left']] |
 
-If you want to change font size, set `$wgSmjScale`.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjScale = 1.5;
-```
-
-If you want to use local module, set `$wgSmjUseCdn`.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjUseCdn = false;
-```
-
-If you want to enable some extra inlineMath symbol pairs, set `$wgSmjExtraInlineMath`. Pairs of `[math][/math]` are always in-line math delimiters. (And independently of this setting, you can use `$ ... $` to switch to math mode within text (`\text{}` etc.) or chemical formulas (`\ce{}`).)
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjExtraInlineMath = [["$","$"],["\\(","\\)"]];
-```
-
-Since version 0.8.7, inlineMath and blockMath and environments are ignored in edit summaries and diffs. To restore the previous behavior (especially if you are using maths in edit summaries), set `$wgSmjIgnoreHtmlClass`.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjIgnoreHtmlClass = "mathjax_ignore";
-```
-
-If you want to disable MathJax context menu, set `$wgSmjEnableMenu`.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjEnableMenu = false;
-```
-
-By enabling `$wgSmjEnableHtmlAttributes`, the `display` attribute of the `<math>` tag will work, and the `class`, `id`, `title` and `data-*` attributes of the `<math>` tag will be carried over to the `<span>` tag.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjEnableHtmlAttributes = true;
-```
-
-In version 0.8.9, an option was added to make it completely dedicated to `<math>` and `<chem>`. Setting `$wgSmjDirectMathJax` to `env` disables `\ref{}` and escaping of `$`, while setting it to `none` disables all delimiters, including `[math]`, making it mandatory to enclose all TeX expressions in `<math>` or `<chem>` (and `$wgSmjDisplayMath`, `$wgSmjExtraInlineMath`, and `$wgSmjIgnoreHtmlClass` will become meaningless).
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjDirectMathJax = "none";
-```
-
-By using $wgSmjConfigByRevision, you can apply different settings to an article's revisions up to a certain point and to revisions after that. This allows past revisions to be displayed with the settings that were in place at the time. Only the keys written inside the [] are overwritten. Preview, History and SpecialPages are treated as base cases that do not apply this setting.
-```PHP
-wfLoadExtension( 'SimpleMathJax' );
-$wgSmjDirectMathJax = "none";    #To match the preview with the actual rendering, write the latest settings in the base case
-$wgSmjConfigByRevision = [
-	["upto"=>50000, "wgSmjDirectMathJax"=>"full"],
-	["since"=>50001, "upto"=>60000, "wgSmjDirectMathJax"=>"env"]
-];
-```
+See [docs/config.md](docs/config.md) for a detailed walkthrough of each
+setting, with usage examples. Upgrading from before 1.0.0? Settings were
+redesigned with no backward compatibility — the same document's
+"Migrating from pre-1.0.0" section covers what to change in your
+`LocalSettings.php`.
 
 # Hooks
 The hook `SimpleMathJaxAttributes` is available to add attributes to the span around the math. (Note that this process is performed only for `<math>` and `<chem>` elements, and other delimiters are handled directly by MathJax.) This hook provides you with the opportunity to ensure that your own code does not interfere with MathJax's rendering of math.
@@ -100,4 +52,3 @@ $wgHooks['SimpleMathJaxAttributes'][]
 		$attributes['class'] .= ' noglossary';
 	};
 ```
-
