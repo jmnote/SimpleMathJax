@@ -201,4 +201,3 @@ $wgHooks['SimpleMathJaxAttributes'][]
 		$attributes['class'] .= ' noglossary';
 	};
 ```
-
