@@ -61,7 +61,7 @@ differently.
 function without a MediaWiki bootstrap — see `tests/RevisionOverridesTest.php`.
 
 **`ext.SimpleMathJax.js` always adds `['[math]','[/math]']` to MathJax's
-`inlineMath` list, regardless of `$wgSmjExtraDelimiters*`.** That's
+`inlineMath` list, regardless of `$wgSmjDelimiters*`.** That's
 SimpleMathJax's own internal marker for the `<math>`/`<chem>` output
 `renderTex()` wraps TeX in (see above), not wikitext syntax an editor would
 type themselves — MathJax needs it in its delimiter list to typeset that
@@ -69,7 +69,7 @@ output at all, independently of whatever bare delimiters the admin
 configured for extra-delimiter scanning.
 
 **`$wgSmjIgnoreHtmlClass`'s diff/comment protection only matters with
-`$wgSmjExtraDelimitersEnabled` on.** `$wgSmjExtraDelimitersEnabled` also
+`$wgSmjDelimitersEnabled` on.** `$wgSmjDelimitersEnabled` also
 decides how much of the page MathJax scans: off (the default), the JS
 module's `elements` option restricts it to its own `<span
 class="smj-container">` output, so a diff or comment is never a target

@@ -17,7 +17,7 @@ function assert_same( $name, $expected, $actual ) {
 	echo '  actual:   ' . var_export( $actual, true ) . "\n";
 }
 
-$baseConfig = [ 'wgSmjScale' => 1, 'wgSmjCdnEnabled' => true, 'wgSmjExtraDelimitersEnabled' => false ];
+$baseConfig = [ 'wgSmjScale' => 1, 'wgSmjCdnEnabled' => true, 'wgSmjDelimitersEnabled' => false ];
 assert_same(
 	'applyRevisionOverrides is a no-op with no overrides configured',
 	$baseConfig,
@@ -35,7 +35,7 @@ assert_same(
 
 assert_same(
 	'applyRevisionOverrides replaces a top-level key inside its range',
-	[ 'wgSmjScale' => 2, 'wgSmjCdnEnabled' => true, 'wgSmjExtraDelimitersEnabled' => false ],
+	[ 'wgSmjScale' => 2, 'wgSmjCdnEnabled' => true, 'wgSmjDelimitersEnabled' => false ],
 	Hooks::applyRevisionOverrides(
 		$baseConfig,
 		[ [ 'max' => 50000, 'wgSmjScale' => 2 ] ],
@@ -54,10 +54,10 @@ assert_same(
 
 assert_same(
 	'applyRevisionOverrides sets an unrelated flat key without touching the rest',
-	[ 'wgSmjScale' => 1, 'wgSmjCdnEnabled' => true, 'wgSmjExtraDelimitersEnabled' => true ],
+	[ 'wgSmjScale' => 1, 'wgSmjCdnEnabled' => true, 'wgSmjDelimitersEnabled' => true ],
 	Hooks::applyRevisionOverrides(
 		$baseConfig,
-		[ [ 'min' => 1, 'max' => 50000, 'wgSmjExtraDelimitersEnabled' => true ] ],
+		[ [ 'min' => 1, 'max' => 50000, 'wgSmjDelimitersEnabled' => true ] ],
 		25000
 	)
 );

@@ -27,9 +27,9 @@ wfLoadExtension( 'SimpleMathJax' );
 | `$wgSmjCdnVersion`       | `'4'`                       | MathJax version to load from the CDN | `'4.1.3'`                  |
 | `$wgSmjScale`            | `1`                         | `MathJax.chtml.scale`              | `1.5`                         |
 | `$wgSmjEnableMenu`       | `true`                      | `MathJax.options.enableMenu`       | `false`                       |
-| `$wgSmjExtraDelimitersEnabled` | `false`               | Whether to also scan for bare delimiters (e.g. `$...$`) outside `<math>`/`<chem>` | `true` |
-| `$wgSmjExtraDelimitersInlineMath` | `[]`              | Inline math delimiter pairs | `[['$','$']]` |
-| `$wgSmjExtraDelimitersDisplayMath` | `[]`             | Display math delimiter pairs | `[['$$','$$']]` |
+| `$wgSmjDelimitersEnabled` | `false`               | Whether to also scan for bare delimiters (e.g. `$...$`) outside `<math>`/`<chem>` | `true` |
+| `$wgSmjDelimitersInlineMath` | `[]`              | Inline math delimiter pairs | `[['$','$']]` |
+| `$wgSmjDelimitersDisplayMath` | `[]`             | Display math delimiter pairs | `[['$$','$$']]` |
 | `$wgSmjAllowedAttributes` | `[]` | List of generic HTML attributes to carry over to the output `<span>` | `['class', 'title']` |
 | `$wgSmjIgnoreHtmlClass`  | `'mathjax_ignore\|comment\|`<br>`diff-(context\|`<br>`addedline\|deletedline)'` | `MathJax.options.ignoreHtmlClass`  | `'mathjax_ignore\|comment\|`<br>`diff-(context\|`<br>`addedline\|deletedline)\|my_custom_class'` |
 | `$wgSmjRevisionOverrides` | `[]` | Switch the configuration according to the article's revision  | `[['max'=>1048576,`<br>`'wgSmjScale'=>1.5]]` |

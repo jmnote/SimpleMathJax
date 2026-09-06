@@ -14,10 +14,10 @@ the old names are no longer read in 1.0.0.
 
 > ⚠️ **This is not a pure rename.** Two defaults actually flip:
 > - Bare `$...$`/`$$...$$` math scanning now defaults to *off* (see
->   `$wgSmjExtraDelimitersEnabled` below). If you never explicitly set
+>   `$wgSmjDelimitersEnabled` below). If you never explicitly set
 >   `$wgSmjDirectMathJax`/`$wgSmjExtraInlineMath`/`$wgSmjDisplayMath` and
 >   relied on their old default (`'full'`), those formulas **stop
->   rendering** unless you add `$wgSmjExtraDelimitersEnabled = true`.
+>   rendering** unless you add `$wgSmjDelimitersEnabled = true`.
 
 ### Renamed only
 
@@ -101,11 +101,11 @@ five — e.g. `[ 'class', 'title' ]` covers the common case of a CSS styling
 hook plus a hover tooltip, without carrying over `id` (which can collide
 with other elements on the page).
 
-### `$wgSmjDirectMathJax` / `$wgSmjDisplayMath` / `$wgSmjExtraInlineMath` → `$wgSmjExtraDelimiters*`
+### `$wgSmjDirectMathJax` / `$wgSmjDisplayMath` / `$wgSmjExtraInlineMath` → `$wgSmjDelimiters*`
 
 These three settings become three differently-named flat settings —
-`$wgSmjExtraDelimitersEnabled`, `$wgSmjExtraDelimitersInlineMath`,
-`$wgSmjExtraDelimitersDisplayMath` — and the `"full"`/`"env"`/`"none"`
+`$wgSmjDelimitersEnabled`, `$wgSmjDelimitersInlineMath`,
+`$wgSmjDelimitersDisplayMath` — and the `"full"`/`"env"`/`"none"`
 three-way mode collapses into a single boolean (`Enabled`).
 **The `"env"` mode is gone** — it used to let you turn `\ref`/escape
 handling on or off separately, but turning escapes off only made stray
@@ -115,7 +115,7 @@ reason to pick it over `"full"`. It's folded into `Enabled`.
 
 **The default also flips, from on to off.** `$wgSmjDirectMathJax` used to
 default to `'full'` (bare `$...$` math worked out of the box).
-`$wgSmjExtraDelimitersEnabled`'s default is now `false` — only
+`$wgSmjDelimitersEnabled`'s default is now `false` — only
 `<math>`/`<chem>` tags work out of the box, matching this extension's
 original contract ("TeX between `<math>` and `</math>`"). This is a real
 behavior change, not just a rename: **if you never touched these settings,
@@ -123,20 +123,20 @@ you are affected.**
 
 ```diff
 - // (nothing set — relied on the old default, 'full')
-+ $wgSmjExtraDelimitersEnabled = true;   // keep bare $...$/$$...$$ working after the upgrade
++ $wgSmjDelimitersEnabled = true;   // keep bare $...$/$$...$$ working after the upgrade
 ```
 
 ```diff
 - $wgSmjDirectMathJax = 'full';
-+ $wgSmjExtraDelimitersEnabled = true;
++ $wgSmjDelimitersEnabled = true;
 ```
 
 ```diff
 - $wgSmjExtraInlineMath = [ [ '$', '$' ] ];
 - $wgSmjDisplayMath = [ [ '$$', '$$' ] ];
-+ $wgSmjExtraDelimitersEnabled = true;
-+ $wgSmjExtraDelimitersInlineMath = [ [ '$', '$' ] ];
-+ $wgSmjExtraDelimitersDisplayMath = [ [ '$$', '$$' ] ];
++ $wgSmjDelimitersEnabled = true;
++ $wgSmjDelimitersInlineMath = [ [ '$', '$' ] ];
++ $wgSmjDelimitersDisplayMath = [ [ '$$', '$$' ] ];
 ```
 
 ```diff
@@ -146,7 +146,7 @@ you are affected.**
 
 ```diff
 - $wgSmjDirectMathJax = 'env';
-+ $wgSmjExtraDelimitersEnabled = true;   // \ref and escapes now come along too — fine for most sites
++ $wgSmjDelimitersEnabled = true;   // \ref and escapes now come along too — fine for most sites
 ```
 
 ### If `$wgSmjRevisionOverrides` overrode `$wgSmjDirectMathJax`
@@ -157,7 +157,7 @@ dot path is needed:
 ```diff
   $wgSmjRevisionOverrides = [
 -     [ 'upto' => 2000000, 'wgSmjDirectMathJax' => 'none' ],
-+     [ 'max' => 2000000, 'wgSmjExtraDelimitersEnabled' => false ],
++     [ 'max' => 2000000, 'wgSmjDelimitersEnabled' => false ],
   ];
 ```
 
@@ -173,10 +173,10 @@ dot path is needed:
    (list) — `[]` for the old `false`, or list the attributes you want to
    preserve for the old `true` behavior.
 3. **If you want bare `$...$`/`$$...$$` math to keep working**, add
-   `$wgSmjExtraDelimitersEnabled = true` explicitly — this is now required
+   `$wgSmjDelimitersEnabled = true` explicitly — this is now required
    even if you never set `$wgSmjDirectMathJax` before, since the default
    flipped from on to off. If you used `$wgSmjDisplayMath`/`$wgSmjExtraInlineMath`,
-   rename them to `$wgSmjExtraDelimitersDisplayMath`/`$wgSmjExtraDelimitersInlineMath`.
+   rename them to `$wgSmjDelimitersDisplayMath`/`$wgSmjDelimitersInlineMath`.
    If you used `'env'`, be aware it now behaves like `'full'`.
 4. If `$wgSmjConfigByRevision` overrode `$wgSmjDirectMathJax` or another
    renamed setting, just use its new flat key name — no dot path needed.

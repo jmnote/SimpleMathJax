@@ -21,15 +21,15 @@
 			"value": "4",
 			"description": "MathJax version to load from the CDN"
 		},
-		"SmjExtraDelimitersEnabled": {
+		"SmjDelimitersEnabled": {
 			"value": false,
 			"description": "Whether to also scan for bare delimiters (e.g. $...$), outside of <math>/<chem>"
 		},
-		"SmjExtraDelimitersInlineMath": {
+		"SmjDelimitersInlineMath": {
 			"value": [],
 			"description": "Inline math delimiter pairs for extra delimiter scanning, e.g. [['$','$']]"
 		},
-		"SmjExtraDelimitersDisplayMath": {
+		"SmjDelimitersDisplayMath": {
 			"value": [],
 			"description": "Display math delimiter pairs for extra delimiter scanning, e.g. [['$$','$$']]"
 		},

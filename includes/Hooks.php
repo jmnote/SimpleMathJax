@@ -17,16 +17,16 @@ class Hooks {
 
 	public static function onParserFirstCallInit( Parser $parser ) {
 		global $wgOut, $wgSmjCdnEnabled, $wgSmjCdnVersion, $wgSmjEnableMenu,
-		$wgSmjExtraDelimitersEnabled, $wgSmjExtraDelimitersInlineMath, $wgSmjExtraDelimitersDisplayMath,
+		$wgSmjDelimitersEnabled, $wgSmjDelimitersInlineMath, $wgSmjDelimitersDisplayMath,
 		$wgSmjIgnoreHtmlClass, $wgSmjScale,
 		$wgSmjAllowedAttributes, $wgSmjRevisionOverrides;
 
 		$config = [
 			"wgSmjCdnEnabled"                  => $wgSmjCdnEnabled,
 			"wgSmjCdnVersion"                  => $wgSmjCdnVersion,
-			"wgSmjExtraDelimitersEnabled"      => $wgSmjExtraDelimitersEnabled,
-			"wgSmjExtraDelimitersInlineMath"   => $wgSmjExtraDelimitersInlineMath,
-			"wgSmjExtraDelimitersDisplayMath"  => $wgSmjExtraDelimitersDisplayMath,
+			"wgSmjDelimitersEnabled"      => $wgSmjDelimitersEnabled,
+			"wgSmjDelimitersInlineMath"   => $wgSmjDelimitersInlineMath,
+			"wgSmjDelimitersDisplayMath"  => $wgSmjDelimitersDisplayMath,
 			"wgSmjIgnoreHtmlClass"             => $wgSmjIgnoreHtmlClass,
 			"wgSmjScale"                       => $wgSmjScale,
 			"wgSmjEnableMenu"                  => $wgSmjEnableMenu,
@@ -37,7 +37,7 @@ class Hooks {
 		$config = self::applyRevisionOverrides( $config, $wgSmjRevisionOverrides, $articlerev );
 
 		$clientConfigVars = [ "wgSmjCdnEnabled", "wgSmjCdnVersion",
-			"wgSmjExtraDelimitersEnabled", "wgSmjExtraDelimitersInlineMath", "wgSmjExtraDelimitersDisplayMath",
+			"wgSmjDelimitersEnabled", "wgSmjDelimitersInlineMath", "wgSmjDelimitersDisplayMath",
 			"wgSmjIgnoreHtmlClass", "wgSmjScale", "wgSmjEnableMenu" ];
 		foreach ( $clientConfigVars as $varname ) {
 			$wgOut->addJsConfigVars( $varname, $config[$varname] );
@@ -45,11 +45,11 @@ class Hooks {
 
 		self::$allowedAttributes =
 			is_array( $config["wgSmjAllowedAttributes"] ) ? $config["wgSmjAllowedAttributes"] : [];
-		self::$extraDelimitersEnabled = (bool)$config["wgSmjExtraDelimitersEnabled"];
+		self::$extraDelimitersEnabled = (bool)$config["wgSmjDelimitersEnabled"];
 		self::$extraDelimitersInlineMath =
-			is_array( $config["wgSmjExtraDelimitersInlineMath"] ) ? $config["wgSmjExtraDelimitersInlineMath"] : [];
+			is_array( $config["wgSmjDelimitersInlineMath"] ) ? $config["wgSmjDelimitersInlineMath"] : [];
 		self::$extraDelimitersDisplayMath =
-			is_array( $config["wgSmjExtraDelimitersDisplayMath"] ) ? $config["wgSmjExtraDelimitersDisplayMath"] : [];
+			is_array( $config["wgSmjDelimitersDisplayMath"] ) ? $config["wgSmjDelimitersDisplayMath"] : [];
 		self::$ignoreHtmlClass =
 			is_string( $config["wgSmjIgnoreHtmlClass"] ) ? $config["wgSmjIgnoreHtmlClass"] : '';
 

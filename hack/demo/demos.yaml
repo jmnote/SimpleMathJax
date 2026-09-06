@@ -26,9 +26,9 @@
     $wgSmjCdnEnabled = false;
     $wgSmjScale = 1.5;
     $wgSmjAllowedAttributes = [ 'style', 'class' ];
-    $wgSmjExtraDelimitersEnabled = true;
-    $wgSmjExtraDelimitersInlineMath = [ [ '$', '$' ] ];
-    $wgSmjExtraDelimitersDisplayMath = [ [ '$$', '$$' ] ];
+    $wgSmjDelimitersEnabled = true;
+    $wgSmjDelimitersInlineMath = [ [ '$', '$' ] ];
+    $wgSmjDelimitersDisplayMath = [ [ '$$', '$$' ] ];
   examples:
     - "<chem>CO2 + C -> 2 CO</chem>"
     - "''Italic'' works."
@@ -43,9 +43,9 @@
 - name: custom02
   addDiffShot: true
   settings: |
-    $wgSmjExtraDelimitersEnabled = true;
-    $wgSmjExtraDelimitersInlineMath = [ [ '$', '$' ] ];
-    $wgSmjExtraDelimitersDisplayMath = [ [ '$$', '$$' ] ];
+    $wgSmjDelimitersEnabled = true;
+    $wgSmjDelimitersInlineMath = [ [ '$', '$' ] ];
+    $wgSmjDelimitersDisplayMath = [ [ '$$', '$$' ] ];
     // Don't: the default is already good.
     // Blanked to show diffs rendering unnecessarily.
     $wgSmjIgnoreHtmlClass = 'mathjax_ignore';

@@ -1,11 +1,11 @@
 mw.hook( 'wikipage.content' ).add( function ( $content ) {
 window.MathJax = {
   tex: {
-    inlineMath: mw.config.get('wgSmjExtraDelimitersInlineMath').concat([['[math]','[/math]']]),
-    displayMath: mw.config.get('wgSmjExtraDelimitersDisplayMath'),
+    inlineMath: mw.config.get('wgSmjDelimitersInlineMath').concat([['[math]','[/math]']]),
+    displayMath: mw.config.get('wgSmjDelimitersDisplayMath'),
     processEnvironments: true,
-    processRefs: mw.config.get('wgSmjExtraDelimitersEnabled'),
-    processEscapes: mw.config.get('wgSmjExtraDelimitersEnabled'),
+    processRefs: mw.config.get('wgSmjDelimitersEnabled'),
+    processEscapes: mw.config.get('wgSmjDelimitersEnabled'),
     packages: mw.config.exists('smjPreloadChem') ? {'[+]': ['autoload','mhchem']} : {'[+]': ['autoload']},
     macros: {
       AA: "{\u00c5}",
@@ -125,7 +125,7 @@ window.MathJax = {
     load: ['ui/safe','[tex]/autoload'].concat(mw.config.exists('smjPreloadChem') ? ['[tex]/mhchem'] : [])
   },
   startup: {
-    elements: mw.config.get('wgSmjExtraDelimitersEnabled') ? null : ["span.smj-container"],
+    elements: mw.config.get('wgSmjDelimitersEnabled') ? null : ["span.smj-container"],
     pageReady: () => {
       return MathJax.startup.defaultPageReady().then(() => {
         document.querySelectorAll("span.smj-container > .MathJax").forEach((mjx) => {
