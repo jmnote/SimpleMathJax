@@ -4,7 +4,7 @@
 	"author": "jmnote",
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
-	"license-name": "GPL-2.0+",
+	"license-name": "MIT",
 	"type": "parserhook",
 	"requires": {
 		"MediaWiki": ">= 1.43.0"
