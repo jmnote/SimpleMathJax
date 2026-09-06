@@ -41,8 +41,23 @@ $wgSmjCdnEnabled = false;
 When working from the Git repository, initialize or update the bundled
 MathJax submodule with `make local-mathjax` — see
 [Updating MathJax](development.md#updating-mathjax) for version
-selection. Normal extension packages already include the bundled MathJax
-resources and do not require Git commands.
+selection. The `resources/MathJax` directory is a Git submodule, and
+GitHub's automatically generated release source archives (the "Source
+code (zip/tar.gz)" links on a release page) do not include submodule
+contents — only an empty `resources/MathJax` directory. If you set
+`$wgSmjCdnEnabled = false`, use one of these instead:
+
+- Download the `SimpleMathJax-<version>-with-mathjax.tar.gz` asset
+  attached to the corresponding [release](https://github.com/jmnote/SimpleMathJax/releases),
+  which already has the MathJax submodule's contents included.
+- Or clone the repository (`git clone --recurse-submodules`, or run
+  `git submodule update --init` in an existing checkout) so
+  `resources/MathJax/tex-chtml.js` and the other bundled files are
+  actually present.
+
+Otherwise local rendering will fail. This doesn't apply when using the
+CDN (the default), which fetches MathJax from jsDelivr instead of the
+bundled files.
 
 ### `$wgSmjScale`
 

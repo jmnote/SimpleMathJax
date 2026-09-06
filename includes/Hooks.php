@@ -62,10 +62,17 @@ class Hooks {
 	}
 
 	// $pattern is an admin-supplied regex fragment with no delimiter of its
-	// own, so avoid one that could occur inside it.
-	private static function matchesIgnoreHtmlClass( string $pattern, string $class ): bool {
+	// own, so avoid one that could occur inside it. The pattern is anchored
+	// to whole space-delimited class tokens, mirroring the
+	// "(?:^| )(?:pattern)(?: |$)" boundary MathJax itself applies to its
+	// own ignoreHtmlClass option (see resources/MathJax/core.js), so e.g.
+	// "comment" matches class="comment" but not class="commentary".
+	// Public (like applyRevisionOverrides below) so it's unit-testable
+	// without a MediaWiki bootstrap.
+	public static function matchesIgnoreHtmlClass( string $pattern, string $class ): bool {
 		$delimiter = strpos( $pattern, '~' ) === false ? '~' : "\x01";
-		$result = preg_match( $delimiter . $pattern . $delimiter, $class );
+		$anchored = '(?:^| )(?:' . $pattern . ')(?: |$)';
+		$result = preg_match( $delimiter . $anchored . $delimiter, $class );
 		return $result === 1;
 	}
 
@@ -146,7 +153,14 @@ class Hooks {
 		$isIgnored = self::$ignoreHtmlClass !== ''
 			&& self::matchesIgnoreHtmlClass( self::$ignoreHtmlClass, $attributes["class"] );
 		if ( $isIgnored ) {
-			unset( $attributes["style"] );
+			// Strip only the placeholder opacity this method defaults to
+			// while MathJax hasn't run yet; an editor-supplied "style" (via
+			// $wgSmjAllowedAttributes) already replaced that default above
+			// and must be kept, since an ignored element is never typeset
+			// and so never gets its opacity reset to 1 either.
+			if ( !isset( $validatedAttribs["style"] ) ) {
+				unset( $attributes["style"] );
+			}
 			$element = Html::Element( "span", $attributes, $tex );
 		} else {
 			if ( !isset( $attributes["smj-debug"] ) && !isset( $args["smj-debug"] ) ) {
