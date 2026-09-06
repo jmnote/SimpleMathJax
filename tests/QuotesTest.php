@@ -1,15 +1,7 @@
 <?php
-/**
- * Pure-PHP regression tests for SimpleMathJaxQuotes (no MediaWiki bootstrap
- * required). Run with: php tests/SimpleMathJaxQuotesTest.php
- *
- * Covers the correctness issues raised in review of PR #66
- * (https://github.com/jmnote/SimpleMathJax/pull/66#issuecomment-5545388668):
- * empty-string delimiters hanging the scan, malformed delimiter entries
- * fataling, and nested same-name \begin/\end mismatching.
- */
+use MediaWiki\Extension\SimpleMathJax\Quotes;
 
-require __DIR__ . '/../SimpleMathJaxQuotes.php';
+require __DIR__ . '/../includes/Quotes.php';
 
 $failures = 0;
 
@@ -30,7 +22,7 @@ function assert_same( $name, $expected, $actual ) {
 }
 
 function run( $text, $inline = [], $display = [], $processEscapes = true, $protectEnvironments = true ) {
-	return SimpleMathJaxQuotes::protectQuotesInMath(
+	return Quotes::protectQuotesInMath(
 		$text, 'protect_marker', $inline, $display, $processEscapes, $protectEnvironments
 	);
 }
