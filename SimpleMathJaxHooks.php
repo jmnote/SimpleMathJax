@@ -5,6 +5,9 @@ class SimpleMathJaxHooks {
 	private static $useChem;
 	private static $wrapDisplaystyle;
 	private static $enableHtmlAttributes;
+	private static $directMathJax;
+	private static $displayMath;
+	private static $extraInlineMath;
 
 	public static function onParserFirstCallInit( Parser $parser ) {
 		global $wgOut, $wgSmjUseCdn, $wgSmjUseChem, $wgSmjDirectMathJax, $wgSmjEnableMenu,
@@ -47,6 +50,15 @@ class SimpleMathJaxHooks {
 		self::$useChem = $config["wgSmjUseChem"];
 		self::$wrapDisplaystyle = $config["wgSmjWrapDisplaystyle"];
 		self::$enableHtmlAttributes = $config["wgSmjEnableHtmlAttributes"];
+
+		// Cached for onInternalParseBeforeLinks(), which otherwise has no way
+		// to see $wgSmjConfigByRevision overrides applied above — reading the
+		// raw globals there could protect quotes for a different mode/delimiter
+		// set than what the client (built from this same effective $config)
+		// actually parses on a wiki using per-revision overrides.
+		self::$directMathJax = $config["wgSmjDirectMathJax"];
+		self::$displayMath = is_array( $config["wgSmjDisplayMath"] ) ? $config["wgSmjDisplayMath"] : [];
+		self::$extraInlineMath = is_array( $config["wgSmjExtraInlineMath"] ) ? $config["wgSmjExtraInlineMath"] : [];
 
 		if ( $config["wgSmjDirectMathJax"] !== 'none' ) {
 			$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
@@ -130,12 +142,13 @@ class SimpleMathJaxHooks {
 	 *
 	 * Runs only when direct $…$/$$…$$ parsing is enabled (mode 'full'/'env');
 	 * in 'none' mode MathJax handles only <math>/<chem> tags, whose content
-	 * is already protected from wikitext parsing.
+	 * is already protected from wikitext parsing. Reads the effective,
+	 * revision-overridden config cached by onParserFirstCallInit() rather
+	 * than the raw globals, so this always protects for the same mode and
+	 * delimiters the client will actually parse with.
 	 */
 	public static function onInternalParseBeforeLinks( $parser, &$text, $stripState ) {
-		global $wgSmjDirectMathJax, $wgSmjDisplayMath, $wgSmjExtraInlineMath;
-
-		if ( $wgSmjDirectMathJax === 'none' ) {
+		if ( self::$directMathJax === 'none' ) {
 			return;
 		}
 
@@ -144,10 +157,10 @@ class SimpleMathJaxHooks {
 			static function ( $run ) use ( $parser ) {
 				return $parser->insertStripItem( $run );
 			},
-			$wgSmjExtraInlineMath,
-			$wgSmjDisplayMath,
-			true, // processEscapes — $wgSmjDirectMathJax 'full'
-			true  // \begin…\end environments
+			self::$extraInlineMath,
+			self::$displayMath,
+			self::$directMathJax === 'full', // processEscapes — ext.SimpleMathJax.js only sets this in 'full' mode
+			true // \begin…\end environments
 		);
 	}
 }
