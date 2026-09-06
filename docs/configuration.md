@@ -114,7 +114,7 @@ class, if `class` is allowed via
 [`$wgSmjAllowedAttributes`](#wgsmjallowedattributes) (empty by default).
 `comment` and `diff-(context|addedline|deletedline)` match what MediaWiki
 puts on edit-summary and diff-table elements, protecting them — though only
-if [`$wgSmjDelimitersEnabled`](#wgsmjextradelimitersenabled) is on (see
+if [`$wgSmjDelimitersEnabled`](#wgsmjdelimitersenabled) is on (see
 [Rendering internals](development.md#rendering-internals) for why).
 
 **Don't** replace the whole pattern with just your own class when extra
