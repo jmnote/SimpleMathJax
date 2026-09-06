@@ -51,9 +51,23 @@ class SimpleMathJaxQuotes {
 		}
 
 		// Longest start delimiters first ($$ before $, \[ before \() — the
-		// MathJax sortLength ordering.
+		// MathJax sortLength ordering. Entries are caller-supplied config
+		// (e.g. $wgSmjExtraInlineMath), so validate shape defensively: a
+		// malformed or empty-string pair would otherwise fatal or, worse,
+		// never advance $i below and hang the parse (see findClose()).
 		$starts = [];
-		foreach ( array_merge( $displayDelims, $inlineDelims ) as [ $open, $close ] ) {
+		foreach ( array_merge( $displayDelims, $inlineDelims ) as $pair ) {
+			if ( !is_array( $pair ) || count( $pair ) < 2 ) {
+				continue;
+			}
+			// array_values() re-indexes from 0: a pair with non-sequential or
+			// associative keys (e.g. [1 => '$', 2 => '$']) would otherwise
+			// leave $open undefined (list-assignment reads keys 0/1 by
+			// position) and emit a warning before being filtered below.
+			[ $open, $close ] = array_values( $pair );
+			if ( !is_string( $open ) || !is_string( $close ) || $open === '' || $close === '' ) {
+				continue;
+			}
 			$starts[$open] = $close;
 		}
 		uksort( $starts, static function ( $a, $b ) {
@@ -86,8 +100,14 @@ class SimpleMathJaxQuotes {
 				$envEnd = strpos( $text, '}', $i + 7 );
 				if ( $envEnd !== false ) {
 					$env = substr( $text, $i + 7, $envEnd - $i - 7 );
+					$open = '\\begin{' . $env . '}';
 					$close = '\\end{' . $env . '}';
-					$end = self::findClose( $text, $envEnd + 1, $close );
+					// Pass $open as the nesting delimiter: a same-name
+					// \begin{env} nested inside must be balanced by its own
+					// \end{env} before this one closes, or a directly nested
+					// \begin{matrix}\begin{matrix}...\end{matrix}\end{matrix}
+					// would match the outer's close on the inner \end.
+					$end = self::findClose( $text, $envEnd + 1, $close, $open );
 					if ( $end !== -1 ) {
 						// Content runs from after \begin{…} up to the start
 						// of \end{…}; findClose returns just PAST the close.
@@ -147,21 +167,36 @@ class SimpleMathJaxQuotes {
 	 * @param string $text
 	 * @param int $from
 	 * @param string $close
+	 * @param ?string $nestOpen when set (used for \begin{env}…\end{env}),
+	 *   a same-name nested opener increments a depth counter so an inner
+	 *   \end{env} closes the inner \begin{env} rather than this one.
 	 * @return int index just past the closing delimiter, or -1
 	 */
-	private static function findClose( string $text, int $from, string $close ): int {
+	private static function findClose( string $text, int $from, string $close, ?string $nestOpen = null ): int {
 		$len = strlen( $text );
 		$cL = strlen( $close );
+		$oL = $nestOpen !== null ? strlen( $nestOpen ) : 0;
 		$braces = 0;
+		$depth = 0;
 		$i = $from;
 		while ( $i + $cL <= $len ) {
 			if ( substr( $text, $i, $cL ) === $close ) {
 				if ( $braces === 0 ) {
-					return $i + $cL;
+					if ( $depth === 0 ) {
+						return $i + $cL;
+					}
+					$depth--;
+					$i += $cL;
+					continue;
 				}
 				// Close delimiter inside a braced group is math content
 				// (MathJax skips it and keeps scanning).
 				$i += $cL;
+				continue;
+			}
+			if ( $braces === 0 && $nestOpen !== null && substr( $text, $i, $oL ) === $nestOpen ) {
+				$depth++;
+				$i += $oL;
 				continue;
 			}
 			$ch = $text[$i];
