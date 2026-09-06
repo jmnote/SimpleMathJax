@@ -5,9 +5,9 @@
 #
 # Usage: hack/demo/demo.sh [up|down] [demo]
 #        hack/demo/demo.sh screenshot [demo]
-# `demo` is a top-level key in docs/demos.yaml (e.g. default, directMath);
+# `demo` is a top-level key in hack/demo/demos.yaml (e.g. default01, custom01);
 # its capture is saved to docs/screenshots/screenshot-<demo>.png. Defaults
-# to `default`; `screenshot` with no `demo` given screenshots every demo in
+# to `default01`; `screenshot` with no `demo` given screenshots every demo in
 # demos.yaml.
 set -euo pipefail
 DEMO_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -28,26 +28,39 @@ json_field() {
 	php -r 'echo json_decode(stream_get_contents(STDIN), true)["query"]["tokens"][$argv[1]];' "$1"
 }
 
+# Extracts the new revision id from an action=edit API JSON response, so a
+# demo with `addDiffShot: true` can link straight to "diff against the
+# previous revision" without a second API round-trip to look it up.
+edit_new_revid() {
+	php -r 'echo json_decode(stream_get_contents(STDIN), true)["edit"]["newrevid"];'
+}
+
 # Prints a demo's `settings:` block from docs/demos.yaml — the raw PHP
 # lines appended into LocalSettings.php (see up()) and shown on the demo
 # page in a <syntaxhighlight lang="php"> block. See render.php.
 local_settings_body() {
-	php "$DEMO_DIR/render.php" docs/demos.yaml "$1" settings
+	php "$DEMO_DIR/render.php" "$DEMO_DIR/demos.yaml" "$1" settings
 }
 
 # Prints a demo's `examples:` list from docs/demos.yaml, each rendered as a
 # syntaxhighlight block next to its live render, in a responsive flex row.
 # See render.php.
 render_examples() {
-	php "$DEMO_DIR/render.php" docs/demos.yaml "$1" examples
+	php "$DEMO_DIR/render.php" "$DEMO_DIR/demos.yaml" "$1" examples
 }
 
-# Logs in as Admin and edits Main Page with a small demo showing primes
-# inside $...$/$$...$$ surviving wikitext emphasis parsing, prefixed with the
-# demo's own `settings:` block (wrapped in <syntaxhighlight>) for
-# context. Re-run on every up so editing a demo's entry in docs/demos.yaml and
-# re-running `up` (or `screenshot`) always shows the latest content.
-seed_main_page() {
+# Logs in as Admin and edits a page called "Demo" (not "Main Page", which
+# the installer already fills with its own default content) with a small
+# demo showing primes inside $...$/$$...$$ surviving wikitext emphasis
+# parsing, prefixed with the demo's own `settings:` block (wrapped in
+# <syntaxhighlight>) for context. Blanks the page first so the demo edit
+# always has an empty previous revision to diff against — a real
+# two-column diff, not just a "page creation" summary — regardless of how
+# many times this runs against the same wiki (see screenshot_one's
+# addDiffShot handling). Re-run on every up so editing a demo's entry in
+# docs/demos.yaml and re-running `up` (or `screenshot`) always shows the
+# latest content.
+seed_demo_page() {
 	local demo="$1"
 	local jar url="http://localhost:$PORT/api.php"
 	jar=$(mktemp)
@@ -60,6 +73,11 @@ seed_main_page() {
 	local csrf_token
 	csrf_token=$(curl -s -b "$jar" -c "$jar" "$url?action=query&meta=tokens&format=json" | json_field csrftoken)
 
+	curl -s -b "$jar" -c "$jar" \
+		--data-urlencode "action=edit" --data-urlencode "title=Demo" \
+		--data-urlencode "text=" \
+		--data-urlencode "token=$csrf_token" --data-urlencode "format=json" "$url" >/dev/null
+
 	local page
 	page=$(mktemp)
 	{
@@ -70,15 +88,20 @@ seed_main_page() {
 		render_examples "$demo"
 	} > "$page"
 
-	curl -s -b "$jar" -c "$jar" \
-		--data-urlencode "action=edit" --data-urlencode "title=Main Page" \
+	local edit_response
+	edit_response=$(curl -s -b "$jar" -c "$jar" \
+		--data-urlencode "action=edit" --data-urlencode "title=Demo" \
 		--data-urlencode "text@$page" \
-		--data-urlencode "token=$csrf_token" --data-urlencode "format=json" "$url" >/dev/null
+		--data-urlencode "token=$csrf_token" --data-urlencode "format=json" "$url")
 	rm -f "$jar" "$page"
-	echo "==> Seeded Main Page with the $demo demo"
+	echo "$edit_response" | edit_new_revid > "$DATA/last_revid"
+	echo "==> Seeded the Demo page with the $demo demo"
 }
 
 wait_for_wiki() {
+	# Main Page, not Demo: it's the installer's own default page, so it
+	# already exists the moment the wiki responds — unlike Demo, which
+	# seed_demo_page hasn't created yet at this point.
 	for _ in $(seq 1 30); do
 		curl -sf -o /dev/null "http://localhost:$PORT/index.php/Main_Page" && return 0
 		sleep 1
@@ -88,7 +111,7 @@ wait_for_wiki() {
 }
 
 up() {
-	local demo="${1:-default}"
+	local demo="${1:-default01}"
 	mkdir -p "$DATA"
 	chmod 777 "$DATA"
 	if [ ! -f "$DATA/LocalSettings.php" ]; then
@@ -103,7 +126,7 @@ up() {
 				--scriptpath "" --server "http://localhost:$PORT" \
 				--pass "$PASS" \
 				--extensions SyntaxHighlight_GeSHi \
-				"SimpleMathJax Demo" Admin
+				SimpleMathJax Admin
 		local_settings_body "$demo" >> "$DATA/LocalSettings.php"
 	fi
 	docker rm -f "$NAME" >/dev/null 2>&1 || true
@@ -114,7 +137,7 @@ up() {
 		-v "$PWD:/var/www/html/extensions/SimpleMathJax:ro" \
 		"$IMAGE"
 	echo "==> Wiki running at http://localhost:$PORT (Admin / $PASS)"
-	wait_for_wiki && seed_main_page "$demo"
+	wait_for_wiki && seed_demo_page "$demo"
 }
 
 # Stops the container and wipes its data, so the next `up` reinstalls fresh
@@ -128,11 +151,17 @@ down() {
 # Screenshots one demo's page with a real browser (Puppeteer); see
 # screenshot.mjs. Forces a fresh install (down, then up) so the demo's own
 # `settings:` block is guaranteed to be the one in effect, then saves to
-# docs/screenshots/screenshot-<demo>.png. A demo with `addMenuShot: true`
+# docs/screenshots/screenshot-<demo>.png. A demo with `addRightClickShot: true`
 # (see render.php) gets one extra screenshot,
-# docs/screenshots/screenshot-<demo>-menu.png, after right-clicking its
+# docs/screenshots/screenshot-<demo>-rightclick.png, after right-clicking its
 # first mjx-container — needed to show MathJax's context menu, e.g. for
-# $wgSmjEnableMenu, since the normal capture never triggers one.
+# $wgSmjEnableMenu, since the normal capture never triggers one. A demo with
+# `addDiffShot: true` gets a separate extra screenshot,
+# docs/screenshots/screenshot-<demo>-diff.png, of the Demo page's diff
+# against the blank revision seed_demo_page saves right before its real
+# edit — needed to show $wgSmjIgnoreHtmlClass keeping bare-delimiter
+# scanning out of diff views, since a diff is a different page/URL entirely,
+# not something a click on the normal capture can reveal.
 screenshot_one() {
 	local demo="$1"
 	down
@@ -142,17 +171,28 @@ screenshot_one() {
 		( cd "$DEMO_DIR" && npm install )
 	fi
 	local right_click=""
-	if [ "$(php "$DEMO_DIR/render.php" docs/demos.yaml "$demo" addmenushot)" = "true" ]; then
+	if [ "$(php "$DEMO_DIR/render.php" "$DEMO_DIR/demos.yaml" "$demo" addrightclickshot)" = "true" ]; then
 		right_click=mjx-container
 	fi
 	mkdir -p "$PWD/docs/screenshots"
 	(
 		cd "$DEMO_DIR" &&
+		URL="http://localhost:$PORT/index.php/Demo" \
 		OUT="$PWD/../../docs/screenshots/screenshot-$demo.png" \
 		RIGHT_CLICK="$right_click" \
-		RIGHT_CLICK_OUT="$PWD/../../docs/screenshots/screenshot-$demo-menu.png" \
+		RIGHT_CLICK_OUT="$PWD/../../docs/screenshots/screenshot-$demo-rightclick.png" \
 		node screenshot.mjs
 	)
+	if [ "$(php "$DEMO_DIR/render.php" "$DEMO_DIR/demos.yaml" "$demo" adddiffshot)" = "true" ]; then
+		local revid
+		revid=$(<"$DATA/last_revid")
+		(
+			cd "$DEMO_DIR" &&
+			URL="http://localhost:$PORT/index.php?title=Demo&diff=prev&oldid=$revid" \
+			OUT="$PWD/../../docs/screenshots/screenshot-$demo-diff.png" \
+			node screenshot.mjs
+		)
+	fi
 }
 
 # Screenshots every demo in docs/demos.yaml when none is named.
@@ -161,8 +201,12 @@ screenshot() {
 		screenshot_one "$1"
 		return
 	fi
+	# Regenerating every demo: clear old captures first so a demo that got
+	# renamed or removed from demos.yaml doesn't leave a stale screenshot
+	# behind under its old name.
+	rm -f "$PWD/docs/screenshots"/screenshot-*.png
 	local demo
-	for demo in $(sed -n 's/^- name: //p' docs/demos.yaml); do
+	for demo in $(sed -n 's/^- name: //p' "$DEMO_DIR/demos.yaml"); do
 		screenshot_one "$demo"
 	done
 }

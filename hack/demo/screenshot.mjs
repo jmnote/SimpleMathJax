@@ -9,24 +9,32 @@
 //
 // RIGHT_CLICK, when set, takes one extra screenshot (to RIGHT_CLICK_OUT)
 // after right-clicking the LAST element matching that CSS selector — used
-// by demo.sh's `addMenuShot:` field to also show MathJax's context menu
+// by demo.sh's `addRightClickShot: true` field to also show MathJax's context menu
 // (only visible on right-click, so the plain OUT capture can't demonstrate
 // $wgSmjEnableMenu on its own). The normal OUT capture always happens
 // first, unaffected by this.
 import puppeteer from 'puppeteer';
+import fs from 'node:fs';
+import path from 'node:path';
 
 // The container/CI environment this runs in has no CJK fonts installed, so
 // Korean/Japanese/Chinese text in a demo page (including inside MathJax's
 // own output) would render blank. Rather than depend on system fonts
-// (apt-get, different per host), pull in web fonts and apply them as
-// fallbacks — this keeps captures reproducible wherever Chromium runs, as
-// long as it can reach Google Fonts. One sans (regular text) and one serif
-// (MathJax defaults to a serif TeX look), so each keeps the weight it would
-// normally have.
-const CJK_FONT_CSS =
-	"https://fonts.googleapis.com/css2?family=Noto+Sans+KR&family=Noto+Serif+KR&display=swap";
+// (apt-get, different per host), load pinned Fontsource packages and apply
+// them as fallbacks. One sans (regular text) and one serif (MathJax defaults
+// to a serif TeX look), so each keeps the weight it would normally have.
+const DEMO_DIR = path.dirname(new URL(import.meta.url).pathname);
 
-const url = process.env.URL ?? 'http://localhost:8080/index.php/Main_Page';
+function localFontCss(packageName) {
+	const packageDir = path.join(DEMO_DIR, 'node_modules', '@fontsource', packageName);
+	let css = fs.readFileSync(path.join(packageDir, 'index.css'), 'utf8');
+	return css.replace(/url\(\.\/files\/([^\)]+)\)/g, (match, filename) => {
+		const font = fs.readFileSync(path.join(packageDir, 'files', filename));
+		return `url(data:font/woff2;base64,${font.toString('base64')})`;
+	});
+}
+
+const url = process.env.URL ?? 'http://localhost:8080/index.php/Demo';
 const outfile = process.env.OUT ?? '../../docs/demo1-screenshot.png';
 
 // --no-sandbox is needed when running as root (e.g. in CI or a dev
@@ -47,18 +55,29 @@ try {
 	// at all, so nothing to substitute. `!important` is needed because
 	// these are all higher-priority than inheriting from `body`.
 	//
+	// The per-script substitution CDP offers for exactly this
+	// (`Page.setFontFamilies`) would avoid hand-listing every selector that
+	// names its own font-family below, but it's a no-op in this headless
+	// Chromium (call succeeds, page still shows tofu) — tried and reverted,
+	// see git history if revisiting.
+	//
 	// mjx-utext is scoped narrowly, not every mjx-container descendant:
 	// stretchy delimiters like \left(...\right) are sized glyphs from
 	// MathJax's own font (e.g. class "TEX-S2"), not text — forcing a web
 	// font onto those too breaks their metrics, so `\left(` stops growing
 	// to match its contents. pre/code keep "monospace" first so Latin text
 	// stays aligned, with the web font only as a per-glyph fallback for CJK.
-	await page.addStyleTag({ url: CJK_FONT_CSS });
+	await page.addStyleTag({ content: localFontCss('noto-sans-kr') });
+	await page.addStyleTag({ content: localFontCss('noto-serif-kr') });
 	await page.addStyleTag({
 		content: `
 			body { font-family: 'Noto Sans KR', sans-serif !important; }
 			mjx-utext { font-family: 'Noto Serif KR', serif !important; }
 			pre, code { font-family: monospace, 'Noto Sans KR' !important; }
+			.diff-addedline, .diff-deletedline, .diff-context,
+			.mw-diff-inline-added, .mw-diff-inline-deleted,
+			.mw-diff-inline-moved, .mw-diff-inline-changed,
+			.mw-diff-inline-context { font-family: monospace, 'Noto Sans KR' !important; }
 		`,
 	});
 	await page.evaluate(() => document.fonts.ready);

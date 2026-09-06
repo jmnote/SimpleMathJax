@@ -15,14 +15,16 @@
 //                                        syntaxhighlight block next to its
 //                                        live render, laid out in a
 //                                        responsive flex row.
-//   render.php <path> <demo> addmenushot prints "true" if the demo has
-//                                        `addMenuShot: true`, else nothing —
-//                                        see screenshot.mjs's RIGHT_CLICK.
+//   render.php <path> <demo> addrightclickshot prints "true" if the demo has
+//                                        `addRightClickShot: true`.
+//   render.php <path> <demo> adddiffshot prints "true" if the demo has
+//                                        `addDiffShot: true`.
 //
 // Only this narrow shape is supported, not general YAML: a top-level
 // sequence of demo items (`- name: <demo>`), each an optional `settings:`
-// literal block scalar (`|`), an `examples:` block sequence of
-// double-quoted scalars, and an optional `addMenuShot: true` plain scalar.
+// literal block scalar (`|`), an `examples:` block sequence whose items are
+// either quoted scalars or their own `- |` literal block scalar, and an
+// optional `addRightClickShot: true` / `addDiffShot: true` scalar.
 // YAML's C-style escaping for \\, \" and \n inside a double-quoted scalar
 // is a strict subset of JSON's, so each quoted example is unescaped by
 // wrapping it in JSON quotes and handing it to json_decode — this project
@@ -48,6 +50,10 @@ foreach ( file( $path ) as $line ) {
 		break;
 	}
 	$lines[] = $line;
+}
+if ( !$capturing ) {
+	fwrite( STDERR, "render.php: no demo named '$demo' found in $path\n" );
+	exit( 1 );
 }
 $indent = null;
 foreach ( $lines as $line ) {
@@ -97,24 +103,67 @@ if ( $mode === 'settings' ) {
 
 if ( $mode === 'examples' ) {
 	$examples = [];
-	foreach ( $lines as $line ) {
+	$count = count( $lines );
+	for ( $i = 0; $i < $count; $i++ ) {
+		$line = $lines[$i];
 		if ( preg_match( '/^\s*-\s*"(.*)"\s*$/', $line, $m ) ) {
 			$examples[] = json_decode( "\"{$m[1]}\"" );
+			continue;
+		}
+		if ( preg_match( "/^\s*-\s*'(.*)'\s*$/", $line, $m ) ) {
+			// YAML single-quoted scalars escape a literal apostrophe as ''.
+			$examples[] = str_replace( "''", "'", $m[1] );
+			continue;
+		}
+		// A `- |` literal block scalar: every following line indented more
+		// than the "-" is taken verbatim (no quote-escaping) until indentation
+		// drops back to the item's own level or lower, then dedented by its
+		// own common indent and trailing blank lines clipped — long examples
+		// (e.g. a multi-line continued fraction) read better this way than
+		// escaped into one quoted line.
+		if ( preg_match( '/^(\s*)-\s*\|\s*$/', $line, $m ) ) {
+			$itemIndent = strlen( $m[1] );
+			$blockLines = [];
+			$blockIndent = null;
+			for ( $i++; $i < $count; $i++ ) {
+				$next = $lines[$i];
+				if ( trim( $next ) === '' ) {
+					// Each non-blank line below still carries its own
+					// trailing "\n" from file(), so joining with '' (not a
+					// "\n" glue) reproduces the source exactly — matching
+					// how the settings-mode block above is joined.
+					$blockLines[] = "\n";
+					continue;
+				}
+				$nextIndent = strlen( $next ) - strlen( ltrim( $next ) );
+				if ( $nextIndent <= $itemIndent ) {
+					break;
+				}
+				$blockIndent ??= $nextIndent;
+				$blockLines[] = substr( $next, $blockIndent );
+			}
+			$i--; // the for loop's own $i++ will land back on the line that broke us out
+			$examples[] = rtrim( implode( '', $blockLines ) );
 		}
 	}
-	echo "<div style=\"display:flex;flex-wrap:wrap;gap:1em;\">\n\n";
+	// Column fragmentation ("column-count" below) makes the container its
+	// own block formatting context, so the first item's own top margin (a
+	// browser default on <pre>, which <syntaxhighlight> renders as) doesn't
+	// collapse into the page above it the way it normally would — visible
+	// as a gap above column 1 only, since a later column's break point
+	// isn't a "start" and so never re-applies that margin. Pull the whole
+	// block up by that amount to cancel it out.
+	echo '<div style="column-count: 2; column-rule: 1px solid #ccc">';
 	foreach ( $examples as $example ) {
-		echo "<div class=\"mw-message-box\" style=\"flex:1 1 auto;min-width:240px;overflow-x:auto;\">\n";
-		echo "<syntaxhighlight lang=\"tex\">\n$example\n</syntaxhighlight>\n\n";
-		echo "$example\n</div>\n\n";
+		echo "<syntaxhighlight lang=\"tex\">$example</syntaxhighlight> $example\n";
 	}
-	echo "</div>\n";
+	echo '</div>';
 	exit;
 }
 
-if ( $mode === 'addmenushot' ) {
+if ( $mode === 'addrightclickshot' ) {
 	foreach ( $lines as $line ) {
-		if ( preg_match( '/^addMenuShot:\s*true\s*$/', $line ) ) {
+		if ( preg_match( '/^addRightClickShot:\s*true\s*$/', $line ) ) {
 			echo "true\n";
 			break;
 		}
@@ -122,5 +171,15 @@ if ( $mode === 'addmenushot' ) {
 	exit;
 }
 
-fwrite( STDERR, "render.php: unknown mode '$mode' (want 'settings', 'examples' or 'addmenushot')\n" );
+if ( $mode === 'adddiffshot' ) {
+	foreach ( $lines as $line ) {
+		if ( preg_match( '/^addDiffShot:\s*true\s*$/', $line ) ) {
+			echo "true\n";
+			break;
+		}
+	}
+	exit;
+}
+
+fwrite( STDERR, "render.php: unknown mode '$mode' (want 'settings', 'examples', 'addrightclickshot' or 'adddiffshot')\n" );
 exit( 1 );

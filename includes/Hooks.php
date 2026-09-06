@@ -9,51 +9,47 @@ use Parser;
 use PPFrame;
 
 class Hooks {
-	private const DIRECT_MATH_DEFAULTS = [
+	private const EXTRA_DELIMITERS_DEFAULTS = [
 		'enabled' => false,
 		'inlineMath' => [],
 		'displayMath' => [],
 	];
 
-	private static bool $displaystyle            = false;
-	private static bool $enableRenderAttributes  = true;
-	private static array $allowedAttributes      = [];
-	private static array $directMath             = self::DIRECT_MATH_DEFAULTS;
+	private static array $allowedAttributes = [];
+	private static array $extraDelimiters   = self::EXTRA_DELIMITERS_DEFAULTS;
+	private static string $ignoreHtmlClass  = '';
 
 	public static function onParserFirstCallInit( Parser $parser ) {
-		global $wgOut, $wgSmjUseCdn, $wgSmjEnableMenu,
-		$wgSmjDirectMath, $wgSmjIgnoreHtmlClass,
-		$wgSmjScale, $wgSmjDisplayAlign, $wgSmjDisplaystyle,
-		$wgSmjEnableRenderAttributes, $wgSmjAllowedAttributes, $wgSmjRevisionOverrides;
+		global $wgOut, $wgSmjCdn, $wgSmjEnableMenu,
+		$wgSmjExtraDelimiters, $wgSmjIgnoreHtmlClass,
+		$wgSmjScale,
+		$wgSmjAllowedAttributes, $wgSmjRevisionOverrides;
 
 		$config = [
-			"wgSmjUseCdn"                  => $wgSmjUseCdn,
-			"wgSmjDirectMath"              => self::mergeDirectMath( $wgSmjDirectMath ),
-			"wgSmjIgnoreHtmlClass"         => $wgSmjIgnoreHtmlClass,
-			"wgSmjScale"                   => $wgSmjScale,
-			"wgSmjEnableMenu"              => $wgSmjEnableMenu,
-			"wgSmjDisplayAlign"            => $wgSmjDisplayAlign,
-			"wgSmjDisplaystyle"            => $wgSmjDisplaystyle,
-			"wgSmjEnableRenderAttributes"  => $wgSmjEnableRenderAttributes,
-			"wgSmjAllowedAttributes"       => $wgSmjAllowedAttributes,
+			"wgSmjCdn"               => $wgSmjCdn,
+			"wgSmjExtraDelimiters"   => self::mergeExtraDelimiters( $wgSmjExtraDelimiters ),
+			"wgSmjIgnoreHtmlClass"   => $wgSmjIgnoreHtmlClass,
+			"wgSmjScale"             => $wgSmjScale,
+			"wgSmjEnableMenu"        => $wgSmjEnableMenu,
+			"wgSmjAllowedAttributes" => $wgSmjAllowedAttributes,
 		];
 
 		$articlerev = (int)$wgOut->getRevisionId();
 		$config = self::applyRevisionOverrides( $config, $wgSmjRevisionOverrides, $articlerev );
 
-		$clientConfigVars = [ "wgSmjUseCdn", "wgSmjDirectMath",
-			"wgSmjIgnoreHtmlClass", "wgSmjScale", "wgSmjEnableMenu", "wgSmjDisplayAlign" ];
+		$clientConfigVars = [ "wgSmjCdn", "wgSmjExtraDelimiters",
+			"wgSmjIgnoreHtmlClass", "wgSmjScale", "wgSmjEnableMenu" ];
 		foreach ( $clientConfigVars as $varname ) {
 			$wgOut->addJsConfigVars( $varname, $config[$varname] );
 		}
 
-		self::$displaystyle           = $config["wgSmjDisplaystyle"];
-		self::$enableRenderAttributes = $config["wgSmjEnableRenderAttributes"];
-		self::$allowedAttributes      =
+		self::$allowedAttributes =
 			is_array( $config["wgSmjAllowedAttributes"] ) ? $config["wgSmjAllowedAttributes"] : [];
-		self::$directMath             = $config["wgSmjDirectMath"];
+		self::$extraDelimiters   = $config["wgSmjExtraDelimiters"];
+		self::$ignoreHtmlClass   =
+			is_string( $config["wgSmjIgnoreHtmlClass"] ) ? $config["wgSmjIgnoreHtmlClass"] : '';
 
-		if ( self::$directMath['enabled'] ) {
+		if ( self::$extraDelimiters['enabled'] ) {
 			$wgOut->addModules( [ 'ext.SimpleMathJax' ] );
 		}
 
@@ -61,15 +57,20 @@ class Hooks {
 		$parser->setHook( 'chem', __CLASS__ . '::renderChem' );
 	}
 
-	public static function mergeDirectMath( $value ): array {
-		return array_merge( self::DIRECT_MATH_DEFAULTS, is_array( $value ) ? $value : [] );
+	public static function mergeExtraDelimiters( $value ): array {
+		return array_merge( self::EXTRA_DELIMITERS_DEFAULTS, is_array( $value ) ? $value : [] );
 	}
 
-	/**
-	 * Apply $wgSmjRevisionOverrides on top of $config for the given revision id.
-	 * Pulled out of onParserFirstCallInit() as a pure function so it can be
-	 * unit-tested without a MediaWiki bootstrap (see tests/RevisionOverridesTest.php).
-	 */
+	// $pattern is an admin-supplied regex fragment with no delimiter of its
+	// own, so avoid one that could occur inside it.
+	private static function matchesIgnoreHtmlClass( string $pattern, string $class ): bool {
+		$delimiter = strpos( $pattern, '~' ) === false ? '~' : "\x01";
+		$result = preg_match( $delimiter . $pattern . $delimiter, $class );
+		return $result === 1;
+	}
+
+	// Apply $wgSmjRevisionOverrides on top of $config for the given revision id.
+	// A free function so it's unit-testable without a MediaWiki bootstrap.
 	public static function applyRevisionOverrides( array $config, array $overrides, int $articlerev ): array {
 		foreach ( $overrides as $confset ) {
 			if ( $articlerev == 0 ) {
@@ -98,7 +99,7 @@ class Hooks {
 				}
 
 				if ( array_key_exists( $key, $config ) ) {
-					$config[$key] = $key === "wgSmjDirectMath" ? self::mergeDirectMath( $value ) : $value;
+					$config[$key] = $key === "wgSmjExtraDelimiters" ? self::mergeExtraDelimiters( $value ) : $value;
 				}
 			}
 		}
@@ -109,53 +110,19 @@ class Hooks {
 		$parserOutput = $parser->getOutput();
 		$parserOutput->addModules( [ 'ext.SimpleMathJax' ] );
 
-		// The chem attribute just preloads mhchem (a JS optimization, not a
-		// rendering-behavior switch) and <chem>...</chem> always does the same
-		// thing regardless of $wgSmjEnableRenderAttributes (see renderChem()
-		// below), so <math chem> shouldn't be gated differently.
+		// Unconditional: this only preloads the mhchem JS package, unrelated
+		// to display handling.
 		if ( isset( $args["chem"] ) ) {
 			$parserOutput->setJsConfigVar( "smjPreloadChem", true );
 		}
 
-		if ( !self::$enableRenderAttributes ) {
-			// display= and inline-block are SimpleMathJax's own render-control
-			// attributes; when this setting is off they're ignored entirely, same as
-			// if they'd never been written on the <math> tag.
-			$args = array_diff_key( $args, array_flip( [ "display", "inline-block" ] ) );
-		}
-		if ( isset( $args["inline-block"] ) ) {
-			if ( isset( $args["display"] ) ) {
-				return self::renderError( 'SimpleMathJax: inline-block and display cannot be used together.' );
-			}
-			$tex = "\\displaystyle{ $tex }";
-		} elseif ( !isset( $args["display"] ) ) {
-			if ( self::$displaystyle ) {
-				$tex = "\\displaystyle{ $tex }";
-			}
-
-		} else {
-			switch ( $args["display"] ) {
-				case "":
-					break;
-				case "inline":
-					$tex = "\\textstyle{ $tex }";
-					break;
-				case "block":
-					break;
-				case "linebreak":
-					// Same block layout as "block", but also turns on MathJax's
-					// automatic line-breaking for this page (chtml.displayOverflow,
-					// see ext.SimpleMathJax.js — a MathJax 4+ feature) for equations
-					// too wide for their container, matching Math extension's
-					// display="linebreak".
-					$parserOutput->setJsConfigVar( "smjLinebreak", true );
-					break;
-				default:
-					return self::renderError( 'SimpleMathJax: invalid display="' . $args["display"] . '"' );
-			}
+		if ( isset( $args["display"] ) && !in_array( $args["display"], [ "", "inline", "block" ], true ) ) {
+			return self::renderError( 'SimpleMathJax: invalid display="' . $args["display"] . '"' );
 		}
 
-		return self::renderTex( $tex, $parser, $args );
+		// renderTex() applies \displaystyle{}/\textstyle{} itself, since it's
+		// only a default guess, not part of what the editor wrote.
+		return self::renderTex( $tex, $parser, $args, true );
 	}
 
 	public static function renderChem( ?string $tex, array $args, Parser $parser, PPFrame $frame ) {
@@ -163,26 +130,49 @@ class Hooks {
 		$parserOutput->addModules( [ 'ext.SimpleMathJax' ] );
 		$parserOutput->setJsConfigVar( "smjPreloadChem", true );
 
-		return self::renderTex( "\\ce{ $tex }", $parser, $args );
+		// Wrapping happens inside renderTex(), not here, so an ignored
+		// element (see below) shows the editor's original TeX rather than
+		// the \ce{} wrapper meant for MathJax.
+		return self::renderTex( $tex, $parser, $args, false, true );
 	}
 
-	private static function renderTex( ?string $tex, Parser $parser, array $args ) {
+	private static function renderTex(
+		?string $tex, Parser $parser, array $args, bool $mathTag, bool $wrapChem = false
+	) {
 		$hookContainer    = MediaWikiServices::getInstance()->getHookContainer();
 		$attributes       = [ "style" => "opacity:.5", "class" => "" ];
-		$allTags          = [ "class", "id", "title", "lang", "dir" ];
-		$inherit_tags     = array_intersect( $allTags, self::$allowedAttributes );
-		$validatedAttribs = Sanitizer::validateAttributes( $args, array_fill_keys( $inherit_tags, true ) );
+		$allowedAttributes = array_filter( self::$allowedAttributes, 'is_string' );
+		$validatedAttribs  = Sanitizer::validateAttributes(
+			$args,
+			array_fill_keys( $allowedAttributes, true )
+		);
 		$attributes       = array_merge( $attributes, $validatedAttribs );
 
 		$hookContainer->run( "SimpleMathJaxAttributes", [ &$attributes, $tex, $args ] );
-		if ( !isset( $attributes["smj-debug"] ) && !isset( $args["smj-debug"] ) ) {
-			$attributes["class"] .= " smj-container";
-		}
-
-		if ( isset( $args["display"] ) && in_array( $args["display"], [ "block", "linebreak" ], true ) ) {
-			$element = Html::Element( "span", $attributes, "\\begin{displaymjx}{$tex}\\end{displaymjx}" );
+		// An ignored element is never typeset, so it skips smj-container and
+		// the delimiter wrapping instead of showing them as literal text.
+		$isIgnored = self::$ignoreHtmlClass !== ''
+			&& self::matchesIgnoreHtmlClass( self::$ignoreHtmlClass, $attributes["class"] );
+		if ( $isIgnored ) {
+			unset( $attributes["style"] );
+			$element = Html::Element( "span", $attributes, $tex );
 		} else {
-			$element = Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
+			if ( !isset( $attributes["smj-debug"] ) && !isset( $args["smj-debug"] ) ) {
+				$attributes["class"] .= " smj-container";
+			}
+			if ( $wrapChem ) {
+				$tex = "\\ce{ $tex }";
+			}
+			if ( $mathTag ) {
+				if ( !isset( $args["display"] ) ) {
+					$tex = "\\displaystyle{ $tex }";
+				} elseif ( $args["display"] === "inline" ) {
+					$tex = "\\textstyle{ $tex }";
+				}
+			}
+			$element = isset( $args["display"] ) && $args["display"] === "block"
+				? Html::Element( "span", $attributes, "\\begin{displaymjx}{$tex}\\end{displaymjx}" )
+				: Html::Element( "span", $attributes, "[math]{$tex}[/math]" );
 		}
 		return [ $element, 'markerType' => 'nowiki' ];
 	}
@@ -194,7 +184,7 @@ class Hooks {
 	}
 
 	public static function onInternalParseBeforeLinks( $parser, &$text, $stripState ) {
-		if ( !self::$directMath['enabled'] ) {
+		if ( !self::$extraDelimiters['enabled'] ) {
 			return;
 		}
 
@@ -203,8 +193,8 @@ class Hooks {
 			static function ( $run ) use ( $parser ) {
 				return $parser->insertStripItem( $run );
 			},
-			self::$directMath['inlineMath'],
-			self::$directMath['displayMath'],
+			self::$extraDelimiters['inlineMath'],
+			self::$extraDelimiters['displayMath'],
 			true,
 			true
 		);

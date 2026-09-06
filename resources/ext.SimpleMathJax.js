@@ -1,11 +1,11 @@
 mw.hook( 'wikipage.content' ).add( function ( $content ) {
 window.MathJax = {
   tex: {
-    inlineMath: mw.config.get('wgSmjDirectMath').inlineMath.concat([['[math]','[/math]']]),
-    displayMath: mw.config.get('wgSmjDirectMath').displayMath,
+    inlineMath: mw.config.get('wgSmjExtraDelimiters').inlineMath.concat([['[math]','[/math]']]),
+    displayMath: mw.config.get('wgSmjExtraDelimiters').displayMath,
     processEnvironments: true,
-    processRefs: mw.config.get('wgSmjDirectMath').enabled,
-    processEscapes: mw.config.get('wgSmjDirectMath').enabled,
+    processRefs: mw.config.get('wgSmjExtraDelimiters').enabled,
+    processEscapes: mw.config.get('wgSmjExtraDelimiters').enabled,
     packages: mw.config.exists('smjPreloadChem') ? {'[+]': ['autoload','mhchem']} : {'[+]': ['autoload']},
     macros: {
       AA: "{\u00c5}",
@@ -120,33 +120,26 @@ window.MathJax = {
   },
   chtml: {
     scale: mw.config.get('wgSmjScale'),
-    displayAlign: mw.config.get('wgSmjDisplayAlign'),
-    displayOverflow: mw.config.exists('smjLinebreak') ? 'linebreak' : 'overflow',
-    linebreaks: {
-      // getLinebreakWidth() resolves this against the container's width in
-      // *unscaled* ems, while the equation's own width is measured in its
-      // own (scaled) ems — so without compensating, a scale != 1 makes it
-      // misjudge how much actually fits. Shrinking the percentage by the
-      // same factor cancels that out.
-      width: (100 / mw.config.get('wgSmjScale')) + '%'
-    }
   },
   loader: {
     load: ['ui/safe','[tex]/autoload'].concat(mw.config.exists('smjPreloadChem') ? ['[tex]/mhchem'] : [])
   },
   startup: {
-    elements: mw.config.get('wgSmjDirectMath').enabled ? null : ["span.smj-container"],
+    elements: mw.config.get('wgSmjExtraDelimiters').enabled ? null : ["span.smj-container"],
     pageReady: () => {
       return MathJax.startup.defaultPageReady().then(() => {
-        $("span.smj-container > .MathJax").parent().css('opacity',1);
+        document.querySelectorAll("span.smj-container > .MathJax").forEach((mjx) => {
+          mjx.parentElement.style.opacity = 1;
+        });
       });
     }
   }
 };
 (function () {
-  var script = document.createElement('script');
-  script.src = mw.config.get('wgSmjUseCdn')
-    ? 'https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js'
+  const script = document.createElement('script');
+  const cdn = mw.config.get('wgSmjCdn');
+  script.src = cdn.enabled
+    ? 'https://cdn.jsdelivr.net/npm/mathjax@' + cdn.version + '/tex-chtml.js'
     : mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/resources/MathJax/tex-chtml.js';
   script.async = true;
   document.head.appendChild(script);

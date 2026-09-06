@@ -13,21 +13,13 @@
 		"MediaWiki\\Extension\\SimpleMathJax\\": "includes/"
 	},
 	"config": {
-		"SmjUseCdn": {
-			"value": true,
-			"description": "Whether to load MathJax from CDN"
+		"SmjCdn": {
+			"value": { "enabled": true, "version": "4" },
+			"description": "CDN settings for MathJax"
 		},
-		"SmjEnableRenderAttributes": {
-			"value": true,
-			"description": "Whether to process SimpleMathJax's own render-control attributes on <math> (display=, inline-block)"
-		},
-		"SmjAllowedAttributes": {
-			"value": [],
-			"description": "Generic HTML attributes to carry over from <math>/<chem> to the output <span>"
-		},
-		"SmjDirectMath": {
+		"SmjExtraDelimiters": {
 			"value": { "enabled": false, "inlineMath": [], "displayMath": [] },
-			"description": "Direct (bare $...$) math scanning: 'enabled', 'inlineMath', 'displayMath'"
+			"description": "Extra delimiter scanning (e.g. $...$), outside of <math>/<chem>: 'enabled', 'inlineMath', 'displayMath'"
 		},
 		"SmjIgnoreHtmlClass": {
 			"value": "mathjax_ignore|comment|diff-(context|addedline|deletedline)",
@@ -41,13 +33,9 @@
 			"value": true,
 			"description": "Whether to enable MathJax context menu"
 		},
-		"SmjDisplayAlign": {
-			"value": "left",
-			"description": "Alignment for MathJax.chtml.displayAlign"
-		},
-		"SmjDisplaystyle": {
-			"value": false,
-			"description": "Whether bare <math> (no display=) renders at display-style size"
+		"SmjAllowedAttributes": {
+			"value": [],
+			"description": "Generic HTML attributes to carry over from <math>/<chem> to the output <span>"
 		},
 		"SmjRevisionOverrides": {
 			"value": [],
