@@ -97,7 +97,7 @@ async function injectCjkFonts(page) {
 }
 
 async function recordDoc(browser, name, segments, viewport, outDir) {
-	const pageTitle = `VisualEditorDemo-${name}`;
+	const pageTitle = `SMJ×VE Demo - ${name}`;
 	const { width: WIDTH, height: HEIGHT } = viewport;
 	const encoder = new GIFEncoder(WIDTH, HEIGHT, 'octree');
 	encoder.start();
@@ -269,7 +269,7 @@ async function recordDoc(browser, name, segments, viewport, outDir) {
 		await clickButtonByText('Save page') || await clickButtonByText('Save changes');
 		await new Promise((r) => setTimeout(r, 1200));
 	}
-	await page.reload({ waitUntil: 'load', timeout: 60000 } ).catch(() => {});
+	await page.reload({ waitUntil: 'load', timeout: 60000 }).catch(() => { });
 	await injectCjkFonts(page);
 	await page.waitForFunction(
 		() => Array.from(document.querySelectorAll('span.smj-container'))

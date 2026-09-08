@@ -1,14 +1,14 @@
 mediawiki:
   versions:
     - 1.43
-    - 1.45
+    # - 1.45
 viewport:
   width: 800
   height: 600
 docs:
   - name: default
     content: |
-      옴의 법칙에 따르면 다음과 같다.
+      옴(Ohm)의 법칙:
       <math display="block">전압 = 전류 \times 저항</math>
       Chemical reaction: <chem>H2O + CO2 -> H2CO3</chem>
 
