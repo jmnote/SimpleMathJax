@@ -1,11 +1,11 @@
 <?php
-// Renders one field of one demo out of docs/demos.yaml for demo.sh:
+// Renders one field of one demo out of docs/demo-screenshots.yaml for demo.sh:
 //   render.php <path> <demo> settings   prints `wfLoadExtension(
 //                                        'SimpleMathJax' );` followed by the
 //                                        demo's `settings:` literal block
 //                                        (its $wgSmj* overrides only — every
 //                                        demo needs the wfLoadExtension line,
-//                                        so it isn't repeated in demos.yaml)
+//                                        so it isn't repeated in demo-screenshots.yaml)
 //                                        — raw PHP appended into
 //                                        LocalSettings.php (see up()) and
 //                                        shown on the demo page in a

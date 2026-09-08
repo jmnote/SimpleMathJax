@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": []
+	},
+	"simplemathjax-visualeditor-mwmathdialog-title": "Title of the VisualEditor dialog for inserting/editing a SimpleMathJax <math> formula, and label of the Insert-menu tool and context item that open it.",
+	"simplemathjax-visualeditor-mwchemdialog-title": "Title of the VisualEditor dialog for inserting/editing a SimpleMathJax <chem> chemical formula, and label of the Insert-menu tool and context item that open it.",
+	"simplemathjax-visualeditor-mwformuladialog-formula": "Label of the TeX/chem input field in the VisualEditor formula dialog (shared by the <math> and <chem> dialogs).",
+	"simplemathjax-visualeditor-mwformuladialog-display": "Label of the display-mode picker (default/inline/block) in the VisualEditor formula dialog (shared by the <math> and <chem> dialogs).",
+	"simplemathjax-visualeditor-mwformuladialog-display-default": "Option label: leave the display mode unset, i.e. no display=\"...\" attribute is written.",
+	"simplemathjax-visualeditor-mwformuladialog-display-inline": "Option label: force inline display, i.e. display=\"inline\".",
+	"simplemathjax-visualeditor-mwformuladialog-display-block": "Option label: force block display, i.e. display=\"block\"."
+}
