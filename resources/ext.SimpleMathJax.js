@@ -183,10 +183,12 @@ mw.hook('wikipage.content').add(function ($content) {
     return;
   }
   var $containers = $content.filter('.smj-container').add($content.find('.smj-container'));
-  if (!$containers.length) {
+  var delimitersEnabled = mw.config.get('wgSmjDelimitersEnabled');
+  if (!delimitersEnabled && !$containers.length) {
     return;
   }
-  mw.libs.smj.typeset($containers.toArray()).then(() => {
+  var elements = delimitersEnabled ? $content.toArray() : $containers.toArray();
+  mw.libs.smj.typeset(elements).then(() => {
     $containers.children('.MathJax').parent().css('opacity', 1);
   });
 });
