@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": []
+	},
+	"simplemathjax-visualeditor-mwmathdialog-title": "수학식",
+	"simplemathjax-visualeditor-mwchemdialog-title": "화학식",
+	"simplemathjax-visualeditor-mwformuladialog-formula": "식",
+	"simplemathjax-visualeditor-mwformuladialog-display": "표시",
+	"simplemathjax-visualeditor-mwformuladialog-display-default": "기본값",
+	"simplemathjax-visualeditor-mwformuladialog-display-inline": "인라인",
+	"simplemathjax-visualeditor-mwformuladialog-display-block": "블록"
+}

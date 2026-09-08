@@ -1,6 +1,6 @@
 {
 	"name": "SimpleMathJax",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"author": "jmnote",
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleMathJax",
 	"description": "render TeX between <code><nowiki><math></nowiki></code> and <code><nowiki></math></nowiki></code>",
@@ -58,10 +58,55 @@
 		"ParserFirstCallInit": "MediaWiki\\Extension\\SimpleMathJax\\Hooks::onParserFirstCallInit",
 		"InternalParseBeforeLinks": "MediaWiki\\Extension\\SimpleMathJax\\Hooks::onInternalParseBeforeLinks"
 	},
+	"attributes": {
+		"VisualEditor": {
+			"PluginModules": [
+				"ext.SimpleMathJax.visualEditor"
+			]
+		}
+	},
+	"MessagesDirs": {
+		"SimpleMathJax": [
+			"i18n"
+		]
+	},
 	"ResourceModules": {
 		"ext.SimpleMathJax": {
 			"scripts": [
 				"resources/ext.SimpleMathJax.js"
+			]
+		},
+		"ext.SimpleMathJax.visualEditor": {
+			"scripts": [
+				"resources/ve/ve.dm.MWMathNode.js",
+				"resources/ve/ve.dm.MWChemNode.js",
+				"resources/ve/ve.ce.MWFormulaNode.js",
+				"resources/ve/ve.ce.MWMathNode.js",
+				"resources/ve/ve.ce.MWChemNode.js",
+				"resources/ve/ve.ui.MWFormulaDialog.js",
+				"resources/ve/ve.ui.MWMathDialog.js",
+				"resources/ve/ve.ui.MWChemDialog.js",
+				"resources/ve/ve.ui.MWMathDialogTool.js",
+				"resources/ve/ve.ui.MWChemDialogTool.js",
+				"resources/ve/ve.ui.MWFormulaContextItem.js",
+				"resources/ve/ve.ui.MWMathContextItem.js",
+				"resources/ve/ve.ui.MWChemContextItem.js"
+			],
+			"styles": [
+				"resources/ve/ve.ui.MWFormulaDialog.less"
+			],
+			"dependencies": [
+				"ext.visualEditor.mwcore",
+				"ext.SimpleMathJax"
+			],
+			"messages": [
+				"simplemathjax-visualeditor-mwmathdialog-title",
+				"simplemathjax-visualeditor-mwchemdialog-title",
+				"simplemathjax-visualeditor-mwformuladialog-formula",
+				"simplemathjax-visualeditor-mwformuladialog-display",
+				"simplemathjax-visualeditor-mwformuladialog-display-default",
+				"simplemathjax-visualeditor-mwformuladialog-display-inline",
+				"simplemathjax-visualeditor-mwformuladialog-display-block"
 			]
 		}
 	},

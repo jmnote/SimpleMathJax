@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": []
+	},
+	"simplemathjax-visualeditor-mwmathdialog-title": "Math formula",
+	"simplemathjax-visualeditor-mwchemdialog-title": "Chemical formula",
+	"simplemathjax-visualeditor-mwformuladialog-formula": "Formula",
+	"simplemathjax-visualeditor-mwformuladialog-display": "Display",
+	"simplemathjax-visualeditor-mwformuladialog-display-default": "Default",
+	"simplemathjax-visualeditor-mwformuladialog-display-inline": "Inline",
+	"simplemathjax-visualeditor-mwformuladialog-display-block": "Block"
+}
