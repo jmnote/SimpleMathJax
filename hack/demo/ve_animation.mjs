@@ -97,7 +97,7 @@ async function injectCjkFonts(page) {
 }
 
 async function recordDoc(browser, name, segments, viewport, outDir) {
-	const pageTitle = `SMJ×VE Demo - ${name}`;
+	const pageTitle = `SmjVeDemo-${name}`;
 	const { width: WIDTH, height: HEIGHT } = viewport;
 	const encoder = new GIFEncoder(WIDTH, HEIGHT, 'octree');
 	encoder.start();
