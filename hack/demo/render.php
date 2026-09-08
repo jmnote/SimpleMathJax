@@ -1,35 +1,15 @@
 <?php
 // Renders one field of one demo out of docs/demo-screenshots.yaml for demo.sh:
-//   render.php <path> <demo> settings   prints `wfLoadExtension(
-//                                        'SimpleMathJax' );` followed by the
-//                                        demo's `settings:` literal block
-//                                        (its $wgSmj* overrides only — every
-//                                        demo needs the wfLoadExtension line,
-//                                        so it isn't repeated in demo-screenshots.yaml)
-//                                        — raw PHP appended into
-//                                        LocalSettings.php (see up()) and
-//                                        shown on the demo page in a
-//                                        <syntaxhighlight lang="php"> block.
-//   render.php <path> <demo> examples   prints the demo's `examples:` list
-//                                        as wikitext, each example as a
-//                                        syntaxhighlight block next to its
-//                                        live render, laid out in a
-//                                        responsive flex row.
-//   render.php <path> <demo> addrightclickshot prints "true" if the demo has
-//                                        `addRightClickShot: true`.
-//   render.php <path> <demo> adddiffshot prints "true" if the demo has
-//                                        `addDiffShot: true`.
+//   render.php <path> <demo> settings           the demo's settings: block as
+//                                                PHP appended into LocalSettings.php
+//   render.php <path> <demo> examples            the demo's examples: list as wikitext
+//   render.php <path> <demo> addrightclickshot   "true" if addRightClickShot: true
+//   render.php <path> <demo> adddiffshot         "true" if addDiffShot: true
 //
-// Only this narrow shape is supported, not general YAML: a top-level
-// sequence of demo items (`- name: <demo>`), each an optional `settings:`
-// literal block scalar (`|`), an `examples:` block sequence whose items are
-// either quoted scalars or their own `- |` literal block scalar, and an
-// optional `addRightClickShot: true` / `addDiffShot: true` scalar.
-// YAML's C-style escaping for \\, \" and \n inside a double-quoted scalar
-// is a strict subset of JSON's, so each quoted example is unescaped by
-// wrapping it in JSON quotes and handing it to json_decode — this project
-// already requires php (see demo.sh's json_field()), so reusing it here
-// avoids a YAML library dependency just for this.
+// Only this narrow YAML shape is supported: a top-level sequence of demo
+// items (`- name: <demo>`), each an optional `settings:` literal block
+// scalar (`|`), an `examples:` block sequence of quoted or `- |` block
+// scalars, and optional `addRightClickShot:`/`addDiffShot:` booleans.
 
 [ , $path, $demo, $mode ] = $argv;
 
@@ -115,12 +95,9 @@ if ( $mode === 'examples' ) {
 			$examples[] = str_replace( "''", "'", $m[1] );
 			continue;
 		}
-		// A `- |` literal block scalar: every following line indented more
-		// than the "-" is taken verbatim (no quote-escaping) until indentation
-		// drops back to the item's own level or lower, then dedented by its
-		// own common indent and trailing blank lines clipped — long examples
-		// (e.g. a multi-line continued fraction) read better this way than
-		// escaped into one quoted line.
+		// A `- |` literal block scalar, for long examples (e.g. a
+		// multi-line continued fraction) that read better unescaped than
+		// squeezed into one quoted line.
 		if ( preg_match( '/^(\s*)-\s*\|\s*$/', $line, $m ) ) {
 			$itemIndent = strlen( $m[1] );
 			$blockLines = [];
@@ -128,10 +105,6 @@ if ( $mode === 'examples' ) {
 			for ( $i++; $i < $count; $i++ ) {
 				$next = $lines[$i];
 				if ( trim( $next ) === '' ) {
-					// Each non-blank line below still carries its own
-					// trailing "\n" from file(), so joining with '' (not a
-					// "\n" glue) reproduces the source exactly — matching
-					// how the settings-mode block above is joined.
 					$blockLines[] = "\n";
 					continue;
 				}
@@ -146,13 +119,8 @@ if ( $mode === 'examples' ) {
 			$examples[] = rtrim( implode( '', $blockLines ) );
 		}
 	}
-	// Column fragmentation ("column-count" below) makes the container its
-	// own block formatting context, so the first item's own top margin (a
-	// browser default on <pre>, which <syntaxhighlight> renders as) doesn't
-	// collapse into the page above it the way it normally would — visible
-	// as a gap above column 1 only, since a later column's break point
-	// isn't a "start" and so never re-applies that margin. Pull the whole
-	// block up by that amount to cancel it out.
+	// column-count fragmentation would otherwise collapse the first
+	// example's top margin into the page above it; this cancels that out.
 	echo '<div style="column-count: 2; column-rule: 1px solid #ccc">';
 	foreach ( $examples as $example ) {
 		echo "<syntaxhighlight lang=\"wikitext\">$example</syntaxhighlight> $example\n";

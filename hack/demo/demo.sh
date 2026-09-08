@@ -1,26 +1,19 @@
 #!/usr/bin/env bash
-# Local test wiki: the official `mediawiki` Docker image + SQLite (no
-# separate DB container), with this repo bind-mounted in as the extension —
-# no MediaWiki core checkout needed. See AGENTS.md. VisualEditor is also
-# installed (bundled with the image, so no extra download) so
-# resources/ve/*.js can be exercised by hand at ?veaction=edit; nothing here
-# exercises it automatically, since screenshot() only ever edits through the
-# API (see seed_demo_page), not VisualEditor.
+# Local test wiki: the official `mediawiki` Docker image + SQLite, with this
+# repo bind-mounted in as the extension. VisualEditor is also installed
+# (bundled with the image) so resources/ve/*.js can be exercised at
+# ?veaction=edit.
 #
 # Usage: hack/demo/demo.sh [up|down] [demo]
 #        hack/demo/demo.sh screenshot [demo]
 #        hack/demo/demo.sh animations [version]
 #        MW_VERSION=1.45 hack/demo/demo.sh screenshot [demo]
-# `demo` is a top-level key in hack/demo/demo-screenshots.yaml (e.g. default01, custom01);
-# its capture is saved to docs/screenshots/$MW_VERSION/screenshot-<demo>.png.
-# Defaults to `default01`; `screenshot` with no `demo` given screenshots
-# every demo in demo-screenshots.yaml. MW_VERSION selects the `mediawiki` Docker image
-# tag to test against (default 1.43) — e.g. to check whether a bug is
-# specific to one MediaWiki version. `animations` takes its version the
-# same way as `screenshot` takes a demo - as a plain argument, not
-# MW_VERSION - and with none given loops over every version in
-# demo-animations.yaml's own `mediawiki: versions:` list instead of
-# defaulting to one (see animations() below).
+# `demo` is a top-level key in demo-screenshots.yaml (default: default01);
+# `screenshot` with none given screenshots every demo. MW_VERSION selects
+# the `mediawiki` Docker image tag (default 1.43). `animations` takes its
+# version as a plain argument (like `screenshot`'s demo, not MW_VERSION),
+# and with none given loops over demo-animations.yaml's own
+# `mediawiki: versions:` list.
 set -euo pipefail
 DEMO_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$DEMO_DIR/../.."
@@ -68,20 +61,12 @@ render_examples() {
 	php "$DEMO_DIR/render.php" "$DEMO_DIR/demo-screenshots.yaml" "$1" examples
 }
 
-# Logs in as Admin and edits the configured demo page (not "Main Page", which
-# the installer already fills with its own default content) with a small
-# demo showing primes inside $...$/$$...$$ surviving wikitext emphasis
-# parsing, prefixed with a MediaWiki {{CURRENTVERSION}}/SimpleMathJax
-# version line (so a screenshot alone shows what it was captured against —
-# useful once screenshots exist for more than one MediaWiki version, see
-# MW_VERSION) and the demo's own `settings:` block (wrapped in
-# <syntaxhighlight>) for context. Blanks the page first so the demo edit
-# always has an empty previous revision to diff against — a real
-# two-column diff, not just a "page creation" summary — regardless of how
-# many times this runs against the same wiki (see screenshot_one's
-# addDiffShot handling). Re-run on every up so editing a demo's entry in
-# docs/demo-screenshots.yaml and re-running `up` (or `screenshot`) always shows the
-# latest content.
+# Logs in as Admin and edits the configured demo page (not "Main Page") with
+# the demo's rendered examples, prefixed with a
+# {{CURRENTVERSION}}/SimpleMathJax version line and its `settings:` block.
+# Blanks the page first so the edit always has an empty previous revision to
+# diff against (see screenshot_one's addDiffShot handling). Re-run on every
+# `up` so the page always reflects the latest demo-screenshots.yaml.
 seed_demo_page() {
 	local demo="$1"
 	local jar url="http://localhost:$PORT/api.php"
@@ -126,9 +111,8 @@ seed_demo_page() {
 }
 
 wait_for_wiki() {
-	# Main Page, not the configured demo page: it's the installer's own
-	# default page, so it already exists the moment the wiki responds — unlike
-	# the demo page, which seed_demo_page hasn't created yet at this point.
+	# Main Page, not the demo page: it exists as soon as the wiki responds,
+	# unlike the demo page, which seed_demo_page hasn't created yet.
 	for _ in $(seq 1 30); do
 		curl -sf -o /dev/null "http://localhost:$PORT/index.php/Main_Page" && return 0
 		sleep 1
@@ -167,28 +151,19 @@ up() {
 	wait_for_wiki && seed_demo_page "$demo"
 }
 
-# Stops the container and wipes its data, so the next `up` reinstalls fresh
-# (also how you pick up changes to a demo's `settings:` block, which is
-# only applied during install).
+# Stops the container and wipes its data, so the next `up` reinstalls fresh.
 down() {
 	docker rm -f "$NAME" >/dev/null 2>&1 || true
 	rm -rf "$DATA"
 }
 
 # Screenshots one demo's page with a real browser (Puppeteer); see
-# screenshot.mjs. Forces a fresh install (down, then up) so the demo's own
-# `settings:` block is guaranteed to be the one in effect, then saves to
-# $SCREENSHOT_DIR/screenshot-<demo>.png (docs/screenshots/$MW_VERSION by
-# default). A demo with `addRightClickShot: true` (see render.php) gets one
-# extra screenshot, screenshot-<demo>-rightclick.png, after right-clicking
-# its first mjx-container — needed to show MathJax's context menu, e.g. for
-# $wgSmjEnableMenu, since the normal capture never triggers one. A demo with
-# `addDiffShot: true` gets a separate extra screenshot,
-# screenshot-<demo>-diff.png, of the demo page's diff against the blank
-# revision seed_demo_page saves right before its real edit — needed to show
-# $wgSmjIgnoreHtmlClass keeping bare-delimiter scanning out of diff views,
-# since a diff is a different page/URL entirely, not something a click on
-# the normal capture can reveal.
+# screenshot.mjs. Forces a fresh install (down, then up), then saves to
+# $SCREENSHOT_DIR/screenshot-<demo>.png. `addRightClickShot: true` adds
+# screenshot-<demo>-rightclick.png (MathJax's context menu, e.g. for
+# $wgSmjEnableMenu). `addDiffShot: true` adds screenshot-<demo>-diff.png,
+# the demo page's diff against the blank seed revision (e.g. for
+# $wgSmjIgnoreHtmlClass).
 screenshot_one() {
 	local demo="$1"
 	down
@@ -228,9 +203,8 @@ screenshot() {
 		screenshot_one "$1"
 		return
 	fi
-	# Regenerating every demo: clear old captures first so a demo that got
-	# renamed or removed from demo-screenshots.yaml doesn't leave a stale screenshot
-	# behind under its old name.
+	# Clear old captures first so a renamed/removed demo doesn't leave a
+	# stale screenshot behind.
 	mkdir -p "$SCREENSHOT_DIR"
 	rm -f "$SCREENSHOT_DIR"/screenshot-*.png
 	local demo
@@ -239,11 +213,9 @@ screenshot() {
 	done
 }
 
-# demo-animations.yaml's optional top-level `mediawiki: versions:` list -
-# only consulted when animations() itself is asked to pick the version (no
-# version argument given), and only to decide which versions to loop over
-# then; falls back to just the one already-defaulted $MW_VERSION if that
-# block is missing.
+# demo-animations.yaml's optional top-level `mediawiki: versions:` list,
+# consulted only when animations() has no version argument; falls back to
+# $MW_VERSION if that block is missing.
 animation_versions() {
 	local versions
 	versions=$(awk '/^mediawiki:/ { f=1; next } /^[a-zA-Z]/ { f=0 } f' "$DEMO_DIR/demo-animations.yaml" |
@@ -253,10 +225,8 @@ animation_versions() {
 
 # Records docs/animations/$MW_VERSION/animation-<name>.gif for each doc in
 # demo-animations.yaml: inserting that doc's formulas via VisualEditor's
-# Insert menu (see resources/ve/*.js), then saving the page. Forces a
-# fresh install (down, then up) so it always starts from the same blank
-# state. Shares screenshot_one's node_modules (puppeteer) plus its own
-# gif-encoding deps, so also covered by that one `npm install`.
+# Insert menu (see resources/ve/*.js), then saving. Forces a fresh install
+# (down, then up).
 animations_one() {
 	IMAGE="mediawiki:$MW_VERSION"
 	down
@@ -275,10 +245,8 @@ animations_one() {
 	)
 }
 
-# Runs animations_one for a single explicit version (given as an argument,
-# same as screenshot's demo argument - not MW_VERSION), or, with none
-# given, once per version in demo-animations.yaml's own
-# `mediawiki: versions:` list.
+# Runs animations_one for a single explicit version (an argument, like
+# screenshot's demo), or once per version in animation_versions.
 animations() {
 	if [ -n "${1:-}" ]; then
 		MW_VERSION="$1" animations_one
