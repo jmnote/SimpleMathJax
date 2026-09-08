@@ -150,8 +150,12 @@ function ensureLoaded() {
     ? 'https://cdn.jsdelivr.net/npm/mathjax@' + mw.config.get('wgSmjCdnVersion') + '/tex-chtml.js'
     : mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/resources/MathJax/tex-chtml.js';
   script.async = true;
-  scriptLoadPromise = new Promise((resolve) => {
+  scriptLoadPromise = new Promise((resolve, reject) => {
     script.onload = resolve;
+    script.onerror = () => {
+      loaded = false;
+      reject();
+    };
   });
   document.head.appendChild(script);
 }
@@ -172,5 +176,18 @@ mw.libs.smj.typeset = function (elements) {
   return result;
 };
 
-mw.hook('wikipage.content').add(ensureLoaded);
+mw.hook('wikipage.content').add(function ($content) {
+  var alreadyLoaded = loaded;
+  ensureLoaded();
+  if (!alreadyLoaded) {
+    return;
+  }
+  var $containers = $content.filter('.smj-container').add($content.find('.smj-container'));
+  if (!$containers.length) {
+    return;
+  }
+  mw.libs.smj.typeset($containers.toArray()).then(() => {
+    $containers.children('.MathJax').parent().css('opacity', 1);
+  });
+});
 })();
