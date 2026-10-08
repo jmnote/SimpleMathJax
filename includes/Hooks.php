@@ -16,7 +16,7 @@ class Hooks {
 	private static string $ignoreHtmlClass = '';
 
 	public static function onParserFirstCallInit( Parser $parser ) {
-		global $wgOut, $wgSmjCdnEnabled, $wgSmjCdnVersion, $wgSmjEnableMenu,
+		global $wgOut, $wgSmjCdnEnabled, $wgSmjCdnVersion, $wgSmjEnableMenu, $wgSmjExplorerEnabled,
 		$wgSmjDelimitersEnabled, $wgSmjDelimitersInlineMath, $wgSmjDelimitersDisplayMath,
 		$wgSmjIgnoreHtmlClass, $wgSmjScale,
 		$wgSmjAllowedAttributes, $wgSmjRevisionOverrides;
@@ -30,6 +30,7 @@ class Hooks {
 			"wgSmjIgnoreHtmlClass"             => $wgSmjIgnoreHtmlClass,
 			"wgSmjScale"                       => $wgSmjScale,
 			"wgSmjEnableMenu"                  => $wgSmjEnableMenu,
+			"wgSmjExplorerEnabled"             => $wgSmjExplorerEnabled,
 			"wgSmjAllowedAttributes"           => $wgSmjAllowedAttributes,
 		];
 
@@ -38,7 +39,7 @@ class Hooks {
 
 		$clientConfigVars = [ "wgSmjCdnEnabled", "wgSmjCdnVersion",
 			"wgSmjDelimitersEnabled", "wgSmjDelimitersInlineMath", "wgSmjDelimitersDisplayMath",
-			"wgSmjIgnoreHtmlClass", "wgSmjScale", "wgSmjEnableMenu" ];
+			"wgSmjIgnoreHtmlClass", "wgSmjScale", "wgSmjEnableMenu", "wgSmjExplorerEnabled" ];
 		foreach ( $clientConfigVars as $varname ) {
 			$wgOut->addJsConfigVars( $varname, $config[$varname] );
 		}
