@@ -17,23 +17,9 @@ var defaults = {
   wgSmjScale: 1
 };
 
-// Pre-1.0 names of settings that were only renamed (see docs/mig-1.0.md),
-// consulted for pages cached before the upgrade. Settings whose meaning or
-// default changed in 1.0 (e.g. delimiters) are not mapped.
-var legacyNames = {
-  wgSmjCdnEnabled: 'wgSmjUseCdn'
-};
-
-function isSet(value) {
-  return value !== null && value !== undefined;
-}
-
 function config(name) {
   var value = mw.config.get(name);
-  if (!isSet(value) && legacyNames[name]) {
-    value = mw.config.get(legacyNames[name]);
-  }
-  return isSet(value) ? value : defaults[name];
+  return value === null || value === undefined ? defaults[name] : value;
 }
 
 function ensureLoaded() {
