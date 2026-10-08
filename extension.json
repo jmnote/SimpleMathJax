@@ -45,6 +45,10 @@
 			"value": true,
 			"description": "Whether to enable MathJax context menu"
 		},
+		"SmjExplorerEnabled": {
+			"value": false,
+			"description": "Whether to enable MathJax's accessibility explorer (semantic enrichment: click/keyboard exploration with highlighting, speech and Braille)"
+		},
 		"SmjAllowedAttributes": {
 			"value": [],
 			"description": "Generic HTML attributes to carry over from <math>/<chem> to the output <span>"

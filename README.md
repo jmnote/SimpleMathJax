@@ -27,6 +27,7 @@ wfLoadExtension( 'SimpleMathJax' );
 | `$wgSmjCdnVersion`       | `'4'`                       | MathJax version to load from the CDN | `'4.1.3'`                  |
 | `$wgSmjScale`            | `1`                         | `MathJax.chtml.scale`              | `1.5`                         |
 | `$wgSmjEnableMenu`       | `true`                      | `MathJax.options.enableMenu`       | `false`                       |
+| `$wgSmjExplorerEnabled`  | `false`                     | Whether to enable MathJax's accessibility explorer (click/keyboard exploration, speech, Braille) | `true` |
 | `$wgSmjDelimitersEnabled` | `false`               | Whether to also scan for bare delimiters (e.g. `$...$`) outside `<math>`/`<chem>` | `true` |
 | `$wgSmjDelimitersInlineMath` | `[]`              | Inline math delimiter pairs | `[['$','$']]` |
 | `$wgSmjDelimitersDisplayMath` | `[]`             | Display math delimiter pairs | `[['$$','$$']]` |

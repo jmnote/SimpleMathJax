@@ -14,7 +14,8 @@ var defaults = {
   wgSmjDelimitersInlineMath: [],
   wgSmjDelimitersDisplayMath: [],
   wgSmjIgnoreHtmlClass: 'mathjax_ignore|comment|diff-(context|addedline|deletedline)',
-  wgSmjScale: 1
+  wgSmjScale: 1,
+  wgSmjExplorerEnabled: false
 };
 
 function config(name) {
@@ -144,7 +145,14 @@ function ensureLoaded() {
     },
     options: {
       ignoreHtmlClass: config('wgSmjIgnoreHtmlClass'),
-      processHtmlClass: "mathjax_process|smj-container"
+      processHtmlClass: "mathjax_process|smj-container",
+      // Semantic enrichment drives MathJax 4's explorer: a click selects and
+      // highlights a symbol. Readers can still turn it on from the menu.
+      menuOptions: {
+        settings: {
+          enrich: config('wgSmjExplorerEnabled')
+        }
+      }
     },
     chtml: {
       scale: config('wgSmjScale'),

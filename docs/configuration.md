@@ -14,6 +14,7 @@ and examples. Upgrading from before 1.0.0? See the
 | `$wgSmjCdnVersion`       | `'4'` | MathJax version to load from the CDN |
 | `$wgSmjScale`            | `1` | `MathJax.chtml.scale` |
 | `$wgSmjEnableMenu`       | `true` | `MathJax.options.enableMenu` |
+| `$wgSmjExplorerEnabled`  | `false` | Whether to enable MathJax's accessibility explorer (click/keyboard exploration, speech, Braille) |
 | `$wgSmjDelimitersEnabled` | `false` | Whether to also scan for bare delimiters (e.g. `$...$`) outside `<math>`/`<chem>` |
 | `$wgSmjDelimitersInlineMath` | `[]` | Inline math delimiter pairs, e.g. `[['$','$']]` |
 | `$wgSmjDelimitersDisplayMath` | `[]` | Display math delimiter pairs, e.g. `[['$$','$$']]` |
@@ -78,6 +79,22 @@ If you want to disable MathJax context menu, set `$wgSmjEnableMenu`.
 ```php
 wfLoadExtension( 'SimpleMathJax' );
 $wgSmjEnableMenu = false;
+```
+
+### `$wgSmjExplorerEnabled`
+
+MathJax 4 enriches each formula with semantic information for its
+accessibility explorer. With it on, clicking a formula selects and
+highlights a symbol, arrow keys move through the expression, and screen
+readers get spoken and Braille output. SimpleMathJax turns this off by
+default so a click does not select part of a formula. Readers can still
+enable it per browser from the MathJax menu (right-click, Accessibility).
+
+To enable it for everyone:
+
+```php
+wfLoadExtension( 'SimpleMathJax' );
+$wgSmjExplorerEnabled = true;
 ```
 
 ### `$wgSmjDelimitersEnabled`
