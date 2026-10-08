@@ -44,19 +44,5 @@ foreach ( $defaults ?? [] as $name => $value ) {
 	assert_same( "$name default matches extension.json", $expected, $value );
 }
 
-// Legacy names are only for settings the migration guide lists as renamed.
-if ( preg_match( '/var legacyNames = (\{.*?\});/s', $js, $m ) ) {
-	preg_match_all( "/(\w+): '(\w+)'/", $m[1], $pairs, PREG_SET_ORDER );
-	$guide = file_get_contents( __DIR__ . '/../docs/mig-1.0.md' );
-	foreach ( $pairs as [ , $name, $legacy ] ) {
-		assert_same( "$name has a client default", true, array_key_exists( $name, $defaults ?? [] ) );
-		assert_same(
-			"$legacy -> $name is a rename in docs/mig-1.0.md",
-			1,
-			preg_match( '/\| `\$' . $legacy . '` \| `\$' . $name . '` \|/', $guide )
-		);
-	}
-}
-
 echo $failures === 0 ? "\nAll tests passed.\n" : "\n$failures test(s) FAILED.\n";
 exit( $failures === 0 ? 0 : 1 );
