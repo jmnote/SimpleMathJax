@@ -8,6 +8,7 @@ test: ## Run the pure-PHP test suites
 	php tests/QuotesTest.php
 	php tests/RevisionOverridesTest.php
 	php tests/IgnoreHtmlClassTest.php
+	php tests/JsDefaultsTest.php
 
 phpcs: vendor/autoload.php ## parallel-lint + minus-x + phpcs against the MediaWiki coding standard
 	composer test

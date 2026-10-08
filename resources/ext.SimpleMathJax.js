@@ -3,6 +3,25 @@ mw.libs.smj = mw.libs.smj || {};
 var loaded = false;
 var scriptLoadPromise = null;
 
+// Defaults match extension.json. The page HTML that carries these settings
+// can be cached (CDN, reverse proxy) separately from this module, so after an
+// upgrade the two may come from different versions; fall back instead of
+// failing to render any formula.
+var defaults = {
+  wgSmjCdnEnabled: true,
+  wgSmjCdnVersion: '4',
+  wgSmjDelimitersEnabled: false,
+  wgSmjDelimitersInlineMath: [],
+  wgSmjDelimitersDisplayMath: [],
+  wgSmjIgnoreHtmlClass: 'mathjax_ignore|comment|diff-(context|addedline|deletedline)',
+  wgSmjScale: 1
+};
+
+function config(name) {
+  var value = mw.config.get(name);
+  return value === null || value === undefined ? defaults[name] : value;
+}
+
 function ensureLoaded() {
   if (loaded) {
     return;
@@ -10,11 +29,11 @@ function ensureLoaded() {
   loaded = true;
   window.MathJax = {
     tex: {
-      inlineMath: mw.config.get('wgSmjDelimitersInlineMath').concat([['[math]','[/math]']]),
-      displayMath: mw.config.get('wgSmjDelimitersDisplayMath'),
+      inlineMath: config('wgSmjDelimitersInlineMath').concat([['[math]','[/math]']]),
+      displayMath: config('wgSmjDelimitersDisplayMath'),
       processEnvironments: true,
-      processRefs: mw.config.get('wgSmjDelimitersEnabled'),
-      processEscapes: mw.config.get('wgSmjDelimitersEnabled'),
+      processRefs: config('wgSmjDelimitersEnabled'),
+      processEscapes: config('wgSmjDelimitersEnabled'),
       packages: mw.config.exists('smjPreloadChem') ? {'[+]': ['autoload','mhchem']} : {'[+]': ['autoload']},
       macros: {
         AA: "{\u00c5}",
@@ -124,17 +143,17 @@ function ensureLoaded() {
       }
     },
     options: {
-      ignoreHtmlClass: mw.config.get('wgSmjIgnoreHtmlClass'),
+      ignoreHtmlClass: config('wgSmjIgnoreHtmlClass'),
       processHtmlClass: "mathjax_process|smj-container"
     },
     chtml: {
-      scale: mw.config.get('wgSmjScale'),
+      scale: config('wgSmjScale'),
     },
     loader: {
       load: ['ui/safe','[tex]/autoload'].concat(mw.config.exists('smjPreloadChem') ? ['[tex]/mhchem'] : [])
     },
     startup: {
-      elements: mw.config.get('wgSmjDelimitersEnabled') ? null : ["span.smj-container"],
+      elements: config('wgSmjDelimitersEnabled') ? null : ["span.smj-container"],
       pageReady: () => {
         return MathJax.startup.defaultPageReady().then(() => {
           document.querySelectorAll("span.smj-container > .MathJax").forEach((mjx) => {
@@ -146,8 +165,8 @@ function ensureLoaded() {
   };
 
   var script = document.createElement('script');
-  script.src = mw.config.get('wgSmjCdnEnabled')
-    ? 'https://cdn.jsdelivr.net/npm/mathjax@' + mw.config.get('wgSmjCdnVersion') + '/tex-chtml.js'
+  script.src = config('wgSmjCdnEnabled')
+    ? 'https://cdn.jsdelivr.net/npm/mathjax@' + config('wgSmjCdnVersion') + '/tex-chtml.js'
     : mw.config.get('wgExtensionAssetsPath') + '/SimpleMathJax/resources/MathJax/tex-chtml.js';
   script.async = true;
   scriptLoadPromise = new Promise((resolve, reject) => {
@@ -183,7 +202,7 @@ mw.hook('wikipage.content').add(function ($content) {
     return;
   }
   var $containers = $content.filter('.smj-container').add($content.find('.smj-container'));
-  var delimitersEnabled = mw.config.get('wgSmjDelimitersEnabled');
+  var delimitersEnabled = config('wgSmjDelimitersEnabled');
   if (!delimitersEnabled && !$containers.length) {
     return;
   }
