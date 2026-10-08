@@ -15,6 +15,7 @@ var defaults = {
   wgSmjDelimitersDisplayMath: [],
   wgSmjIgnoreHtmlClass: 'mathjax_ignore|comment|diff-(context|addedline|deletedline)',
   wgSmjScale: 1,
+  wgSmjEnableMenu: true,
   wgSmjExplorerEnabled: false
 };
 
@@ -146,6 +147,7 @@ function ensureLoaded() {
     options: {
       ignoreHtmlClass: config('wgSmjIgnoreHtmlClass'),
       processHtmlClass: "mathjax_process|smj-container",
+      enableMenu: config('wgSmjEnableMenu'),
       // Semantic enrichment drives MathJax 4's explorer: a click selects and
       // highlights a symbol. Readers can still turn it on from the menu.
       menuOptions: {
